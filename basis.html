@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orientation for environmental predictions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-deep:  #1a3a2a;
+  --green-mid:   #2d6a4f;
+  --green-light: #52b788;
+  --amber:       #c17f24;
+  --amber-pale:  #fef3cd;
+  --parchment:   #f5f0e8;
+  --parchment2:  #ede7d9;
+  --ink:         #1c1c1c;
+  --ink-mid:     #3d3d3a;
+  --ink-muted:   #6b6b67;
+  --rule:        rgba(26,58,42,0.12);
+  --c1: #2d6a4f; --c2: #1a5276; --c3: #6c3483; --c4: #b7471c; --c5: #117a65;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:var(--ink);line-height:1.65;font-size:15px}
+.site-header{background:var(--green-deep);color:#fff;padding:40px 32px 32px;border-bottom:3px solid var(--amber)}
+.site-header h1{font-family:'Lora',serif;font-size:clamp(1.5rem,3vw,2.3rem);font-weight:400;font-style:italic;margin-bottom:8px}
+.site-header .intro{max-width:620px;margin-top:12px;color:rgba(255,255,255,0.72);font-size:0.88rem;line-height:1.7}
+.links-toggle{display:flex;align-items:center;gap:10px;padding:10px 0 0}
+.links-toggle label{font-size:.82rem;color:var(--ink-muted);cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.links-toggle input{accent-color:var(--amber);width:15px;height:15px;cursor:pointer}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 80px}
+.phase{margin-bottom:40px}
+.phase-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.phase-title{font-family:'Lora',serif;font-size:1.25rem;font-weight:600;color:var(--green-deep)}
+.phase-role{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:20px;background:var(--parchment2);color:var(--ink-muted);border:1px solid var(--rule);white-space:nowrap}
+.rationale{background:var(--parchment2);border:1px solid var(--rule);border-left:3px solid var(--amber);border-radius:6px;padding:9px 14px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
+.rat-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);white-space:nowrap;padding-top:2px}
+.rat-text{font-size:.82rem;color:var(--ink-muted);font-style:italic;line-height:1.5}
+.card{background:#fff;border-radius:10px;border:1px solid var(--rule);border-left:4px solid var(--green-mid);box-shadow:0 1px 4px rgba(0,0,0,0.07);margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
+.card:hover{box-shadow:0 3px 12px rgba(0,0,0,0.11)}
+.card-hd{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none}
+.card-hd:hover{background:rgba(0,0,0,0.013)}
+.card-title{font-family:'Lora',serif;font-size:.98rem;font-weight:600;flex:1}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-size:.68rem;padding:2px 7px;border-radius:20px;font-weight:600;line-height:1.4}
+.b-ex{background:var(--amber-pale);color:#7a4f10;border:1px solid #e8c97a}
+.b-imp{background:#fde8e8;color:#8b1a1a;border:1px solid #f5b0b0}
+.b-con{background:#e8e8fd;color:#2a2a8b;border:1px solid #b0b0f5}
+.chevron{width:18px;height:18px;color:var(--ink-muted);flex-shrink:0;transition:transform .2s}
+.card.open .chevron{transform:rotate(90deg)}
+.card-body{display:none;padding:4px 16px 16px;border-top:1px solid var(--rule)}
+.card.open .card-body{display:block}
+.card-body p{font-size:.86rem;color:var(--ink-mid);margin:10px 0 6px;line-height:1.7}
+.sub-list{list-style:none;margin:10px 0 0}
+.sub-item{display:flex;align-items:flex-start;gap:10px;padding:8px 11px;background:var(--parchment);border-radius:7px;border:1px solid var(--rule);font-size:.83rem;cursor:pointer;margin-bottom:5px;transition:background .1s}
+.sub-item:hover{background:var(--parchment2)}
+.si-icon{flex-shrink:0;margin-top:1px}
+.si-body{flex:1}
+.si-name{font-weight:600;color:var(--ink)}
+.si-desc{color:var(--ink-muted);font-size:.78rem;margin-top:1px}
+.si-detail{display:none;font-size:.8rem;color:var(--ink-mid);margin-top:6px;line-height:1.55;padding-top:6px;border-top:1px dashed var(--rule)}
+.sub-item.open .si-detail{display:block}
+.si-chev{color:var(--ink-muted);font-size:.7rem;padding-top:3px;flex-shrink:0;transition:transform .15s}
+.sub-item.open .si-chev{transform:rotate(90deg)}
+.role-tag{display:inline-block;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:20px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.role-sh{background:#e8f4ff;color:#1a5276;border:1px solid #b8d8f0}
+.def{border-bottom:1.5px dashed var(--green-mid);cursor:help;position:relative;display:inline}
+.def::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--green-deep);color:#fff;font-size:.76rem;font-family:'Inter',sans-serif;font-style:normal;padding:7px 11px;border-radius:7px;width:210px;text-align:left;line-height:1.45;pointer-events:none;opacity:0;transition:opacity .15s;z-index:300;box-shadow:0 4px 14px rgba(0,0,0,.22);white-space:normal}
+.def::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--green-deep);pointer-events:none;opacity:0;transition:opacity .15s;z-index:301}
+.def:hover::after,.def:hover::before,.def.tapped::after,.def.tapped::before{opacity:1}
+.xlink{display:none;margin:10px 0 0;padding:8px 12px;background:#fff7e6;border:1px dashed var(--amber);border-radius:7px;font-size:.79rem;color:#7a4f10;line-height:1.5}
+.xlink a{color:var(--amber);font-weight:600;text-decoration:none}
+.xlink a:hover{text-decoration:underline}
+body.show-links .xlink{display:block}
+.example{margin:10px 0 0;padding:11px 14px;background:var(--amber-pale);border-radius:7px;border-left:3px solid var(--amber);font-size:.82rem;color:#5a3a08;line-height:1.6}
+.example strong{display:block;margin-bottom:3px;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--amber)}
+.important{margin:10px 0 0;padding:10px 14px;background:#fff0f0;border-radius:7px;border-left:3px solid #cc3333;font-size:.82rem;color:#7a1010;line-height:1.6}
+.important strong{display:block;margin-bottom:3px;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#cc3333}
+.sec-title{font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:var(--green-deep);margin:52px 0 4px;padding-top:28px;border-top:2px solid var(--rule)}
+.sec-sub{color:var(--ink-muted);font-size:.85rem;margin-bottom:20px}
+.cont-card{background:#fff;border:1px solid var(--rule);border-left:4px solid #5a4fcf;border-radius:10px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cont-q{font-family:'Lora',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
+.cont-body{font-size:.84rem;color:var(--ink-mid);line-height:1.7;margin-bottom:8px}
+.glos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:14px}
+.glos-item{background:#fff;border:1px solid var(--rule);border-radius:7px;padding:11px 13px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.glos-term{font-weight:600;font-size:.8rem;font-family:monospace;color:var(--green-deep);border-bottom:1px solid var(--rule);padding-bottom:5px;margin-bottom:5px}
+.glos-def{font-size:.8rem;color:var(--ink-mid);line-height:1.5}
+.ack{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:18px 22px;font-size:.84rem;color:var(--ink-mid);line-height:1.8}
+.ack a{color:var(--green-mid);text-decoration:none}
+.ack a:hover{text-decoration:underline}
+footer{margin-top:60px;padding:22px 32px;background:var(--green-deep);color:rgba(255,255,255,.5);font-size:.78rem;text-align:center;line-height:1.7}
+footer a{color:var(--green-light);text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Orientation for environmental predictions</h1>
+  <p class="intro">An orientation for practitioners on designing, executing, and communicating rigorous quantitative predictions in ecology. Hover over <span class="def" data-def="Dashed underlines mark terms with definitions — hover to read.">underlined terms</span> for definitions.</p>
+</header>
+
+<div class="wrap" style="padding-bottom:0">
+  <div class="card" id="intro-card" style="border-left-color:var(--amber);margin-top:24px">
+    <div class="card-hd" onclick="toggleCard(this.parentElement)">
+      <span class="card-title">Introduction — start here</span>
+      <span class="badges"><span class="badge b-con">For newcomers</span></span>
+      <svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="card-body" id="intro-body"></div>
+  </div>
+  <div class="links-toggle">
+    <label><input type="checkbox" id="chk-links" onchange="toggleLinks(this)"> Show cross-phase linkage arrows</label>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<div class="wrap">
+  <h2 class="sec-title" id="checklist">Checklist — overlooked issues</h2>
+  <p class="sec-sub">🔔 Issues that are commonly missed.</p>
+  <div id="highlight-out"></div>
+  <h2 class="sec-title" id="discussion">Bones of contention</h2>
+  <p class="sec-sub">Open scientific debates.</p>
+  <div id="disc-out"></div>
+  <h2 class="sec-title" id="glossary">Glossary</h2>
+  <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
+  <div class="glos-grid" id="glos-out"></div>
+  <h2 class="sec-title" id="acknowledgements">Acknowledgements</h2>
+  <div class="ack">
+    <p>This resource was developed by an author collective (no individual names). With thanks to:</p>
+    <p><strong>ANDINA</strong> &nbsp;·&nbsp; <strong>EEFI</strong> &nbsp;·&nbsp; <strong>FuFo</strong> &nbsp;·&nbsp; feedback from participants of the <a href="https://iite.info/seminar/" target="_blank">IITE Seminar</a></p>
+  </div>
+</div>
+
+<footer>
+  <a href="#checklist">Checklist</a> &nbsp;·&nbsp;
+  <a href="#discussion">Bones of contention</a> &nbsp;·&nbsp;
+  <a href="#glossary">Glossary</a> &nbsp;·&nbsp;
+  <a href="#acknowledgements">Acknowledgements</a>
+</footer>
+
+
+<!--
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   CONTENT EDITOR — everything between the two double lines is yours to edit  ║
+║                                                                              ║
+║   RULES (please read once):                                                  ║
+║                                                                              ║
+║   • Lines starting with ## are SECTION headings — do not change the ##       ║
+║   • Lines starting with === are PHASE headings — do not change the ===       ║
+║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
+║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
+║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
+║     DETAIL, EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is     ║
+║   • Everything after a keyword on the same line is the value                 ║
+║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
+║   • Apostrophes are fine. Quotes are fine. No escaping needed.               ║
+║   • To leave a field empty, write [text] as a placeholder                    ║
+║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<script type="text/content" id="page-content">
+
+## INTRO
+Predictions serve two goals: addressing practical, applied questions with stakeholders,
+AND advancing scientific understanding of a system by falsifying causal predictions.
+
+There is a philosophical difference between predictions in applied and fundamental
+science. Only under very specific conditions is prediction science — in particular when
+it achieves validation of structure. A "context" explanation points to a system defined
+too narrowly, and may lead eventually to incompressible system descriptions if everything
+always remains context-dependent. Keep the long-term view of science in mind.
+
+The quality of predictions is currently unknown due to lack of uncertainty quantification.
+
+Newcomers may want orientation — this resource provides it.
+
+A model is a flexible thing here: it can be a set of expert statements, a process model,
+or a deep-learning analysis. A prediction is a quantitative statement of a model,
+including forecasts and projections.
+
+
+## GLOSSARY
+model | A flexible thing: can be a set of expert statements, a process model, or a deep-learning analysis.
+prediction | A quantitative statement of a model; includes forecasts and projections.
+calibration | Fitting model parameters to observed data; equivalent to inverse modelling. Distinct from validation.
+validation | An honest, pre-planned test of predictive quality on data not used in calibration.
+SA | Sensitivity Analysis — identifies which parameters most strongly influence the target output.
+ABM | Agent-Based Model — simulates individual entities and their interactions to produce system-level patterns.
+ODE | Ordinary Differential Equation — describes continuous-time dynamics of system state variables.
+MSY | Maximum Sustainable Yield — the largest catch that can be taken from a stock indefinitely.
+PDF | Probability Density Function — the full distribution of a predicted quantity, encoding uncertainty.
+MCMC | Markov Chain Monte Carlo — samples posterior parameter distributions in Bayesian calibration.
+ABC | Approximate Bayesian Computation — likelihood-free inference for complex simulators.
+POM | Pattern-Oriented Modelling — calibration using multiple observed patterns simultaneously.
+structural uncertainty | Uncertainty from not knowing the correct model structure; addressed by using multiple model types.
+scenario planning | Generating predictions under a range of plausible future conditions to explore assumption sensitivity.
+
+
+## CHECKLIST
+Overparameterised models make poor predictions: too much detail may hurt. | LINK long-term-plan
+Validation needs to be planned: split data into MANY subsets. | LINK validation
+Upscale of microlevel processes. | LINK model-types
+Always use several models for structural uncertainty. | LINK uncertainty-decomp
+Calibration is really useful. | LINK calibration
+Uncertainty quantification is mandatory. | LINK best-answer
+Co-interpretation of results and their uncertainty: PDF, also on maps. | LINK communication
+
+
+## CONTENTION
+Should models be more detailed or fitted?
+  Do we need microlevel representation?
+
+How to establish a moderated discussion to resolve or highlight differences?
+  [text]
+
+
+## PHASES
+
+=== 1. Setting the stage: Why predict?
+ROLE Modeller + Stakeholder
+RATIONALE [text]
+
+--- Specific question
+STAKEHOLDER
+TEXT [text]
+
+--- Target that can be modelled and observed
+TEXT [text]
+
+--- Scenario planning
+TEXT Are imaginable results useful to the question?
+EXAMPLE 🪏 Worked example (fisheries)
+  How much fish biomass can be extracted from this region of the ocean next year
+  and remain below maximum sustainable yield?
+
+
+=== 2. Identifying data and modelling approaches
+ROLE Modeller
+RATIONALE [text]
+
+--- Necessary data of sufficient quality are available
+TEXT [text]
+XLINK Data splits for validation must be planned here. | validation
+
+--- Select / develop modelling approaches matching question and data
+TEXT [text]
+  >>> 📋 Expert statements
+      [text]
+      DETAIL [text]
+  >>> 🤖 ML / DL / AI / Statistics
+      [text]
+      DETAIL [text]
+  >>> 🔢 (O/P)DE
+      [text]
+      DETAIL [text]
+  >>> ⚙️ Coded process
+      [text]
+      DETAIL [text]
+  >>> 👥 ABM / IBM
+      [text]
+      DETAIL [text]
+
+--- Model types
+TEXT [text]
+IMPORTANT 🔔 Upscale of microlevel processes.
+  >>> 🗺️ Spatially implicit / explicit
+      [text]
+      DETAIL [text]
+  >>> 🎲 Stochastic
+      [text]
+      DETAIL [text]
+  >>> ⏱️ Discrete time
+      [text]
+      DETAIL [text]
+  >>> 🐟 Discrete individuals
+      [text]
+      DETAIL [text]
+  >>> 🔄 With / without feedback
+      [text]
+      DETAIL [text]
+
+--- Long-term plan
+TEXT [text]
+IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt.
+  >>> 👩‍🔬 Efficient use of experts
+      STAKEHOLDER
+      [text]
+      DETAIL [text]
+  >>> 📊 Data for many validations in the modelling cycle
+      [text]
+      DETAIL [text]
+  >>> 💻 Computational resources
+      [text]
+      DETAIL [text]
+
+
+=== 3. Modelling
+ROLE Modeller
+RATIONALE [text]
+
+--- Establish workflow for running models
+TEXT [text]
+
+--- Trusted models
+TEXT [text]
+
+--- Parameterisation
+STAKEHOLDER
+TEXT Employ existing knowledge.
+
+--- Sensitivity analysis (global vs local)
+TEXT Sensitivity analysis identifies more or less relevant elements of a model for the target.
+  >>> 🌐 Global SA
+      Varies all parameters simultaneously across their full range.
+      DETAIL [text]
+  >>> 📍 Local SA
+      Varies one parameter at a time around a nominal value.
+      DETAIL [text]
+
+--- Calibration
+TEXT Calibration serves two purposes:
+  (1) Identify structural errors in the model.
+  (2) Improve representation of observations.
+IMPORTANT 🔔 Calibration is really useful.
+XLINK Calibration is not validation — see Validation. | validation
+  >>> 🔬 Optimisation
+      [text]
+      DETAIL [text]
+  >>> 🎰 MCMC
+      [text]
+      DETAIL [text]
+  >>> 🧮 ABC
+      [text]
+      DETAIL [text]
+  >>> 🧩 POM
+      [text]
+      DETAIL [text]
+
+--- Validation
+TEXT Validation is an honest estimate of best prediction quality.
+IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
+XLINK Validation planning belongs in the Long-term plan. | long-term-plan
+
+
+=== 4. Predicting
+ROLE Modeller
+RATIONALE [text]
+
+--- Best answer with uncertainty
+TEXT The output is a PDF, or maps with uncertainty shading.
+EXAMPLE 🪏 Worked example (fisheries)
+  How much fish biomass can be extracted from this region of the ocean next year
+  and remain below maximum sustainable yield?
+IMPORTANT 🔔 Uncertainty quantification is mandatory.
+  Co-interpretation of results and their uncertainty — PDF, also on maps — is required.
+
+--- Uncertainty decomposition
+TEXT Uncertainty decomposition: some elements cannot be taken as irrelevant.
+IMPORTANT 🔔 Always use several models for structural uncertainty.
+
+--- Plausibility check
+TEXT Check for outlier predictions; compare against previous predictions, literature, and common sense.
+
+
+=== 5. Utilisation
+ROLE Modeller + Stakeholder
+RATIONALE [text]
+
+--- Joint interpretation
+TEXT [text]
+  >>> 📢 Communicate
+      [text]
+      DETAIL [text]
+  >>> ↩️ Feedback
+      [text]
+      DETAIL [text]
+
+--- Use / exploit prediction
+TEXT Use or exploit the prediction — for example, to take management decisions.
+EXAMPLE 🪏 Worked example (fisheries)
+  How much fish biomass can be extracted from this region of the ocean next year
+  and remain below maximum sustainable yield?
+
+--- Follow-up planning
+TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
+XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
+
+</script>
+<!--
+╚══════════════════════════════════════════════════════════════════════════════╝
+   END OF EDITABLE CONTENT — do not edit below this line
+╔══════════════════════════════════════════════════════════════════════════════╝
+-->
+
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   PARSER — reads the plain-text content block above and builds the
+   same data structures the renderer expects. Do not edit.
+════════════════════════════════════════════════════════════════════ */
+
+function parseContent() {
+  var raw = document.getElementById('page-content').textContent;
+  var lines = raw.split('\n');
+
+  var result = { intro: [], glossary: [], checklist: [], contentions: [], phases: [] };
+
+  var section = null;
+  var curPhase = null;
+  var curNode = null;
+  var curSub = null;
+  var curField = null;  // which multi-line field we are accumulating into
+
+  function flush() { curField = null; }
+
+  function slugify(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function trimVal(s) { return s.replace(/^\s+|\s+$/g, ''); }
+
+  function nodeId(title) { return slugify(title.replace(/^---\s*/, '')); }
+
+  function colorFor(num) {
+    return ['c1','c2','c3','c4','c5'][num - 1] || 'c1';
+  }
+
+  // --- detect indent level (number of leading spaces)
+  function indent(line) {
+    var m = line.match(/^(\s*)/);
+    return m ? m[1].length : 0;
+  }
+
+  for (var i = 0; i < lines.length; i++) {
+    var raw_line = lines[i];
+    var line = trimVal(raw_line);
+
+    // blank lines end multi-line accumulation only if we're in intro
+    if (line === '') {
+      if (section === 'INTRO' && curField === 'intro') {
+        result.intro.push('');
+      }
+      curField = null;
+      continue;
+    }
+
+    // ── section headings ──────────────────────────────────────────
+    if (line.indexOf('## ') === 0) {
+      section = trimVal(line.slice(3));
+      curPhase = null; curNode = null; curSub = null; curField = null;
+      continue;
+    }
+
+    // ── phase headings ────────────────────────────────────────────
+    if (line.indexOf('=== ') === 0) {
+      flush();
+      var pRaw = trimVal(line.slice(4));
+      var dotPos = pRaw.indexOf('.');
+      var pNum = dotPos > -1 ? parseInt(pRaw.slice(0, dotPos), 10) : (result.phases.length + 1);
+      var pTitle = dotPos > -1 ? trimVal(pRaw.slice(dotPos + 1)) : pRaw;
+      curPhase = { id: 'phase' + pNum, title: pTitle, role: '', color: colorFor(pNum),
+                   phaseNum: String(pNum), rationale: '', nodes: [] };
+      result.phases.push(curPhase);
+      curNode = null; curSub = null;
+      continue;
+    }
+
+    // ── node headings ─────────────────────────────────────────────
+    if (line.indexOf('--- ') === 0) {
+      flush();
+      var nTitle = trimVal(line.slice(4));
+      curNode = { id: slugify(nTitle), title: nTitle, role: null, badges: [],
+                  body: '', subItems: [], xlinks: [], example: null, important: null };
+      if (curPhase) curPhase.nodes.push(curNode);
+      curSub = null;
+      continue;
+    }
+
+    // ── sub-item headings ─────────────────────────────────────────
+    if (line.indexOf('>>> ') === 0) {
+      flush();
+      var sRaw = trimVal(line.slice(4));
+      // first "word" that is an emoji or non-alpha = icon
+      var iconMatch = sRaw.match(/^(\S+)\s+(.*)/);
+      var sIcon = iconMatch ? iconMatch[1] : '';
+      var sName = iconMatch ? trimVal(iconMatch[2]) : sRaw;
+      curSub = { icon: sIcon, name: sName, role: null, desc: '', detail: null };
+      if (curNode) curNode.subItems.push(curSub);
+      curField = 'sub-desc';
+      continue;
+    }
+
+    // ── field keywords ────────────────────────────────────────────
+
+    // ROLE (phase level)
+    if (line.indexOf('ROLE ') === 0 && curPhase && !curNode) {
+      curPhase.role = trimVal(line.slice(5));
+      flush(); continue;
+    }
+
+    // RATIONALE
+    if (line.indexOf('RATIONALE ') === 0 && curPhase && !curNode) {
+      curPhase.rationale = trimVal(line.slice(10));
+      curField = 'rationale'; continue;
+    }
+    if (curField === 'rationale' && curPhase && indent(raw_line) >= 2) {
+      curPhase.rationale += ' ' + line; continue;
+    }
+
+    // STAKEHOLDER flag
+    if (line === 'STAKEHOLDER') {
+      if (curSub) curSub.role = 'sh';
+      else if (curNode) curNode.role = 'sh';
+      flush(); continue;
+    }
+
+    // TEXT (node body)
+    if (line.indexOf('TEXT ') === 0 && curNode) {
+      curNode.body = trimVal(line.slice(5));
+      curField = 'text'; continue;
+    }
+    if (curField === 'text' && curNode && indent(raw_line) >= 2) {
+      curNode.body += ' ' + line; continue;
+    }
+
+    // DETAIL (sub-item expandable text)
+    if (line.indexOf('DETAIL ') === 0 && curSub) {
+      curSub.detail = trimVal(line.slice(7));
+      curField = 'detail'; continue;
+    }
+    if (curField === 'detail' && curSub && indent(raw_line) >= 2) {
+      curSub.detail += ' ' + line; continue;
+    }
+
+    // EXAMPLE
+    if (line.indexOf('EXAMPLE ') === 0 && curNode) {
+      curNode.example = '<strong>' + trimVal(line.slice(8)) + '</strong>';
+      curField = 'example'; continue;
+    }
+    if (curField === 'example' && curNode && indent(raw_line) >= 2) {
+      curNode.example += ' ' + line; continue;
+    }
+
+    // IMPORTANT
+    if (line.indexOf('IMPORTANT ') === 0 && curNode) {
+      curNode.important = '<strong>' + trimVal(line.slice(10)) + '</strong>';
+      curField = 'important'; continue;
+    }
+    if (curField === 'important' && curNode && indent(raw_line) >= 2) {
+      curNode.important += ' ' + line; continue;
+    }
+
+    // XLINK
+    if (line.indexOf('XLINK ') === 0 && curNode) {
+      var xlParts = line.slice(6).split('|');
+      var xlText = trimVal(xlParts[0]);
+      var xlTarget = xlParts[1] ? trimVal(xlParts[1]) : '';
+      curNode.xlinks.push({ text: xlText, target: xlTarget });
+      flush(); continue;
+    }
+
+    // ── section-specific content ──────────────────────────────────
+
+    if (section === 'INTRO') {
+      result.intro.push(line);
+      curField = 'intro';
+      continue;
+    }
+
+    if (section === 'GLOSSARY') {
+      var gParts = line.split('|');
+      if (gParts.length >= 2) {
+        result.glossary.push({ term: trimVal(gParts[0]), def: trimVal(gParts[1]) });
+      }
+      continue;
+    }
+
+    if (section === 'CHECKLIST') {
+      var cParts = line.split('|');
+      var cText = trimVal(cParts[0]);
+      var cLink = null;
+      if (cParts[1]) {
+        var lm = trimVal(cParts[1]).match(/LINK\s+(\S+)/);
+        if (lm) cLink = lm[1];
+      }
+      result.checklist.push({ text: cText, link: cLink });
+      continue;
+    }
+
+    if (section === 'CONTENTION') {
+      // Top-level line (no indent) = question; indented = body
+      if (indent(raw_line) === 0) {
+        result.contentions.push({ q: line, body: '' });
+      } else if (result.contentions.length > 0) {
+        var last = result.contentions[result.contentions.length - 1];
+        last.body = last.body ? last.body + ' ' + line : line;
+      }
+      continue;
+    }
+
+    // sub-item desc continuation (indented line after >>> that isn't DETAIL/STAKEHOLDER)
+    if (curSub && curField === 'sub-desc' && indent(raw_line) >= 2
+        && line.indexOf('DETAIL ') !== 0 && line !== 'STAKEHOLDER') {
+      if (curSub.desc) curSub.desc += ' ' + line;
+      else curSub.desc = line;
+      continue;
+    }
+  }
+
+  return result;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
+   RENDERER — unchanged from previous version. Do not edit.
+════════════════════════════════════════════════════════════════════ */
+
+var COLORS = { c1:'#2d6a4f', c2:'#1a5276', c3:'#6c3483', c4:'#b7471c', c5:'#117a65' };
+
+function renderSubItems(items) {
+  if (!items || !items.length) return '';
+  var html = '<ul class="sub-list">';
+  for (var i = 0; i < items.length; i++) {
+    var s = items[i];
+    var hasDetail = s.detail && s.detail !== '[text]';
+    html += '<li><div class="sub-item" onclick="toggleSub(this)">';
+    html += '<span class="si-icon">' + s.icon + '</span>';
+    html += '<div class="si-body">';
+    html += '<div class="si-name">' + s.name + (s.role === 'sh' ? '<span class="role-tag role-sh">Stakeholder</span>' : '') + '</div>';
+    if (s.desc && s.desc !== '[text]') html += '<div class="si-desc">' + s.desc + '</div>';
+    if (hasDetail) html += '<div class="si-detail">' + s.detail + '</div>';
+    html += '</div>';
+    if (hasDetail) html += '<span class="si-chev">&#9658;</span>';
+    html += '</div></li>';
+  }
+  html += '</ul>';
+  return html;
+}
+
+function renderNode(node, color) {
+  var xlinkHtml = '';
+  for (var x = 0; x < node.xlinks.length; x++) {
+    var xl = node.xlinks[x];
+    xlinkHtml += '<div class="xlink">&#8596; <strong>Cross-phase:</strong> ' + xl.text + ' <a href="#' + xl.target + '">Jump &rarr;</a></div>';
+  }
+  var exHtml  = (node.example  && node.example  !== '[text]') ? '<div class="example">'   + node.example   + '</div>' : '';
+  var impHtml = (node.important && node.important !== '[text]') ? '<div class="important">' + node.important + '</div>' : '';
+  var roleTag = node.role === 'sh' ? '<span class="role-tag role-sh">Stakeholder</span>' : '';
+  var bodyHtml = (node.body && node.body !== '[text]') ? '<p>' + node.body + '</p>' : '<p style="color:var(--ink-muted);font-style:italic;font-size:.83rem">[text to be added]</p>';
+
+  return '<div class="card" id="' + node.id + '" style="border-left-color:' + color + '">'
+    + '<div class="card-hd" onclick="toggleCard(this.parentElement)">'
+    + '<span class="card-title">' + node.title + roleTag + '</span>'
+    + '<svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '</div>'
+    + '<div class="card-body">'
+    + bodyHtml
+    + renderSubItems(node.subItems)
+    + xlinkHtml + exHtml + impHtml
+    + '</div></div>';
+}
+
+function renderPhase(phase) {
+  var color = COLORS[phase.color] || '#2d6a4f';
+  var nodesHtml = '';
+  for (var n = 0; n < phase.nodes.length; n++) {
+    nodesHtml += renderNode(phase.nodes[n], color);
+  }
+  var ratHtml = (phase.rationale && phase.rationale !== '[text]')
+    ? '<div class="rationale"><span class="rat-label">Rationale</span><span class="rat-text">' + phase.rationale + '</span></div>'
+    : '';
+  return '<section class="phase" id="' + phase.id + '">'
+    + '<div class="phase-hd">'
+    + '<h2 class="phase-title">' + phase.phaseNum + '. ' + phase.title + '</h2>'
+    + (phase.role ? '<span class="phase-role">' + phase.role + '</span>' : '')
+    + '</div>'
+    + ratHtml
+    + nodesHtml
+    + '</section>';
+}
+
+function renderIntro(lines) {
+  // Group non-empty lines into paragraphs (split on blank lines)
+  var paras = [];
+  var cur = [];
+  for (var i = 0; i < lines.length; i++) {
+    if (lines[i] === '') {
+      if (cur.length) { paras.push(cur.join(' ')); cur = []; }
+    } else {
+      cur.push(lines[i]);
+    }
+  }
+  if (cur.length) paras.push(cur.join(' '));
+  return paras.map(function(p){ return '<p>' + p + '</p>'; }).join('');
+}
+
+function renderAll() {
+  var data = parseContent();
+
+  document.getElementById('intro-body').innerHTML = renderIntro(data.intro);
+
+  var main = document.getElementById('main');
+  var html = '';
+  for (var i = 0; i < data.phases.length; i++) html += renderPhase(data.phases[i]);
+  main.innerHTML = html;
+
+  var dHtml = '';
+  for (var c = 0; c < data.contentions.length; c++) {
+    var con = data.contentions[c];
+    dHtml += '<div class="cont-card"><div class="cont-q">&#9878; ' + con.q + '</div>';
+    if (con.body && con.body !== '[text]') dHtml += '<div class="cont-body">' + con.body + '</div>';
+    dHtml += '</div>';
+  }
+  document.getElementById('disc-out').innerHTML = dHtml;
+
+  var gHtml = '';
+  for (var d = 0; d < data.glossary.length; d++) {
+    gHtml += '<div class="glos-item"><div class="glos-term">' + data.glossary[d].term + '</div><div class="glos-def">' + data.glossary[d].def + '</div></div>';
+  }
+  document.getElementById('glos-out').innerHTML = gHtml;
+
+  var hHtml = '';
+  for (var h = 0; h < data.checklist.length; h++) {
+    var item = data.checklist[h];
+    var jump = item.link ? ' <a href="#' + item.link + '" style="color:#cc3333;font-weight:600;text-decoration:none">&rarr;</a>' : '';
+    hHtml += '<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:10px 14px;margin-bottom:8px;font-size:0.86rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>' + item.text + jump + '</span></div>';
+  }
+  document.getElementById('highlight-out').innerHTML = hHtml;
+
+  // Auto-definitions
+  autoDefine(document.getElementById('main'), data.glossary);
+  autoDefine(document.getElementById('intro-body'), data.glossary);
+  autoDefine(document.getElementById('disc-out'), data.glossary);
+  autoDefine(document.getElementById('highlight-out'), data.glossary);
+  enableTapTooltips();
+}
+
+function autoDefine(root, glossary) {
+  if (!root) return;
+  var lookup = {}, terms = [];
+  for (var i = 0; i < glossary.length; i++) {
+    lookup[glossary[i].term.toLowerCase()] = glossary[i].def;
+    terms.push(glossary[i].term);
+  }
+  terms.sort(function(a,b){ return b.length - a.length; });
+
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+  var textNodes = [];
+  var node;
+  while ((node = walker.nextNode())) {
+    var skip = false;
+    var anc = node.parentNode;
+    while (anc && anc !== root) {
+      var cls = anc.className && anc.className.indexOf ? anc.className : '';
+      var tag = anc.nodeName;
+      if (tag === 'A' || tag === 'H2' || tag === 'H1' ||
+          (cls && (cls.indexOf('def') !== -1 || cls.indexOf('badge') !== -1 ||
+                   cls.indexOf('role-tag') !== -1 || cls.indexOf('rat-label') !== -1 ||
+                   cls.indexOf('card-hd') !== -1 || cls.indexOf('card-title') !== -1 ||
+                   cls.indexOf('sub-item') !== -1))) { skip = true; break; }
+      anc = anc.parentNode;
+    }
+    if (!skip && node.nodeValue && node.nodeValue.trim().length > 1) textNodes.push(node);
+  }
+
+  function isWordChar(ch) { return /[A-Za-z0-9_]/.test(ch); }
+
+  for (var t = 0; t < textNodes.length; t++) {
+    var tn = textNodes[t];
+    var text = tn.nodeValue;
+    var lower = text.toLowerCase();
+    var bestIdx = -1, bestTerm = null;
+    for (var k = 0; k < terms.length; k++) {
+      var term = terms[k], tl = term.toLowerCase(), searchFrom = 0, idx;
+      while ((idx = lower.indexOf(tl, searchFrom)) !== -1) {
+        var before = idx === 0 ? ' ' : text.charAt(idx - 1);
+        var afterPos = idx + tl.length;
+        var after = afterPos >= text.length ? ' ' : text.charAt(afterPos);
+        if (!isWordChar(before) && !isWordChar(after)) {
+          if (bestIdx === -1 || idx < bestIdx || (idx === bestIdx && term.length > bestTerm.length)) {
+            bestIdx = idx; bestTerm = term;
+          }
+          break;
+        }
+        searchFrom = idx + 1;
+      }
+    }
+    if (bestTerm !== null) {
+      var matchEnd = bestIdx + bestTerm.length;
+      var def = lookup[bestTerm.toLowerCase()];
+      var frag = document.createDocumentFragment();
+      if (bestIdx > 0) frag.appendChild(document.createTextNode(text.substring(0, bestIdx)));
+      var span = document.createElement('span');
+      span.className = 'def';
+      span.setAttribute('data-def', def);
+      span.setAttribute('tabindex', '0');
+      span.textContent = text.substring(bestIdx, matchEnd);
+      frag.appendChild(span);
+      if (matchEnd < text.length) frag.appendChild(document.createTextNode(text.substring(matchEnd)));
+      tn.parentNode.replaceChild(frag, tn);
+    }
+  }
+}
+
+function enableTapTooltips() {
+  document.addEventListener('click', function(e) {
+    var def = e.target.closest ? e.target.closest('.def') : null;
+    if (def) {
+      var wasOpen = def.classList.contains('tapped');
+      var open = document.querySelectorAll('.def.tapped');
+      for (var i = 0; i < open.length; i++) open[i].classList.remove('tapped');
+      if (!wasOpen) def.classList.add('tapped');
+      e.stopPropagation(); return;
+    }
+    var all = document.querySelectorAll('.def.tapped');
+    for (var j = 0; j < all.length; j++) all[j].classList.remove('tapped');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var all = document.querySelectorAll('.def.tapped');
+      for (var i = 0; i < all.length; i++) all[i].classList.remove('tapped');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderAll);
+function toggleCard(card) { card.classList.toggle('open'); }
+function toggleSub(el) { if (el.querySelector('.si-detail')) el.classList.toggle('open'); }
+function toggleLinks(chk) { document.body.classList.toggle('show-links', chk.checked); }
+</script>
+</body>
+</html>
