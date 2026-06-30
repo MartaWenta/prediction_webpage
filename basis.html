@@ -333,7 +333,17 @@ body.show-links .xlink{display:block}
   font-family:'Lora',serif;font-size:1.35rem;font-weight:600;
   color:var(--green-deep);margin:48px 0 4px;padding-top:26px;
   border-top:2px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;
 }
+.sec-title.no-toggle{cursor:default}
+.sec-title:hover:not(.no-toggle){color:var(--green-mid)}
+.sec-chev{
+  width:18px;height:18px;color:var(--ink-muted);
+  flex-shrink:0;transition:transform .2s;margin-left:8px;
+}
+.sec-title.collapsed .sec-chev{transform:rotate(-90deg)}
+.sec-collapsed{display:none}
 .sec-sub{color:var(--ink-muted);font-size:.84rem;margin-bottom:18px}
 .cont-card{
   background:#fff;border:1px solid var(--rule);
@@ -447,16 +457,31 @@ body.show-links #arrow-svg{display:block}
 <main class="wrap" id="main"></main>
 
 <div class="wrap">
-  <h2 class="sec-title" id="checklist">Checklist — overlooked issues</h2>
-  <p class="sec-sub">🔔 Issues that are commonly missed.</p>
-  <div id="highlight-out"></div>
-  <h2 class="sec-title" id="discussion">Bones of contention</h2>
-  <p class="sec-sub">Open scientific debates.</p>
-  <div id="disc-out"></div>
-  <h2 class="sec-title" id="glossary">Glossary</h2>
-  <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
-  <div class="glos-grid" id="glos-out"></div>
-  <h2 class="sec-title" id="acknowledgements">Acknowledgements</h2>
+  <h2 class="sec-title" id="checklist" onclick="toggleSection('s-checklist',this)">
+    Checklist — overlooked issues
+    <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </h2>
+  <div id="s-checklist">
+    <p class="sec-sub">Issues that are commonly missed.</p>
+    <div id="highlight-out"></div>
+  </div>
+  <h2 class="sec-title" id="discussion" onclick="toggleSection('s-discussion',this)">
+    Bones of contention
+    <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </h2>
+  <div id="s-discussion">
+    <p class="sec-sub">Open scientific debates.</p>
+    <div id="disc-out"></div>
+  </div>
+  <h2 class="sec-title" id="glossary" onclick="toggleSection('s-glossary',this)">
+    Glossary
+    <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </h2>
+  <div id="s-glossary">
+    <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
+    <div class="glos-grid" id="glos-out"></div>
+  </div>
+  <h2 class="sec-title no-toggle" id="acknowledgements">
   <div class="ack">
     <p>This resource was developed by an author collective (no individual names). With thanks to:</p>
     <p style="margin-top:6px"><strong>ANDINA</strong> &nbsp;·&nbsp; <strong>EEFI</strong> &nbsp;·&nbsp; <strong>FuFo</strong> &nbsp;·&nbsp; feedback from participants of the <a href="https://iite.info/seminar/" target="_blank">IITE Seminar</a></p>
@@ -1275,6 +1300,12 @@ function toggleCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,
 function toggleSubCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
 function togglePhase(phase){ phase.classList.toggle('collapsed'); setTimeout(drawArrows,220); }
 function toggleSub(el){ if(el.querySelector('.si-detail')) el.classList.toggle('open'); }
+function toggleSection(id,titleEl){
+  var content=document.getElementById(id);
+  var collapsed=content.classList.toggle('sec-collapsed');
+  titleEl.classList.toggle('collapsed',collapsed);
+  setTimeout(drawArrows,220);
+}
 function toggleLinks(chk){
   document.body.classList.toggle('show-links',chk.checked);
   drawArrows();
