@@ -109,7 +109,7 @@ prediction_webpage/
 └── README.md    # this file
 ```
 
-Everything is self-contained in `basis.html`. There are no external dependencies beyond two Google Fonts loaded at runtime.
+Everything is self-contained in `basis.html`. 
 
 ---
 
