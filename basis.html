@@ -599,87 +599,101 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
 --- Target that can be modelled and observed
 TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign) REFERENCES
 
---- Scenario planning
-TEXT Are imaginable results useful to the question? Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
+--- Scenario planning: Are imaginable results useful to the question?
+TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
-  and remain below maximum sustainable yield?
+  and remain below maximum sustainable yield? <span style="color: red">There is text in the html to go below this point!</span>
+
+
+Yields: specific question to be addressed by predictions; identified specific prediction target(s) and required precision; clear usefulness whatever the prediction will be.
 
 
 === 2. Identifying data and modelling approaches
 ROLE Modeller
-RATIONALE [text]
+RATIONALE This step explores whether data and modelling approaches are available to allow predicting the system and target identified in the previous step to a degree useful for answering the question.
 
---- Necessary data of sufficient quality are available #data-available
+--- Are necessary <i>data of sufficient quality</i> are available? No: STOP! #data-available
 TEXT [text]
 XLINK Data splits for validation must be planned here. | validation
 
 --- Select / develop modelling approaches matching question and data #modelling-approaches
-TEXT [text]
+TEXT Consider:
   >>> 📋 Expert statements
-      [text]
-      DETAIL [text]
+      Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
+      DETAIL REFERENCES
   >>> 🤖 ML / DL / AI / Statistics
-      [text]
+      Data-driven, no constraints prediction approaches.
       DETAIL [text]
   >>> 🔢 (O/P)DE
-      [text]
+      Rigid mathematical structure for highly dynamic systems.
       DETAIL [text]
-  >>> ⚙️ Coded process
-      [text]
+  >>> ⚙️ Coded process model, incl. agent-based model
+      Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
       DETAIL [text]
-  >>> 👥 ABM / IBM
+  >>> &#128101; other
       [text]
-      DETAIL [text]
+      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
---- Model types
-TEXT [text]
+If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
+
+--- Specify required model characteristics
+TEXT  with respect to
 IMPORTANT 🔔 Upscale of microlevel processes.
   >>> 🗺️ Spatially implicit / explicit
       [text]
       DETAIL [text]
-  >>> 🎲 Stochastic
+  >>> 🎲 Stochastic/deterministic
       [text]
       DETAIL [text]
-  >>> ⏱️ Discrete time
+  >>> ⏱️ Continuous/Discrete time
       [text]
       DETAIL [text]
-  >>> 🐟 Discrete individuals
+  >>> 🐟 Discrete individuals/continuous biomass
       [text]
       DETAIL [text]
   >>> 🔄 With / without feedback
       [text]
       DETAIL [text]
+  >>> &#128208; explicit management intervention rules
+      [text]
+      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
---- Long-term plan
-TEXT [text]
-IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt.
-  >>> 👩‍🔬 Efficient use of experts
-      STAKEHOLDER
-      [text]
-      DETAIL [text]
+  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. REFERENCES (Dormann et al. 2018)
+
+
+--- Long-term planning
+TEXT This prediction is often part of a longer activity and commitment. Think through the next years and far beyond the current prediction activity. Think of all resources: stakeholder willingness, data availability, computational resources, developer time. Plan this prediction with a longer-term plan in your mind.
+  >>> 👩‍🔬 Efficient use of experts and stakeholders
+      All stakeholders require tactful handling, including not wasting their time on unnecessary meetings and deliberations. The must be employed for question framing and interpretation (first and last step of this Orientation), but will develop fatigue if over-used. 
+      DETAIL REFERENCES
   >>> 📊 Data for many validations in the modelling cycle
-      [text]
-      DETAIL [text]
+      Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
+      IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt. <span style="color: red">Should be in same box as "Data for many ..."</span>
+      DETAIL REFERENCES (Roberts et al. 2017)
   >>> 💻 Computational resources
-      [text]
-      DETAIL [text]
+      Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
+      DETAIL REFERENCES
 
 
 === 3. Modelling
 ROLE Modeller
-RATIONALE [text]
+RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so.
 
 --- Establish workflow for running models
-TEXT [text]
+TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. <span style="color: red">Put in box for more text at lower level here. Alternatively: link out to another html page with more details on workflows particularly for SA/UA.</span>
 
 --- Trusted models
-TEXT [text]
+TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP REFERENCE: Schmolke et al. 2010 TREE, Getz 2018 EcolLett
+  --- Is model "rich" enough?
+  TEXT Does the model structure allow for creating the observed range/dynamics? <span style="color: red">Doyne Farmer's argument that economic models are not sufficiently complex to create market crashes and alike, and hence fundamentally unsuitable for predictions.</span>
   --- Parameterisation
-  STAKEHOLDER
+  Modeller, STAKEHOLDER <!-- currently ignored -->
   TEXT Employ existing knowledge.
+  --- Code verification/unit testing
+  TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
   --- Sensitivity analysis (global vs local)
-  TEXT Sensitivity analysis identifies more or less relevant elements of a model for the target.
+  TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. REFERENCES Sun & Sun 2015
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
         DETAIL [text]
@@ -690,6 +704,7 @@ TEXT [text]
   TEXT Calibration serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
+    Calibration requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge.
   IMPORTANT 🔔 Calibration is really useful.
   XLINK Calibration is not validation — see Validation. | validation
     >>> 🔬 Optimisation
@@ -705,9 +720,11 @@ TEXT [text]
         [text]
         DETAIL [text]
   --- Validation
-  TEXT Validation is an honest estimate of best prediction quality.
+  TEXT External validation is an honest estimate of prediction quality.
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
   XLINK Validation planning belongs in the Long-term plan. | long-term-plan
+  --- Documentation of model code, model development, model testing, model validation, model usage. 
+  TEXT REFERENCES: TRACE: Schmolke et al. 2010; [less of a worry now thanks to LLMs: references]
 
 
 === 4. Predicting
