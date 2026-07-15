@@ -378,6 +378,11 @@ body.show-links .xlink{display:block}
 .ack a{color:var(--green-mid);text-decoration:none}
 .ack a:hover{text-decoration:underline}
 
+.references p {
+  font-size: 0.6rem;
+  margin: 0;
+}
+
 /* ── FOOTER ─────────────────────────────────────────────── */
 footer{
   margin-top:56px;padding:20px 32px;
@@ -432,7 +437,7 @@ body.show-links #arrow-svg{display:block}
 <header class="site-header">
   <p class="tagline">A community resource</p>
   <h1>Orientation for environmental predictions</h1>
-  <p class="intro">An orientation for practitioners on designing, executing, and communicating rigorous quantitative predictions in ecology. Hover over <span class="def" data-def="Dashed underlines mark terms with definitions — hover to read.">underlined terms</span> for definitions.</p>
+  <p class="intro">An orientation for practitioners on designing, executing, and communicating rigorous quantitative predictions in environmental science. Hover over <span class="def" data-def="Dashed underlines mark terms with definitions — hover to read.">underlined terms</span> for definitions.</p>
 </header>
 
 <div class="wrap" style="padding-bottom:0">
@@ -684,27 +689,39 @@ RATIONALE Before the prediction comes the establishment of the prediction routin
 TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. <span style="color: red">Put in box for more text at lower level here. Alternatively: link out to another html page with more details on workflows particularly for SA/UA.</span>
 
 --- Trusted models
-TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP REFERENCE: Schmolke et al. 2010 TREE, Getz 2018 EcolLett
+TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
+  <div class="references">
+    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
+    <p>Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romañach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D’Odorico, P., & O’Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153–166. <a href="https://doi.org/10.1111/ele.12893">doi:10.1111/ele.12893</a> </p>
+  </div>
+  
+  --- Code verification/unit testing (for own code)
+  TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
+  
   --- Is model "rich" enough?
   TEXT Does the model structure allow for creating the observed range/dynamics? <span style="color: red">Doyne Farmer's argument that economic models are not sufficiently complex to create market crashes and alike, and hence fundamentally unsuitable for predictions.</span>
+  
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
   TEXT Employ existing knowledge.
-  --- Code verification/unit testing
-  TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
+  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
+  
   --- Sensitivity analysis (global vs local)
-  TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. REFERENCES Sun & Sun 2015
+  TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. 
+  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
         DETAIL [text]
     >>> 📍 Local SA
         Varies one parameter at a time around a nominal value.
         DETAIL [text]
-  --- Calibration
+  
+  --- Calibration, model inversion <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> 
   TEXT Calibration serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
-    Calibration requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge.
+    Calibration requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
+    <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   IMPORTANT 🔔 Calibration is really useful.
   XLINK Calibration is not validation — see Validation. | validation
     >>> 🔬 Optimisation
@@ -729,10 +746,10 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
 
 === 4. Predicting
 ROLE Modeller
-RATIONALE [text]
+RATIONALE This is the actual act of creating a quantitative “conditional” statement based on the model(s). “Conditional” means that the statement depends on the input provided; for scenarios the prediction would then be “projections”, for short term the prediction would be a “forecast”. The actual prediction products may need to be tailored to the stakeholder, but as scientific output they must adhere to some expected standards.
 
---- Best answer with uncertainty #best-answer
-TEXT The output is a PDF, or maps with uncertainty shading.
+--- Best answer with uncertainty indication #best-answer
+TEXT PDF, maps with uncertainty shading, confidence/prediction interval.
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
   and remain below maximum sustainable yield?
@@ -740,7 +757,7 @@ IMPORTANT 🔔 Uncertainty quantification is mandatory.
   Co-interpretation of results and their uncertainty — PDF, also on maps — is required.
 
 --- Uncertainty decomposition #uncertainty-decomp
-TEXT Uncertainty decomposition: some elements cannot be taken as irrelevant.
+TEXT Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction. Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
 IMPORTANT 🔔 Always use several models for structural uncertainty.
 
 --- Plausibility check
