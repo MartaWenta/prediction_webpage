@@ -174,7 +174,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   letter-spacing:.09em;color:var(--amber);
   white-space:nowrap;padding-top:2px;
 }
-.rat-text{font-size:.81rem;color:var(--ink-muted);font-style:italic;line-height:1.5}
+.rat-text{font-size:.81rem;color:var(--ink-muted);font-style:normal;line-height:1.5}
 
 /* ── NODE CARD ───────────────────────────────────────────── */
 .card{
@@ -381,6 +381,8 @@ body.show-links .xlink{display:block}
 .references p {
   font-size: 0.6rem;
   margin: 0;
+  padding-left: 0.5cm;   /* moves subsequent lines right */
+  text-indent: -0.5cm;  /* pulls the first line back */
 }
 
 /* ── FOOTER ─────────────────────────────────────────────── */
@@ -590,7 +592,14 @@ How to establish a moderated discussion to resolve or highlight differences?
 
 === 1. Setting the stage: Why predict?
 ROLE Modeller + Stakeholder
-RATIONALE This step specifies the actual prediction target and the context in which the prediction is to be evaluated.
+RATIONALE <p>This step specifies the actual prediction target and the context in which the prediction is to be evaluated.</p> <p>Specifying the prediction target - including the quantities to be predicted, the relevant drivers, and the spatial, temporal, and organizational scales of interest - defines the scope of the prediction problem. This determines which processes and data are relevant, ensures that the model, available data, and prediction objective are aligned, constrains model complexity to what is required, and provides an early opportunity to assess whether the necessary information exists before substantial modeling effort is invested.</p> <p>
+  <b>Key questions</b></p><p>
+  <em>Purpose:</em> Why is the prediction needed, who will use it, and what decision or action will it inform? <p>
+  <em>Prediction target:</em> Which quantities should be predicted? At what spatial, temporal, and organizational scales, and over what prediction horizon? Which drivers and processes are expected to determine the target<p> 
+  <em>Feasibility:</em> Can the target quantity be observed or measured for model development and evaluation? Are sufficient data, knowledge, and other resources available? Are the intended scenarios and assumptions within the domain where the model is expected to be valid? How good does a prediction need to be to be "useful" in a particular context?  No prediction papers ever address this. How good can we reasonably expect our prediction to be given the current data set and its limitations?  Hence, how much effort needs to be put into getting better data.<p>
+  <em>Performance requirements:</em> What level of accuracy and uncertainty is acceptable for the intended application? <p>
+  <em>Assumptions and scope:</em> What simplifying assumptions are necessary, and how might they affect the interpretation and applicability of the predictions? </p>
+
 
 --- Specific question
 STAKEHOLDER
@@ -599,7 +608,8 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
   (For example, a stakeholder may want to know the effect of building a dam on 
   malaria infection rates, but the modeller has no ability to quantify malaria 
   transmissions near stagnant water bodies. Then a prediction task seems infeasible. 
-  &#128721;) REFERENCES
+  &#128721;)<p>
+  <div class="references"> <p>Actual references</p> </div>
 
 --- Target that can be modelled and observed
 TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign) REFERENCES
@@ -683,12 +693,12 @@ TEXT This prediction is often part of a longer activity and commitment. Think th
 
 === 3. Modelling
 ROLE Modeller
-RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so.
+RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so. (This section contains the majority of technical detail.)
 
 --- Establish workflow for running models
 TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. <span style="color: red">Put in box for more text at lower level here. Alternatively: link out to another html page with more details on workflows particularly for SA/UA.</span>
 
---- Trusted models
+--- Identifying trustworthy models
 TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
   <div class="references">
     <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
@@ -736,6 +746,21 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
     >>> 🧩 POM
         [text]
         DETAIL [text]
+
+  --- Uncertainty analysis
+  TEXT Uncertainty analysis (UA: Committee on Mathemathical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: Dormann et al. 2026). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
+  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (Wesselkamp et al. 2025).
+  <div class="references"> 
+    <p>Benaroya, H., & Han, S. M. (2005). Probability Models in Engineering and Science. Taylor & Francis.</p<>
+    <p>Committee on Mathematical Foundations of Verification, Validation, and Uncertainty Quantification, & Board on Mathematical Sciences and Their Applications, Division on Engineering and Physical Sciences, National Research Council. (2012). Assessing the Reliability of Complex Models: Mathematical and Statistical Foundations of Verification, Validation and Uncertainty Quantification. The National Academic Press. https://doi.org/10.17226/13395</p>
+    <p>Dormann, C. F., Käber, Y., & Hartig, F. (2026). Full prediction uncertainty quantification: A plea from science and decision making. In Advances in Ecological Research (Vol. 74, pp. 191–212). Elsevier. https://doi.org/10.1016/bs.aecr.2026.02.003</p>
+    <p>Matheson, J. E., & Winkler, R. L. (1976). Scoring rules for continuous probability distributions. Management Science, 22(10), 1087–1096. https://doi.org/10.1287/mnsc.22.10.1087</p>
+    <p>Taylor, J. R. (1997). An Introduction to Error Analysis: The Study of Uncertainties in Physical Measurements (2nd edn.). University Science Books.</p>
+    <p>Wesselkamp, M., Albrecht, J., Pinnington, E., Castillo, W. J., Pappenberger, F., & Dormann, C. F. (2025). The ecological forecast limit revisited: Potential, absolute and relative system predictability. Methods in Ecology and Evolution, 16(7), 1521–1541. https://doi.org/10.1111/2041-210X.70049</p>
+    <p>Wolter, K. M. (2007). Introduction to Variance Estimation (2nd ed). Springer.</p> </div>
+
+  IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
+
   --- Validation
   TEXT External validation is an honest estimate of prediction quality.
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
