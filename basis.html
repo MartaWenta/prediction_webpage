@@ -726,11 +726,11 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         Varies one parameter at a time around a nominal value.
         DETAIL [text]
   
-  --- Calibration, model inversion <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> 
-  TEXT Calibration serves two purposes:
+  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> 
+  TEXT <a href="ModelInversion.html">Model inversion</a> serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
-    Calibration requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
+    Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
     <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   IMPORTANT 🔔 Calibration is really useful.
   XLINK Calibration is not validation — see Validation. | validation
@@ -748,7 +748,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         DETAIL [text]
 
   --- Uncertainty analysis
-  TEXT Uncertainty analysis (UA: Committee on Mathemathical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: Dormann et al. 2026). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
+  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: Dormann et al. 2026). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
   After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (Wesselkamp et al. 2025).
   <div class="references"> 
     <p>Benaroya, H., & Han, S. M. (2005). Probability Models in Engineering and Science. Taylor & Francis.</p<>
