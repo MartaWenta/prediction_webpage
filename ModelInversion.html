@@ -8,16 +8,16 @@
 
 <body>
 
-<!-- page content -->
+
  <h1>Model Inversion (Part of Orientation for Prediction)</h1>
 
- Model inversion describes the estimation of model parameters from data and a defined measure of fit.<a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. 
+ Model inversion describes the estimation of model parameters from data and a defined measure of fit.<a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
  
- Here we discuss the most formal way of model inversion by changing model parameters \(\theta\) so as to minimise (some measure of) the distance \(d\) between model prediction \(\hat{y}_i\)  and observation \(y_i\): \(\arg \min_\theta d(\hat{y}_i - y_i)\). 
+ <p>Here we discuss the most formal way of model inversion by changing model parameters \(\theta\) so as to minimise (some measure of) the distance \(d\) between model prediction \(\hat{y}_i\)  and observation \(y_i\): \(\arg \min_\theta d(\hat{y}_i - y_i)\). 
  
- In the simplest case, \(d = \sqrt{(\hat{y}_i - y_i)^2} \) = Euclidean distance, but many other measures are being used, in particular the negative log-likelihood. This makes the intimacy between model inversion and regression-like approaches clearest and shall hence briefly be explicated.
+ <p>In the simplest case, \(d = \sqrt{(\hat{y}_i - y_i)^2} \) = Euclidean distance, but many other measures are being used, in particular the negative log-likelihood. This makes the intimacy between model inversion and regression-like approaches clearest and shall hence briefly be explicated.
 
- Let us assume that the data can be considered as draws from a probability distribution: 
+ <p>Let us assume that the data can be considered as draws from a probability distribution: 
  
  <p>\( y \sim P(f(X, \theta)) \), </p>
  
