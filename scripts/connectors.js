@@ -30,7 +30,6 @@
   }
 
   function isVisible(el){
-    // Walk up and check that no ancestor is collapsed or hidden.
     var p=el;
     while(p&&p!==document.body){
       if(p.style&&p.style.display==='none') return false;

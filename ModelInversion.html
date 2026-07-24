@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="basis.css">
-<script defer src="citation-tools.js"></script>
-<script defer src="references.js"></script>
+<script defer src="scripts/citation-tools.js"></script>
+<script defer src="scripts/references.js"></script>
+<script defer src="scripts/modelinversion-boot.js"></script>
 <title>Orientation: Model Inversion</title>
 </head>
 
@@ -39,18 +40,5 @@ Footnotes
    <span class="footnote-label"></span> For example, if our individual-based model predicts the number of cuckoos in some landscape, then, assuming those to be represented by a Poisson distribution, we have: \(\text{number of cuckoos} \sim \text{Pois}(\lambda=\text{IBM}(X, \theta))\). The IBM also has the job of ensuring only valid values of \(\lambda\), allowing us to omit the link-function of a GLM. <a href="#footnote-2-ref">&#8617;</a> 
 </p>
 
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  if(window.CitationTools){
-    window.CitationTools.hydrate({
-      biblioGlobal:'MODEL_INVERSION_BIBLIO',
-      citationSelector:'.cite-ref[data-cite]',
-      footnoteSupSelector:'.footnote-ref',
-      footnoteLabelSelector:'.footnote-label',
-      missingPrefix:'Reference details not found for '
-    });
-  }
-});
-</script>
 </body>
 </html>
