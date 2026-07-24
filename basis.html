@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="basis.css">
+<script defer src="citation-tools.js"></script>
+<script defer src="basis.references.js"></script>
 </head>
 <body>
 
@@ -215,13 +217,12 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
   malaria infection rates, but the modeller has no ability to quantify malaria 
   transmissions near stagnant water bodies. Then a prediction task seems infeasible. 
   &#128721;)<p>
-  <div class="references"> <p>Actual references</p> </div>
 
 --- Target that can be modelled and observed
-TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign) REFERENCES
+TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign)
 
 --- Scenario planning: Are imaginable results useful to the question?
-TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
+TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign.
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
   and remain below maximum sustainable yield? <span style="color: red">There is text in the html to go below this point!</span>
@@ -242,7 +243,7 @@ XLINK Data splits for validation must be planned here. | validation
 TEXT Consider:
   >>> 📋 Expert statements
       Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
-      DETAIL REFERENCES
+      DETAIL [text]
   >>> 🤖 ML / DL / AI / Statistics
       Data-driven, no constraints prediction approaches.
       DETAIL [text]
@@ -280,21 +281,21 @@ IMPORTANT 🔔 Upscale of microlevel processes.
       [text]
       DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
-  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. REFERENCES (Dormann et al. 2018)
+  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. <sup class="cite-ref" data-cite="Dormann 2018"></sup>
 
 
 --- Long-term planning
 TEXT This prediction is often part of a longer activity and commitment. Think through the next years and far beyond the current prediction activity. Think of all resources: stakeholder willingness, data availability, computational resources, developer time. Plan this prediction with a longer-term plan in your mind.
   >>> 👩‍🔬 Efficient use of experts and stakeholders
       All stakeholders require tactful handling, including not wasting their time on unnecessary meetings and deliberations. The must be employed for question framing and interpretation (first and last step of this Orientation), but will develop fatigue if over-used. 
-      DETAIL REFERENCES
+      DETAIL [text]
   >>> 📊 Data for many validations in the modelling cycle
       Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
       IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt. <span style="color: red">Should be in same box as "Data for many ..."</span>
-      DETAIL REFERENCES (Roberts et al. 2017)
+      DETAIL <sup class="cite-ref" data-cite="Roberts 2017"></sup>
   >>> 💻 Computational resources
       Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
-      DETAIL REFERENCES
+      DETAIL [text]
 
 
 === 3. Modelling
@@ -306,10 +307,6 @@ TEXT This technical aspect is essential for running models thousands of times au
 
 --- Identifying trustworthy models
 TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
-  <div class="references">
-    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
-    <p>Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romañach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D’Odorico, P., & O’Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153–166. <a href="https://doi.org/10.1111/ele.12893">doi:10.1111/ele.12893</a> </p>
-  </div>
   
   --- Code verification/unit testing (for own code)
   TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
@@ -320,11 +317,9 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
   TEXT Employ existing knowledge.
-  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   
   --- Sensitivity analysis (global vs local)
   TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. 
-  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
         DETAIL [text]
@@ -337,7 +332,6 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
     Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
-    <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   IMPORTANT 🔔 Calibration is really useful.
   XLINK Calibration is not validation — see Validation. | validation
     >>> 🔬 Optimisation
@@ -354,16 +348,8 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         DETAIL [text]
 
   --- Uncertainty analysis
-  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: Dormann et al. 2026). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
-  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (Wesselkamp et al. 2025).
-  <div class="references"> 
-    <p>Benaroya, H., & Han, S. M. (2005). Probability Models in Engineering and Science. Taylor & Francis.</p<>
-    <p>Committee on Mathematical Foundations of Verification, Validation, and Uncertainty Quantification, & Board on Mathematical Sciences and Their Applications, Division on Engineering and Physical Sciences, National Research Council. (2012). Assessing the Reliability of Complex Models: Mathematical and Statistical Foundations of Verification, Validation and Uncertainty Quantification. The National Academic Press. https://doi.org/10.17226/13395</p>
-    <p>Dormann, C. F., Käber, Y., & Hartig, F. (2026). Full prediction uncertainty quantification: A plea from science and decision making. In Advances in Ecological Research (Vol. 74, pp. 191–212). Elsevier. https://doi.org/10.1016/bs.aecr.2026.02.003</p>
-    <p>Matheson, J. E., & Winkler, R. L. (1976). Scoring rules for continuous probability distributions. Management Science, 22(10), 1087–1096. https://doi.org/10.1287/mnsc.22.10.1087</p>
-    <p>Taylor, J. R. (1997). An Introduction to Error Analysis: The Study of Uncertainties in Physical Measurements (2nd edn.). University Science Books.</p>
-    <p>Wesselkamp, M., Albrecht, J., Pinnington, E., Castillo, W. J., Pappenberger, F., & Dormann, C. F. (2025). The ecological forecast limit revisited: Potential, absolute and relative system predictability. Methods in Ecology and Evolution, 16(7), 1521–1541. https://doi.org/10.1111/2041-210X.70049</p>
-    <p>Wolter, K. M. (2007). Introduction to Variance Estimation (2nd ed). Springer.</p> </div>
+  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
+  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
 
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
 
@@ -372,7 +358,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
   XLINK Validation planning belongs in the Long-term plan. | long-term-plan
   --- Documentation of model code, model development, model testing, model validation, model usage. 
-  TEXT REFERENCES: TRACE: Schmolke et al. 2010; [less of a worry now thanks to LLMs: references]
+  TEXT TRACE: <sup class="cite-ref" data-cite="Schmolke 2010"></sup>; [less of a worry now thanks to LLMs: references]
 
 
 === 4. Predicting
@@ -419,6 +405,16 @@ TEXT Further modifications of models, new data for the next period, continuous e
 XLINK-BOTH Follow-up feeds back into Phase 1 and Phase 2. | specific-question
 
 </script>
+<!--
+UNCITED REFERENCES (update when citations change):
+- Getz 2018
+- Sun 2015
+- Benaroya 2005
+- Committee 2012
+- Matheson 1976
+- Taylor 1997
+- Wolter 2007
+-->
 <!--
 ╚══════════════════════════════════════════════════════════════════════════════╝
    END OF EDITABLE CONTENT — do not edit below this line
@@ -896,22 +892,25 @@ function autoDefine(root,glossary){
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   CITATIONS & FOOTNOTES
+════════════════════════════════════════════════════════════════════ */
 function enableTapTooltips(){
   document.addEventListener('click',function(e){
-    var def=e.target.closest?e.target.closest('.def'):null;
-    if(def){
-      var wasOpen=def.classList.contains('tapped');
-      var open=document.querySelectorAll('.def.tapped');
+    var tip=e.target.closest?e.target.closest('.def, .footnote-ref'):null;
+    if(tip){
+      var wasOpen=tip.classList.contains('tapped');
+      var open=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
       for(var i=0;i<open.length;i++) open[i].classList.remove('tapped');
-      if(!wasOpen) def.classList.add('tapped');
+      if(!wasOpen) tip.classList.add('tapped');
       e.stopPropagation(); return;
     }
-    var all=document.querySelectorAll('.def.tapped');
+    var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
     for(var j=0;j<all.length;j++) all[j].classList.remove('tapped');
   });
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape'){
-      var all=document.querySelectorAll('.def.tapped');
+      var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
       for(var i=0;i<all.length;i++) all[i].classList.remove('tapped');
     }
   });
@@ -951,6 +950,15 @@ function renderAll(){
     hHtml+='<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:9px 13px;margin-bottom:7px;font-size:0.84rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>'+item.text+jump+'</span></div>';
   }
   document.getElementById('highlight-out').innerHTML=hHtml;
+
+  if(window.CitationTools){
+    window.CitationTools.hydrate({
+      biblioGlobal:'BASIS_BIBLIO',
+      citationSelector:'.cite-ref[data-cite]',
+      footnoteSupSelector:'.footnote-ref',
+      missingPrefix:'Reference details not found in central bibliography for '
+    });
+  }
 
   autoDefine(document.getElementById('main'),data.glossary);
   autoDefine(document.getElementById('intro-body'),data.glossary);

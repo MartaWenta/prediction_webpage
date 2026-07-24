@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="basis.css">
+<script defer src="citation-tools.js"></script>
+<script defer src="ModelInversion.references.js"></script>
 <title>Orientation: Model Inversion</title>
 </head>
 
@@ -11,7 +13,7 @@
 
  <h1>Model Inversion (Part of Orientation for Prediction)</h1>
 
- Model inversion describes the estimation of model parameters from data and a defined measure of fit <a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
+ Model inversion describes the estimation of model parameters from data and a defined measure of fit <a id="footnote-1-ref" href="#footnote-1"><sup class="footnote-ref"></sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
  
  <p>Here we discuss the most formal way of model inversion by changing model parameters \(\theta\) so as to minimise (some measure of) the distance \(d\) between model prediction \(\hat{y}_i\)  and observation \(y_i\): \(\arg \min_\theta d(\hat{y}_i - y_i)\). 
  
@@ -25,22 +27,30 @@
 
 Then model inversion using log-likelihood means finding values of \( \theta \) that make the observations \(y\) most likely, or the negative log-likelihood minimal:
 
-<p>\( \arg \min_\theta -\sum_i \log P(y_i \mid f(X_i, \theta)) \ \) <a id="footnote-2-ref" href="#footnote-2"><sup>2</sup></a></p>
+<p>\( \arg \min_\theta -\sum_i \log P(y_i \mid f(X_i, \theta)) \ \) <a id="footnote-2-ref" href="#footnote-2"><sup class="footnote-ref"></sup></a></p>
 
-The technical challenge is to find optimisation algorithms that find the optimal values of \(\theta\) for complicated models \( f \) (think: stochastic models without analytical likelihood: Marjoram et al. 2003; very slow models where parameter evaluation becomes very costly; heavily over-parameterised models, where data cannot identify parameters, a.k.a. "equifinality": e.g. Luo et al. 2009; multi-dimensional \(y\) of very different information content: Oberpriller et al. 2021).
-
-<hr>
-References
-<div class="references">
-  Marjoram, P., Molitor, J., Plagnol, V., & Tavaré, S. (2003). Markov chain Monte Carlo without likelihoods. Proceedings of the National Academy of Sciences, 100(26), 15324–15328. https://doi.org/10.1073/pnas.0306899100
-</div>
+The technical challenge is to find optimisation algorithms that find the optimal values of \(\theta\) for complicated models \( f \) (think: stochastic models without analytical likelihood <sup class="cite-ref" data-cite="Marjoram 2003"></sup>; very slow models where parameter evaluation becomes very costly; heavily over-parameterised models, where data cannot identify parameters, a.k.a. "equifinality" <sup class="cite-ref" data-cite="Luo 2009"></sup>; multi-dimensional \(y\) of very different information content <sup class="cite-ref" data-cite="Oberpriller 2021"></sup>).
 
 <hr>
 Footnotes
  <p id="footnote-1">
-   1. Depending on the research field, this activity goes by "fitting", "calibration", "tuning", "parameterisation", "backwards modelling", each with slightly different meaning and goal. <a href="#footnote-1-ref">&#8617;</a> 
+   <span class="footnote-label"></span> Depending on the research field, this activity goes by "fitting", "calibration", "tuning", "parameterisation", "backwards modelling", each with slightly different meaning and goal. <a href="#footnote-1-ref">&#8617;</a> 
 <p id="footnote-2">
-   2. For example, if our individual-based model predicts the number of cuckoos in some landscape, then, assuming those to be represented by a Poisson distribution, we have: \(\text{number of cuckoos} \sim \text{Pois}(\lambda=\text{IBM}(X, \theta))\). The IBM also has the job of ensuring only valid values of \(\lambda\), allowing us to omit the link-function of a GLM. <a href="#footnote-2-ref">&#8617;</a> 
+   <span class="footnote-label"></span> For example, if our individual-based model predicts the number of cuckoos in some landscape, then, assuming those to be represented by a Poisson distribution, we have: \(\text{number of cuckoos} \sim \text{Pois}(\lambda=\text{IBM}(X, \theta))\). The IBM also has the job of ensuring only valid values of \(\lambda\), allowing us to omit the link-function of a GLM. <a href="#footnote-2-ref">&#8617;</a> 
 </p>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  if(window.CitationTools){
+    window.CitationTools.hydrate({
+      biblioGlobal:'MODEL_INVERSION_BIBLIO',
+      citationSelector:'.cite-ref[data-cite]',
+      footnoteSupSelector:'.footnote-ref',
+      footnoteLabelSelector:'.footnote-label',
+      missingPrefix:'Reference details not found for '
+    });
+  }
+});
+</script>
 </body>
 </html>

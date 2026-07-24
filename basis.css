@@ -389,6 +389,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
 .def:hover::after,.def:hover::before,
 .def.tapped::after,.def.tapped::before{opacity:1}
 
+.cite-ref,
+.footnote-ref{
+  display:inline-block;
+  vertical-align:super;
+  font-size:.65em;
+  line-height:0;
+  margin-left:1px;
+  font-weight:700;
+}
+
+.cite-ref{color:var(--amber);cursor:help}
+.footnote-ref{color:var(--green-mid);cursor:pointer}
+
+.cite-tooltip{
+  position:fixed;
+  z-index:900;
+  width:260px;
+  background:var(--green-deep);
+  color:#fff;
+  font-size:.75rem;
+  font-family:'Inter',sans-serif;
+  line-height:1.45;
+  border-radius:7px;
+  padding:7px 11px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+
+.cite-tooltip.is-pinned{
+  box-shadow:0 6px 24px rgba(0,0,0,.28);
+}
+
+.cite-tooltip a{
+  color:var(--green-light);
+  text-decoration:underline;
+  font-weight:600;
+}
+
+body > p[id^="footnote-"]{
+  font-size:.78rem;
+  color:var(--ink-mid);
+  line-height:1.55;
+  margin:4px 0 10px;
+}
+
+body > p[id^="footnote-"] .footnote-label{
+  font-size:.72rem;
+  font-weight:700;
+  color:var(--amber);
+}
+
 /* ── CROSS-LINKS ─────────────────────────────────────────── */
 .xlink{
   display:none;margin:8px 0 0;padding:7px 11px;
@@ -474,23 +524,6 @@ body.show-links .xlink{display:block}
 }
 .ack a{color:var(--green-mid);text-decoration:none}
 .ack a:hover{text-decoration:underline}
-
-.references {
-  font-size: 0.68rem;
-  margin: 0;
-  padding-left: 0.5cm;
-  text-indent: -0.5cm;
-  line-height: 1.45;
-  color: var(--ink-muted);
-}
-
-.card-body .references p,
-.sub-card-body .references p {
-  font-size: inherit;
-  line-height: inherit;
-  margin: 0.2rem 0;
-  color: inherit;
-}
 
 /* ── FOOTER ─────────────────────────────────────────────── */
 footer{
