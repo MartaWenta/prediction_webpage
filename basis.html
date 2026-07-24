@@ -66,7 +66,7 @@
     Checklist — overlooked issues
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-checklist" class="sec-collapsed">
+  <div id="s-checklist" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Issues that are commonly missed.</p>
     <div id="highlight-out"></div>
   </div>
@@ -74,7 +74,7 @@
     Bones of contention
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-discussion" class="sec-collapsed">
+  <div id="s-discussion" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Open scientific debates.</p>
     <div id="disc-out"></div>
   </div>
@@ -82,7 +82,7 @@
     Glossary
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-glossary" class="sec-collapsed">
+  <div id="s-glossary" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
     <div class="glos-grid" id="glos-out"></div>
   </div>
@@ -546,7 +546,7 @@ function renderSubItems(items, bgWhite){
     html+='<div class="si-body">';
     html+='<div class="si-name">'+s.name+(s.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'')+'</div>';
     if(s.desc&&s.desc!=='[text]') html+='<div class="si-desc">'+s.desc+'</div>';
-    if(hasDetail) html+='<div class="si-detail">'+s.detail+'</div>';
+    if(hasDetail) html+='<div class="si-detail" hidden="until-found">'+s.detail+'</div>';
     html+='</div>';
     if(hasDetail) html+='<span class="si-chev">&#9658;</span>';
     html+='</div></li>';
@@ -573,7 +573,7 @@ function renderSubNodes(nodes, color){
       +'<span class="sub-card-title">'+n.title+roleTag+'</span>'
       +'<svg class="sub-card-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
       +'</div>'
-      +'<div class="sub-card-body">'+bodyHtml+renderSubItems(n.subItems,true)+xlHtml+exHtml+impHtml+'</div></div>';
+      +'<div class="sub-card-body" hidden="until-found">'+bodyHtml+renderSubItems(n.subItems,true)+xlHtml+exHtml+impHtml+'</div></div>';
   }
   html+='</div>'; return html;
 }
@@ -593,7 +593,7 @@ function renderNode(node, color){
     +'<span class="card-title">'+node.title+roleTag+'</span>'
     +'<svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     +'</div>'
-    +'<div class="card-body">'+bodyHtml+renderSubItems(node.subItems,false)
+    +'<div class="card-body" hidden="until-found">'+bodyHtml+renderSubItems(node.subItems,false)
     +(node.subNodes&&node.subNodes.length?renderSubNodes(node.subNodes,color):'')
     +xlHtml+exHtml+impHtml+'</div></div>';
 }
@@ -611,7 +611,7 @@ function renderPhase(phase){
     +(phase.role?'<span class="phase-role">'+phase.role+'</span>':'')
     +'<svg class="phase-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     +'</div>'
-    +'<div class="phase-nodes">'+ratHtml+nodesHtml+'</div>'
+    +'<div class="phase-nodes" hidden="until-found">'+ratHtml+nodesHtml+'</div>'
     +'</section>';
 }
 
@@ -956,16 +956,73 @@ function renderAll(){
 }
 
 document.addEventListener('DOMContentLoaded',renderAll);
+document.addEventListener('beforematch',function(e){
+  revealCollapsedForSearch(e.target);
+},true);
 
 /* ── INTERACTION ─────────────────────────────────────────── */
-function toggleCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
-function toggleSubCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
-function togglePhase(phase){ phase.classList.toggle('collapsed'); setTimeout(drawArrows,220); }
-function toggleSub(el){ if(el.querySelector('.si-detail')) el.classList.toggle('open'); }
+function setFindHidden(el, hidden){
+  if(!el) return;
+  if(hidden) el.setAttribute('hidden','until-found');
+  else el.removeAttribute('hidden');
+}
+
+function revealCollapsedForSearch(target){
+  var node=target;
+  while(node&&node!==document.body){
+    if(node.classList){
+      if(node.classList.contains('si-detail')){
+        node.parentElement.classList.add('open');
+        setFindHidden(node,false);
+      }else if(node.classList.contains('sub-card-body')){
+        node.parentElement.classList.add('open');
+        setFindHidden(node,false);
+      }else if(node.classList.contains('card-body')){
+        node.parentElement.classList.add('open');
+        setFindHidden(node,false);
+      }else if(node.classList.contains('phase-nodes')){
+        node.parentElement.classList.remove('collapsed');
+        setFindHidden(node,false);
+      }else if(node.classList.contains('sec-collapsed')){
+        node.classList.remove('sec-collapsed');
+        setFindHidden(node,false);
+        if(node.previousElementSibling&&node.previousElementSibling.classList&&node.previousElementSibling.classList.contains('sec-title')){
+          node.previousElementSibling.classList.remove('collapsed');
+        }
+      }
+    }
+    node=node.parentElement;
+  }
+  setTimeout(drawArrows,0);
+}
+
+function toggleCard(card){
+  card.classList.toggle('open');
+  setFindHidden(card.querySelector('.card-body'),!card.classList.contains('open'));
+  setTimeout(drawArrows,220);
+}
+function toggleSubCard(card){
+  card.classList.toggle('open');
+  setFindHidden(card.querySelector('.sub-card-body'),!card.classList.contains('open'));
+  setTimeout(drawArrows,220);
+}
+function togglePhase(phase){
+  phase.classList.toggle('collapsed');
+  setFindHidden(phase.querySelector('.phase-nodes'),phase.classList.contains('collapsed'));
+  setTimeout(drawArrows,220);
+}
+function toggleSub(el){
+  var detail=el.querySelector('.si-detail');
+  if(detail){
+    el.classList.toggle('open');
+    setFindHidden(detail,!el.classList.contains('open'));
+  }
+}
 function toggleSection(id,titleEl){
   var content=document.getElementById(id);
   var collapsed=content.classList.toggle('sec-collapsed');
   titleEl.classList.toggle('collapsed',collapsed);
+  setFindHidden(content,collapsed);
   setTimeout(drawArrows,220);
 }
 function toggleLinks(chk){
