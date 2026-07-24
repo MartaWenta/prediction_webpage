@@ -612,7 +612,7 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
   <div class="references"> <p>Actual references</p> </div>
 
 --- Target that can be modelled and observed
-TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign) REFERENCES
+TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. <p>At this point, also the precision required should be specified. Is it enough to know the flooding level up to a 95%-confidence interval of 1 m? Would knowing the distribution of an introduced mosquito carrying an infectious disease to the nearest 50 km x 50 km pixel on a map be sufficient? If not: STOP sign) <div class="references"> <p>Actual references</p> </div>
 
 --- Scenario planning: Are imaginable results useful to the question?
 TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
@@ -629,20 +629,24 @@ ROLE Modeller
 RATIONALE This step explores whether data and modelling approaches are available to allow predicting the system and target identified in the previous step to a degree useful for answering the question.
 
 --- Are necessary <i>data of sufficient quality</i> are available? No: STOP! #data-available
-TEXT [text]
+TEXT Data requirements depend on the scale and precision of the desired prediction. When only rough estimates are needed, also coarse or older data may suffice. If a model needs to be developed/parameterised!!LINK/validated!!LINK, there must be sufficient data for several iterations (see long-term planning!!LINK). When the model needs to be developed, data are required not only for the overall modelled state variable, but for each of the model's components or modules; if those are from other sources: can these sources be assumed to be useful for the question at hand? (For example, if a tree-growth model uses a nutrient acquisition model from another tree in another ecosystem, possibly a local data set must be found to re-calibrate the modules parameters.!!LINK to model inversion)
 XLINK Data splits for validation must be planned here. | validation
 
 --- Select / develop modelling approaches matching question and data #modelling-approaches
-TEXT Consider:
+TEXT Rarely is there only one right type of model. Depending on expertise, time, money, required realism, very different approaches are worth considering:
   >>> 📋 Expert statements
       Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
       DETAIL REFERENCES
-  >>> 🤖 ML / DL / AI / Statistics
-      Data-driven, no constraints prediction approaches.
-      DETAIL [text]
+  >>> 🤖 Machine/Deep-Learning, Statistical model
+      Data-driven, no constraints prediction approaches. <div class="references"> <p>Barber, D. (2012). Bayesian Reasoning and Machine Learning. Cambridge University Press.
+      <p>Bishop, C. M., & Bishop, H. (2024). Deep Learning: Foundations and Concepts. Springer.</p>
+      <p>Hastie, T., Tibshirani, R. J., & Friedman, J. H. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction (2nd ed.). Springer.</p>
+      <p>Hyndman, R. J., & Athanasopoulos, G. (2021). Forecasting: Principles and Practice (3rd ed.). OTexts. https://otexts.com/fpp3/
+      <p>West, M., & Harrison, J. (1997). Bayesian Forecasting and Dynamic Models (2nd ed). Springer.
+ </div>
   >>> 🔢 (O/P)DE
-      Rigid mathematical structure for highly dynamic systems.
-      DETAIL [text]
+      Rigorous mathematical structure for dynamic systems in continuous time (Ordinary or Partial Differential Equations) or discrete time (Difference Equations), possibly with stochastic elements and/or external events or forcings. <p>A key advantage is that a rich mathematical tradition and toolbox exists to analyse such models even across a wider range of parameters. However, many such analyses assume equilibrium conditions, while we may be facing predictions out of equilibrium ("transient dynamics"). Still, even when simulated as forward model, ODE/DE are well-understood model types with excellent software support.
+      DETAIL blubb
   >>> ⚙️ Coded process model, incl. agent-based model
       Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
       DETAIL [text]
@@ -653,10 +657,10 @@ TEXT Consider:
 If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
 
 --- Specify required model characteristics
-TEXT  with respect to
+TEXT  The prediction purpose of stage 1 should be specific enough to narrow down the implementation with respect to the following characteristics. In case of doubt, the simpler version may be preferable:
 IMPORTANT 🔔 Upscale of microlevel processes.
   >>> 🗺️ Spatially implicit / explicit
-      [text]
+      Otto
       DETAIL [text]
   >>> 🎲 Stochastic/deterministic
       [text]
