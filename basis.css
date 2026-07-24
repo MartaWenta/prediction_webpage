@@ -534,13 +534,13 @@ footer{
 footer a{color:var(--green-light);text-decoration:none}
 footer a:hover{text-decoration:underline}
 
-/* ── SVG ARROW OVERLAY (document-anchored: scrolls with the page) ── */
-#arrow-svg{
+/* ── SVG CONNECTOR OVERLAY (document-anchored: scrolls with the page) ── */
+#connector-svg{
   position:absolute;top:0;left:0;width:100%;
   pointer-events:none;z-index:5;display:none;
   overflow:visible;
 }
-body.show-links #arrow-svg{display:block}
+body.show-links #connector-svg{display:block}
 
 /* ── MISC ────────────────────────────────────────────────── */
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

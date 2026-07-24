@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="basis.css">
 <script defer src="citation-tools.js"></script>
 <script defer src="references.js"></script>
+<script defer src="connectors.js"></script>
 </head>
 <body>
 
@@ -19,16 +20,9 @@
 
 <div class="page-body">
 
-<!-- SVG ARROW OVERLAY (inside page-body so it scrolls with the document) -->
-<svg id="arrow-svg" aria-hidden="true">
-  <defs>
-    <marker id="arr-tip" markerWidth="14" markerHeight="14"
-            refX="9" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M1.5,1 Q9,4.5 11,6 Q9,7.5 1.5,11 Q5,6 1.5,1 Z"
-            fill="context-stroke" opacity=".96"/>
-    </marker>
-  </defs>
-  <g id="arrow-lines"></g>
+<!-- SVG CONNECTOR OVERLAY (inside page-body so it scrolls with the document) -->
+<svg id="connector-svg" aria-hidden="true">
+  <g id="connector-lines"></g>
 </svg>
 
 <header class="site-header">
@@ -52,7 +46,7 @@
   <div class="control-panel" id="floating-controls-panel">
     <label class="control-chip">
       <input type="checkbox" onchange="toggleLinksState(this.checked)">
-      <span>Show linkage arrows</span>
+      <span>Show cross-phase linkage</span>
     </label>
     <label class="control-chip">
       <input type="checkbox" onchange="setAllSectionsExpanded(this.checked)">
@@ -127,10 +121,8 @@
 ║   • To leave a field empty, write [text] as a placeholder                    ║
 ║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
 ║                                                                              ║
-║   CROSS-PHASE ARROWS (direction is chosen by the keyword you use):           ║
-║     XLINK       label | target-id   arrow points  THIS box → target          ║
-║     XLINK-BACK  label | target-id   arrow points  target → THIS box          ║
-║     XLINK-BOTH  label | target-id   arrow has heads on BOTH ends (feedback)  ║
+║   CROSS-PHASE CONNECTORS:                                                     ║
+║     XLINK       label | target-id   links THIS box with target               ║
 ║   (target-id is the #id or auto-slug of the box you are linking to)          ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -397,7 +389,7 @@ EXAMPLE 🪏 Worked example (fisheries)
 
 --- Follow-up planning
 TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
-XLINK-BOTH Follow-up feeds back into Phase 1 and Phase 2. | specific-question
+XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
 
 </script>
 <!--
@@ -437,8 +429,7 @@ function parseContent() {
            line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
            line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
            line.indexOf('DETAIL ')===0||line.indexOf('EXAMPLE ')===0||
-           line.indexOf('IMPORTANT ')===0||line.indexOf('XLINK ')===0||
-           line.indexOf('XLINK-BACK ')===0||line.indexOf('XLINK-BOTH ')===0;
+           line.indexOf('IMPORTANT ')===0||line.indexOf('XLINK ')===0;
   }
 
   for(var i=0;i<lines.length;i++){
@@ -500,14 +491,11 @@ function parseContent() {
     if(line.indexOf('IMPORTANT ')===0&&(curSubNode||curNode)){
       var tgt=curSubNode||curNode; tgt.important='<strong>'+trimVal(line.slice(10))+'</strong>'; curField='important'; continue;
     }
-    if((line.indexOf('XLINK-BOTH ')===0||line.indexOf('XLINK-BACK ')===0||line.indexOf('XLINK ')===0)&&(curSubNode||curNode)){
+    if((line.indexOf('XLINK ')===0)&&(curSubNode||curNode)){
       var tgt=curSubNode||curNode;
-      var dir='fwd', body=line;
-      if(line.indexOf('XLINK-BOTH ')===0){ dir='both'; body=line.slice(11); }
-      else if(line.indexOf('XLINK-BACK ')===0){ dir='back'; body=line.slice(11); }
-      else { dir='fwd'; body=line.slice(6); }
+      var body=line.slice(6);
       var xlParts=body.split('|');
-      tgt.xlinks.push({text:trimVal(xlParts[0]),target:xlParts[1]?trimVal(xlParts[1]):'',dir:dir}); flush(); continue;
+      tgt.xlinks.push({text:trimVal(xlParts[0]),target:xlParts[1]?trimVal(xlParts[1]):''}); flush(); continue;
     }
     if(section==='INTRO'){ result.intro.push(line); curField='intro'; continue; }
     if(section==='GLOSSARY'){ var gp=line.split('|'); if(gp.length>=2) result.glossary.push({term:trimVal(gp[0]),def:trimVal(gp[1])}); continue; }
@@ -658,205 +646,6 @@ function buildSidebar(phases){
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   ARROWS
-════════════════════════════════════════════════════════════════════ */
-var ARROW_PAIRS=[];
-
-function collectArrows(phases){
-  ARROW_PAIRS=[];
-  for(var i=0;i<phases.length;i++){
-    var nodes=phases[i].nodes;
-    for(var j=0;j<nodes.length;j++){
-      var node=nodes[j];
-      collectFromNode(node);
-      if(node.subNodes) for(var k=0;k<node.subNodes.length;k++) collectFromNode(node.subNodes[k]);
-    }
-  }
-}
-
-function collectFromNode(node){
-  for(var x=0;x<node.xlinks.length;x++){
-    var xl=node.xlinks[x], t=xl.target;
-    if(t&&t!==node.id) ARROW_PAIRS.push({from:node.id,to:t,dir:xl.dir||'fwd'});
-  }
-}
-
-function getRect(id){
-  var el=document.getElementById(id);
-  if(!el) return null;
-  var r=el.getBoundingClientRect();
-  if(r.width===0&&r.height===0) return null;
-  return r;
-}
-
-function isVisible(el){
-  // walk up and check nothing is display:none
-  var p=el;
-  while(p&&p!==document.body){
-    if(p.style&&p.style.display==='none') return false;
-    var cls=p.className||'';
-    if(cls.indexOf('collapsed')!==-1) return false;
-    p=p.parentElement;
-  }
-  return true;
-}
-
-function ensurePhaseOpen(id){
-  var el=document.getElementById(id);
-  if(!el) return;
-  // walk up to find parent phase and open it
-  var p=el.parentElement;
-  while(p){
-    if(p.classList&&p.classList.contains('phase')&&p.classList.contains('collapsed')){
-      p.classList.remove('collapsed');
-    }
-    p=p.parentElement;
-  }
-  // also open parent card if inside card-body
-  var cb=el.closest ? el.closest('.card-body') : null;
-  if(cb) cb.parentElement.classList.add('open');
-}
-
-function getAnchorPoint(el, originLeft, originTop){
-  // Returns the mid-RIGHT point of the element's visible header, in coordinates
-  // relative to the .page-body origin (so the absolutely-positioned SVG, which
-  // is anchored to .page-body, lines up and scrolls naturally with the content).
-  var hd = el.querySelector ? (el.querySelector('.card-hd') || el.querySelector('.sub-card-hd') || el.querySelector('.phase-hd')) : null;
-  var target = hd || el;
-  var r = target.getBoundingClientRect();
-
-  // Collapsed/hidden → zero rect. Fall back to the enclosing phase header.
-  if(r.width===0 && r.height===0){
-    var anc = el.parentElement;
-    while(anc && anc !== document.body){
-      if(anc.classList && anc.classList.contains('phase')){
-        var ph = anc.querySelector('.phase-hd');
-        if(ph){
-          var pr = ph.getBoundingClientRect();
-          if(pr.width!==0 || pr.height!==0){
-            return { right: pr.right-originLeft, y: pr.top+pr.height/2-originTop, fallback:true };
-          }
-        }
-      }
-      anc = anc.parentElement;
-    }
-    return null;
-  }
-  return { right: r.right-originLeft, y: r.top+r.height/2-originTop, fallback:false };
-}
-
-function drawArrows(){
-  var svg=document.getElementById('arrow-svg');
-  var g=document.getElementById('arrow-lines');
-  g.innerHTML='';
-  if(!document.body.classList.contains('show-links')) return;
-
-  var pageBody=document.querySelector('.page-body');
-  if(!pageBody) return;
-  var pbRect=pageBody.getBoundingClientRect();
-  var originLeft=pbRect.left;   // viewport-left of page-body
-  var originTop=pbRect.top;     // viewport-top of page-body
-
-  // Size the SVG to the full document so arrows can live anywhere on the page.
-  svg.style.height = pageBody.scrollHeight + 'px';
-  var pbWidth = pageBody.clientWidth;
-  var linkColors=['#1f6f8b','#2d8f65','#bd6f1a','#8b3f9c','#b53d2f','#2a5f9e','#6b7d1e','#8b5a3c'];
-
-  function lerp(a,b,t){ return a+(b-a)*t; }
-
-  function splitCubicAtHalf(x1,y1,cx1,cy1,cx2,cy2,x2,y2){
-    var x12=lerp(x1,cx1,0.5), y12=lerp(y1,cy1,0.5);
-    var x23=lerp(cx1,cx2,0.5), y23=lerp(cy1,cy2,0.5);
-    var x34=lerp(cx2,x2,0.5), y34=lerp(cy2,y2,0.5);
-    var x123=lerp(x12,x23,0.5), y123=lerp(y12,y23,0.5);
-    var x234=lerp(x23,x34,0.5), y234=lerp(y23,y34,0.5);
-    var xm=lerp(x123,x234,0.5), ym=lerp(y123,y234,0.5);
-    return {
-      left:[x1,y1,x12,y12,x123,y123,xm,ym],
-      right:[xm,ym,x234,y234,x34,y34,x2,y2]
-    };
-  }
-
-  function addCurveSegment(x1,y1,cx1,cy1,cx2,cy2,x2,y2,color,midArrow){
-    var path=document.createElementNS(SVG_NS,'path');
-    path.setAttribute('d','M'+x1+','+y1+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+x2+','+y2);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke',color);
-    path.setAttribute('stroke-width','2.4');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('opacity','0.95');
-    if(midArrow) path.setAttribute('marker-end','url(#arr-tip)');
-    g.appendChild(path);
-  }
-
-  function addDot(cx,cy,color){
-    var dot=document.createElementNS(SVG_NS,'circle');
-    dot.setAttribute('cx',String(cx));
-    dot.setAttribute('cy',String(cy));
-    dot.setAttribute('r','3.2');
-    dot.setAttribute('fill',color);
-    dot.setAttribute('opacity','0.95');
-    g.appendChild(dot);
-  }
-
-  function drawSegment(seg,color,arrowAtEnd,reversed){
-    var s=reversed ? [seg[6],seg[7],seg[4],seg[5],seg[2],seg[3],seg[0],seg[1]] : seg;
-    addCurveSegment(s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],color,arrowAtEnd);
-  }
-
-  for(var i=0;i<ARROW_PAIRS.length;i++){
-    var pair=ARROW_PAIRS[i];
-    var fromEl=document.getElementById(pair.from);
-    var toEl=document.getElementById(pair.to);
-    if(!fromEl||!toEl) continue;
-    if(!isVisible(fromEl)&&!isVisible(toEl)) continue;
-
-    var fromA=getAnchorPoint(fromEl, originLeft, originTop);
-    var toA  =getAnchorPoint(toEl,   originLeft, originTop);
-    if(!fromA||!toA) continue;
-
-    // Document-space coordinates (relative to page-body). No scroll math needed —
-    // the SVG scrolls with the page, so these stay correct without redrawing.
-    var x1=fromA.right, y1=fromA.y;
-    var x4=toA.right,   y4=toA.y;
-
-    // Cubic bezier. Push the curve a bit further out (70px) so it bows clearly
-    // away from the cards, and skew the landing: the second control point sits
-    // ABOVE the target so the arrow sweeps down into it at an angle rather than
-    // arriving flat. Clamp X so it can't run off-page.
-    var maxCx=pbWidth-12;
-    var outset=70;
-    var skew=22;                       // how much the approach tilts
-    var dirSign=(y4>=y1)?1:-1;         // tilt with the overall direction of travel
-    var cx1=Math.min(x1+outset, maxCx);
-    var cy1=y1 + dirSign*6;            // gentle outward lift at the source
-    var cx2=Math.min(x4+outset, maxCx);
-    var cy2=y4 - dirSign*skew;         // lift the landing control point → angled arrival
-
-    var parts=splitCubicAtHalf(x1,y1,cx1,cy1,cx2,cy2,x4,y4);
-    var left=parts.left;
-    var right=parts.right;
-
-    var color=linkColors[i%linkColors.length];
-    var dir=pair.dir||'fwd';
-
-    // Draw as point -> center-arrow -> point.
-    if(dir==='back'){
-      drawSegment(right,color,true,true);
-      drawSegment(left,color,false,true);
-    }else if(dir==='both'){
-      drawSegment(left,color,true,false);
-      drawSegment(right,color,true,true);
-    }else{
-      drawSegment(left,color,true,false);
-      drawSegment(right,color,false,false);
-    }
-    addDot(x1,y1,color);
-    addDot(x4,y4,color);
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
    DEFINITIONS
 ════════════════════════════════════════════════════════════════════ */
 function autoDefine(root,glossary){
@@ -997,8 +786,8 @@ function renderAll(){
   enableTapTooltips();
 
   buildSidebar(data.phases);
-  collectArrows(data.phases);
-  drawArrows();
+  collectConnectors(data.phases);
+  drawConnectors();
 }
 
 document.addEventListener('DOMContentLoaded',renderAll);
@@ -1039,23 +828,23 @@ function revealCollapsedForSearch(target){
     }
     node=node.parentElement;
   }
-  setTimeout(drawArrows,0);
+  setTimeout(drawConnectors,0);
 }
 
 function toggleCard(card){
   card.classList.toggle('open');
   setFindHidden(card.querySelector('.card-body'),!card.classList.contains('open'));
-  setTimeout(drawArrows,220);
+  setTimeout(drawConnectors,220);
 }
 function toggleSubCard(card){
   card.classList.toggle('open');
   setFindHidden(card.querySelector('.sub-card-body'),!card.classList.contains('open'));
-  setTimeout(drawArrows,220);
+  setTimeout(drawConnectors,220);
 }
 function togglePhase(phase){
   phase.classList.toggle('collapsed');
   setFindHidden(phase.querySelector('.phase-nodes'),phase.classList.contains('collapsed'));
-  setTimeout(drawArrows,220);
+  setTimeout(drawConnectors,220);
 }
 function toggleSub(el){
   var detail=el.querySelector('.si-detail');
@@ -1069,12 +858,12 @@ function toggleSection(id,titleEl){
   var collapsed=content.classList.toggle('sec-collapsed');
   titleEl.classList.toggle('collapsed',collapsed);
   setFindHidden(content,collapsed);
-  setTimeout(drawArrows,220);
+  setTimeout(drawConnectors,220);
 }
 
 function toggleLinksState(enabled){
   document.body.classList.toggle('show-links',enabled);
-  drawArrows();
+  drawConnectors();
 }
 
 function toggleFloatingControls(btn){
@@ -1125,12 +914,12 @@ function setAllSectionsExpanded(expanded){
     }
   }
 
-  drawArrows();
+  drawConnectors();
 }
 
-// Arrows are drawn in document coordinates and scroll with the page,
+// Connectors are drawn in document coordinates and scroll with the page,
 // so no scroll listener is needed. Redraw only when layout actually changes.
-window.addEventListener('resize', drawArrows, {passive:true});
+window.addEventListener('resize', drawConnectors, {passive:true});
 </script>
 </body>
 </html>
