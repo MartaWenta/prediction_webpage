@@ -180,7 +180,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   border-radius:12px;
   box-shadow:0 2px 10px rgba(0,0,0,0.07);
   margin-bottom:20px;
-  overflow:hidden;
+  overflow:visible;
   transition:box-shadow .2s;
 }
 .phase:hover{box-shadow:0 4px 18px rgba(0,0,0,0.11)}
@@ -244,7 +244,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   background:#fff;border-radius:8px;
   border:1px solid var(--rule);
   border-left:3px solid var(--green-mid);
-  margin-bottom:8px;overflow:hidden;
+  margin-bottom:8px;overflow:visible;
   transition:box-shadow .15s,border-left-color .15s;
 }
 .card:hover{box-shadow:0 2px 10px rgba(0,0,0,0.09)}
@@ -287,7 +287,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   background:var(--parchment);border-radius:7px;
   border:1px solid var(--rule);
   border-left:3px solid var(--green-mid);
-  margin:8px 0 0;overflow:hidden;
+  margin:8px 0 0;overflow:visible;
 }
 .sub-card-hd{
   display:flex;align-items:center;gap:8px;
@@ -475,11 +475,21 @@ body.show-links .xlink{display:block}
 .ack a{color:var(--green-mid);text-decoration:none}
 .ack a:hover{text-decoration:underline}
 
-.references p {
-  font-size: 0.6rem;
+.references {
+  font-size: 0.68rem;
   margin: 0;
   padding-left: 0.5cm;
   text-indent: -0.5cm;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.card-body .references p,
+.sub-card-body .references p {
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0.2rem 0;
+  color: inherit;
 }
 
 /* ── FOOTER ─────────────────────────────────────────────── */

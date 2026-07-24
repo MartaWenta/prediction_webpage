@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="basis.css">
 <title>Orientation: Model Inversion</title>
 </head>
 
 <body>
 
-
  <h1>Model Inversion (Part of Orientation for Prediction)</h1>
 
- Model inversion describes the estimation of model parameters from data and a defined measure of fit.<a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
+ Model inversion describes the estimation of model parameters from data and a defined measure of fit <a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
  
  <p>Here we discuss the most formal way of model inversion by changing model parameters \(\theta\) so as to minimise (some measure of) the distance \(d\) between model prediction \(\hat{y}_i\)  and observation \(y_i\): \(\arg \min_\theta d(\hat{y}_i - y_i)\). 
  
