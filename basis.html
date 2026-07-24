@@ -131,7 +131,7 @@
 ║   • To leave a field empty, write [text] as a placeholder                    ║
 ║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
 ║                                                                              ║
-║   CROSS-PHASE CONNECTORS:                                                     ║
+║   CROSS-PHASE CONNECTORS:                                                    ║
 ║     XLINK       label | target-id   links THIS box with target               ║
 ║   (target-id is the #id or auto-slug of the box you are linking to)          ║
 ║                                                                              ║
@@ -176,13 +176,13 @@ scenario planning | Generating predictions under a range of plausible future con
 
 
 ## CHECKLIST
-Overparameterised models make poor predictions: too much detail may hurt. | LINK long-term-plan
-Validation needs to be planned: split data into MANY subsets. | LINK validation
-Upscale of microlevel processes. | LINK model-types
-Always use several models for structural uncertainty. | LINK uncertainty-decomp
-Calibration is really useful. | LINK calibration
-Uncertainty quantification is mandatory. | LINK best-answer
-Co-interpretation of results and their uncertainty: PDF, also on maps. | LINK communication
+Overparameterised models make poor predictions: too much detail may hurt | LINK long-term-planning
+Validation needs to be planned: split data into MANY subsets | LINK validation
+Upscale of microlevel processes | LINK model-types
+Always use several models for structural uncertainty | LINK uncertainty-decomp
+Calibration is really useful | LINK model-inversion
+Uncertainty quantification is mandatory | LINK best-answer
+Co-interpretation of results and their uncertainty: PDF, also on maps | LINK communication
 
 
 ## CONTENTION
@@ -324,7 +324,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         Varies one parameter at a time around a nominal value.
         DETAIL [text]
   
-  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> 
+  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
   TEXT <a href="ModelInversion.html">Model inversion</a> serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
@@ -353,7 +353,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   --- Validation
   TEXT External validation is an honest estimate of prediction quality.
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
-  XLINK Validation planning belongs in the Long-term plan. | long-term-plan
+  XLINK Validation planning belongs in the Long-term plan. | long-term planning
   --- Documentation of model code, model development, model testing, model validation, model usage. 
   TEXT TRACE: <sup class="cite-ref" data-cite="Schmolke 2010"></sup>; [less of a worry now thanks to LLMs: references]
 

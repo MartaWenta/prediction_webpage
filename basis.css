@@ -151,7 +151,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   bottom:100px;
   z-index:700;
   display:flex;
-  align-items:center;
+  align-items:flex-end;
   gap:8px;
 }
 .floating-controls .control-panel{
@@ -169,6 +169,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   color:var(--green-deep);
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;
+  align-self:flex-end;
   box-shadow:0 3px 10px rgba(0,0,0,0.12);
 }
 .floating-toggle:hover{
@@ -285,14 +286,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
 .card.open .chevron{transform:rotate(90deg)}
 .card-body{
   display:block;
-  padding:4px 14px 14px;
-  border-top:1px solid var(--rule);
+  padding:0 14px;
+  border-top:0;
   max-height:0;
   opacity:0;
   overflow:hidden;
   pointer-events:none;
 }
 .card.open .card-body{
+  padding:4px 14px 14px;
+  border-top:1px solid var(--rule);
   max-height:none;
   opacity:1;
   overflow:visible;
