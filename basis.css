@@ -100,16 +100,77 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
 }
 .wrap{max-width:840px;margin:0 auto;padding:36px 28px 80px}
 
-/* ── CONTROLS BAR ────────────────────────────────────────── */
-.controls{
-  display:flex;align-items:center;gap:16px;
-  padding:10px 0 4px;flex-wrap:wrap;
+/* ── QUICK CONTROLS ──────────────────────────────────────── */
+.control-panel{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--rule);border-radius:10px;
+  padding:6px 7px;box-shadow:0 4px 12px rgba(0,0,0,0.06);
 }
-.links-toggle label{
-  font-size:.82rem;color:var(--ink-muted);cursor:pointer;
-  display:flex;align-items:center;gap:6px;user-select:none;
+.control-chip{
+  display:flex;align-items:center;gap:8px;
+  font-size:.74rem;color:var(--ink-mid);cursor:pointer;user-select:none;
+  padding:4px 8px;border:1px solid var(--rule);border-radius:999px;
+  background:linear-gradient(180deg,#fff,#f6f3ec);
+  transition:background .15s,border-color .15s,box-shadow .15s;
 }
-.links-toggle input{accent-color:var(--amber);width:15px;height:15px;cursor:pointer}
+.control-chip:hover{
+  border-color:rgba(193,127,36,0.45);
+  box-shadow:0 1px 6px rgba(193,127,36,0.18);
+}
+.control-chip input{
+  accent-color:var(--amber);width:13px;height:13px;cursor:pointer;
+}
+.control-chip input:checked + span{
+  color:var(--green-deep);font-weight:600;
+}
+
+.floating-controls{
+  position:fixed;
+  right:12px;
+  bottom:14px;
+  z-index:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.floating-controls .control-panel{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border-color:rgba(26,58,42,0.16);
+  transition:opacity .18s,transform .18s,max-width .18s,padding .18s,border-color .18s;
+}
+
+.floating-toggle{
+  width:24px;height:38px;
+  border:1px solid rgba(26,58,42,0.2);
+  border-radius:12px;
+  background:linear-gradient(180deg,#ffffff,#ece6d7);
+  color:var(--green-deep);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+}
+.floating-toggle:hover{
+  border-color:rgba(193,127,36,0.5);
+}
+.floating-toggle-arrow{
+  font-size:.72rem;
+  line-height:1;
+  transition:transform .18s;
+}
+
+.floating-controls.is-collapsed .control-panel{
+  opacity:0;
+  pointer-events:none;
+  max-width:0;
+  overflow:hidden;
+  padding:0;
+  border-color:transparent;
+  transform:translateX(10px);
+}
+.floating-controls.is-collapsed .floating-toggle-arrow{
+  transform:rotate(180deg);
+}
 
 /* ── PHASE CARD ──────────────────────────────────────────── */
 .phase{
@@ -443,4 +504,11 @@ body.show-links #arrow-svg{display:block}
 @media(max-width:700px){
   .sidebar{display:none}
   .page-body{margin-left:0}
+  .floating-controls{
+    right:8px;
+    bottom:10px;
+  }
+  .control-chip{
+    font-size:.71rem;
+  }
 }

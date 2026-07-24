@@ -49,15 +49,23 @@
     </div>
     <div class="card-body" id="intro-body"></div>
   </div>
-  <div class="controls">
-    <div class="links-toggle">
-      <label>
-        <input type="checkbox" id="chk-links" onchange="toggleLinks(this)">
-        Show cross-phase linkage arrows
-      </label>
-    </div>
-  </div>
 </div>
+
+<aside class="floating-controls" id="floating-controls" aria-label="Quick display controls">
+  <div class="control-panel" id="floating-controls-panel">
+    <label class="control-chip">
+      <input type="checkbox" onchange="toggleLinksState(this.checked)">
+      <span>Show linkage arrows</span>
+    </label>
+    <label class="control-chip">
+      <input type="checkbox" onchange="setAllSectionsExpanded(this.checked)">
+      <span>Expand all sections</span>
+    </label>
+  </div>
+  <button type="button" class="floating-toggle" onclick="toggleFloatingControls(this)" aria-controls="floating-controls-panel" aria-expanded="true" aria-label="Collapse quick controls" title="Collapse quick controls">
+    <span class="floating-toggle-arrow" aria-hidden="true">&#9664;</span>
+  </button>
+</aside>
 
 <main class="wrap" id="main"></main>
 
@@ -1025,8 +1033,60 @@ function toggleSection(id,titleEl){
   setFindHidden(content,collapsed);
   setTimeout(drawArrows,220);
 }
-function toggleLinks(chk){
-  document.body.classList.toggle('show-links',chk.checked);
+
+function toggleLinksState(enabled){
+  document.body.classList.toggle('show-links',enabled);
+  drawArrows();
+}
+
+function toggleFloatingControls(btn){
+  var dock=document.getElementById('floating-controls');
+  if(!dock) return;
+  var isCollapsed=dock.classList.toggle('is-collapsed');
+  if(btn){
+    btn.setAttribute('aria-expanded',isCollapsed?'false':'true');
+    btn.setAttribute('aria-label',isCollapsed?'Expand quick controls':'Collapse quick controls');
+    btn.title=isCollapsed?'Expand quick controls':'Collapse quick controls';
+  }
+}
+
+function setAllSectionsExpanded(expanded){
+  var phases=document.querySelectorAll('.phase');
+  for(var i=0;i<phases.length;i++){
+    phases[i].classList.toggle('collapsed',!expanded);
+    setFindHidden(phases[i].querySelector('.phase-nodes'),!expanded);
+  }
+
+  var cards=document.querySelectorAll('.card');
+  for(var j=0;j<cards.length;j++){
+    cards[j].classList.toggle('open',expanded);
+    setFindHidden(cards[j].querySelector('.card-body'),!expanded);
+  }
+
+  var subCards=document.querySelectorAll('.sub-card');
+  for(var k=0;k<subCards.length;k++){
+    subCards[k].classList.toggle('open',expanded);
+    setFindHidden(subCards[k].querySelector('.sub-card-body'),!expanded);
+  }
+
+  var secTitles=document.querySelectorAll('.sec-title:not(.no-toggle)');
+  for(var m=0;m<secTitles.length;m++) secTitles[m].classList.toggle('collapsed',!expanded);
+
+  var sections=document.querySelectorAll('#s-checklist, #s-discussion, #s-glossary');
+  for(var n=0;n<sections.length;n++){
+    sections[n].classList.toggle('sec-collapsed',!expanded);
+    setFindHidden(sections[n],!expanded);
+  }
+
+  var subItems=document.querySelectorAll('.sub-item');
+  for(var p=0;p<subItems.length;p++){
+    var detail=subItems[p].querySelector('.si-detail');
+    if(detail){
+      subItems[p].classList.toggle('open',expanded);
+      setFindHidden(detail,!expanded);
+    }
+  }
+
   drawArrows();
 }
 
