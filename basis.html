@@ -25,12 +25,7 @@
     <marker id="arr-tip" markerWidth="14" markerHeight="14"
             refX="9" refY="6" orient="auto" markerUnits="userSpaceOnUse">
       <path d="M1.5,1 Q9,4.5 11,6 Q9,7.5 1.5,11 Q5,6 1.5,1 Z"
-            fill="#c17f24" opacity=".9"/>
-    </marker>
-    <marker id="arr-tip-start" markerWidth="14" markerHeight="14"
-            refX="3" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M10.5,1 Q3,4.5 1,6 Q3,7.5 10.5,11 Q7,6 10.5,1 Z"
-            fill="#c17f24" opacity=".9"/>
+            fill="context-stroke" opacity=".96"/>
     </marker>
   </defs>
   <g id="arrow-lines"></g>
@@ -765,6 +760,49 @@ function drawArrows(){
   // Size the SVG to the full document so arrows can live anywhere on the page.
   svg.style.height = pageBody.scrollHeight + 'px';
   var pbWidth = pageBody.clientWidth;
+  var linkColors=['#1f6f8b','#2d8f65','#bd6f1a','#8b3f9c','#b53d2f','#2a5f9e','#6b7d1e','#8b5a3c'];
+
+  function lerp(a,b,t){ return a+(b-a)*t; }
+
+  function splitCubicAtHalf(x1,y1,cx1,cy1,cx2,cy2,x2,y2){
+    var x12=lerp(x1,cx1,0.5), y12=lerp(y1,cy1,0.5);
+    var x23=lerp(cx1,cx2,0.5), y23=lerp(cy1,cy2,0.5);
+    var x34=lerp(cx2,x2,0.5), y34=lerp(cy2,y2,0.5);
+    var x123=lerp(x12,x23,0.5), y123=lerp(y12,y23,0.5);
+    var x234=lerp(x23,x34,0.5), y234=lerp(y23,y34,0.5);
+    var xm=lerp(x123,x234,0.5), ym=lerp(y123,y234,0.5);
+    return {
+      left:[x1,y1,x12,y12,x123,y123,xm,ym],
+      right:[xm,ym,x234,y234,x34,y34,x2,y2]
+    };
+  }
+
+  function addCurveSegment(x1,y1,cx1,cy1,cx2,cy2,x2,y2,color,midArrow){
+    var path=document.createElementNS(SVG_NS,'path');
+    path.setAttribute('d','M'+x1+','+y1+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+x2+','+y2);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',color);
+    path.setAttribute('stroke-width','2.4');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('opacity','0.95');
+    if(midArrow) path.setAttribute('marker-end','url(#arr-tip)');
+    g.appendChild(path);
+  }
+
+  function addDot(cx,cy,color){
+    var dot=document.createElementNS(SVG_NS,'circle');
+    dot.setAttribute('cx',String(cx));
+    dot.setAttribute('cy',String(cy));
+    dot.setAttribute('r','3.2');
+    dot.setAttribute('fill',color);
+    dot.setAttribute('opacity','0.95');
+    g.appendChild(dot);
+  }
+
+  function drawSegment(seg,color,arrowAtEnd,reversed){
+    var s=reversed ? [seg[6],seg[7],seg[4],seg[5],seg[2],seg[3],seg[0],seg[1]] : seg;
+    addCurveSegment(s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],color,arrowAtEnd);
+  }
 
   for(var i=0;i<ARROW_PAIRS.length;i++){
     var pair=ARROW_PAIRS[i];
@@ -795,34 +833,26 @@ function drawArrows(){
     var cx2=Math.min(x4+outset, maxCx);
     var cy2=y4 - dirSign*skew;         // lift the landing control point → angled arrival
 
-    var d='M'+x1+','+y1+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+x4+','+y4;
+    var parts=splitCubicAtHalf(x1,y1,cx1,cy1,cx2,cy2,x4,y4);
+    var left=parts.left;
+    var right=parts.right;
 
-    var path=document.createElementNS(SVG_NS,'path');
-    path.setAttribute('d',d);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#c17f24');
-    path.setAttribute('stroke-width','1.6');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('opacity','0.8');
-
-    // Direction: 'fwd' = arrowhead at target (default),
-    //            'back' = arrowhead at this node (source),
-    //            'both' = arrowheads at both ends.
+    var color=linkColors[i%linkColors.length];
     var dir=pair.dir||'fwd';
-    if(dir==='fwd'||dir==='both') path.setAttribute('marker-end','url(#arr-tip)');
-    if(dir==='back'||dir==='both') path.setAttribute('marker-start','url(#arr-tip-start)');
-    g.appendChild(path);
 
-    // Place a small tail dot only on the end(s) WITHOUT an arrowhead.
-    function addDot(cx,cy){
-      var dot=document.createElementNS(SVG_NS,'circle');
-      dot.setAttribute('cx',String(cx)); dot.setAttribute('cy',String(cy));
-      dot.setAttribute('r','3.5'); dot.setAttribute('fill','#c17f24'); dot.setAttribute('opacity','0.8');
-      g.appendChild(dot);
+    // Draw as point -> center-arrow -> point.
+    if(dir==='back'){
+      drawSegment(right,color,true,true);
+      drawSegment(left,color,false,true);
+    }else if(dir==='both'){
+      drawSegment(left,color,true,false);
+      drawSegment(right,color,true,true);
+    }else{
+      drawSegment(left,color,true,false);
+      drawSegment(right,color,false,false);
     }
-    if(dir==='fwd')  addDot(x1,y1);      // tail at source
-    if(dir==='back') addDot(x4,y4);      // tail at target
-    // 'both' has arrowheads on both ends → no tail dot
+    addDot(x1,y1,color);
+    addDot(x4,y4,color);
   }
 }
 
