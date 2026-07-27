@@ -657,7 +657,18 @@ TEXT Rarely is there only one right type of model. Depending on expertise, time,
 If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
 
 --- Specify required model characteristics
-TEXT  The prediction purpose of stage 1 should be specific enough to narrow down the implementation with respect to the following characteristics. In case of doubt, the simpler version may be preferable:
+TEXT  The prediction purpose of stage 1 may be specific enough to narrow down the implementation with respect to the following characteristics. If not, here are few questions that may help select among the opposites listed below:
+<ol>
+  <li>Is the purpose to explore a proof-of-principle or strategy?</li>
+  <li>Model as repository of knowledge or as Unix philosophy: "Do one thing, and do that well." DOTADTW</li>
+  <li>Will the model be fitted?</li>
+  <li>Is there clear demonstration in the literature that a certain approach is necessary, e.g. resolution, complexity?</li>
+  <li>Are you familiar with some but not other approaches? This is a poor but common guide!</li>
+  <li>Shall the model quantify equilibrium or transient dynamics?</li>
+  <li>Do you have many or few data?</li>
+  <li>Is your understanding of system and model components very complete?</li>
+</ol>
+<p>In case of doubt, the simpler version may be preferable:
 IMPORTANT 🔔 Upscale of microlevel processes.
   >>> 🗺️ Spatially implicit / explicit
       Otto
@@ -700,28 +711,30 @@ ROLE Modeller
 RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so. (This section contains the majority of technical detail.)
 
 --- Establish workflow for running models
-TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. <span style="color: red">Put in box for more text at lower level here. Alternatively: link out to another html page with more details on workflows particularly for SA/UA.</span>
+TEXT Any model used for prediction will need to be ru-run many times (e.g. in sensitivity !!LINKG or uncertainty analysis !!LINK, or in model inversion !!LINK, or as part of model development's debugging). A pipeline to easily run the prediction machinery is essential for efficient work, to launch it on HPC, and it also helps with documentation !!LINK and reproducibility !!LINK.<p>The pipeline may be a simple script in a higher-level language or in bash; or it may link in formal <a target="_blank" href="https://en.wikipedia.org/wiki/Scientific_workflow_system">scientific workflow software</a>. Open-source software is preferable; versioning is mandatory.<p> This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP.
 
 --- Identifying trustworthy models
 TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
   <div class="references">
-    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
-    <p>Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romañach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D’Odorico, P., & O’Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153–166. <a href="https://doi.org/10.1111/ele.12893">doi:10.1111/ele.12893</a> </p>
+    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a target="_blank" href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
+    <p>Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romañach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D’Odorico, P., & O’Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153–166. <a  target="_blank"href="https://doi.org/10.1111/ele.12893">doi:10.1111/ele.12893</a> </p>
   </div>
   
   --- Code verification/unit testing (for own code)
-  TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
+  TEXT Coded models should be checked to be working correctly. This is important in model development (and there often referred to as <a target="_blank" href="https://en.wikipedia.org/wiki/Unit_testing">"unit testing"</a>), but also for users of models: we want to make sure that the model does what it is supposed to do.<p>The essential step to do so is by defining test cases, where the correct output of the model component is known; unless the model produces this known output, it is faulty. In advanced software development, unit testing is automatised and carried out after every major modification of code (e.g. for <a target="_blank" href="https://testthat.r-lib.org">R</a>, <a target="_blank" href="https://docs.python.org/3/library/unittest.html">Python</a>, <a target="_blank" href="https://www.geeksforgeeks.org/software-testing/embedded-c-cpp-unit-testing-basics">C++</a>). Unit testing is necessary but not sufficient for code verification; other elements of testing need to be considered as well (<a target="_blank" href="https://en.wikipedia.org/wiki/Software_testing">scalability, maintainability, performance</a>).
   
   --- Is model "rich" enough?
-  TEXT Does the model structure allow for creating the observed range/dynamics? <span style="color: red">Doyne Farmer's argument that economic models are not sufficiently complex to create market crashes and alike, and hence fundamentally unsuitable for predictions.</span>
+  TEXT When prediction is about a real world system, so is the model from which it is derived. Thus, the underlying model must be able to reproduce relevant features and dynamics of that real world system. To do so, its dynamics must be "rich" enough = sufficiently powerful = covering enough of the feature space of the system under consideration.<p>For example, typical models of the financial market are unable to produce the kind of bubbles and bursts we witnessed in the 1920 and 2008 <i>from endogenous dynamics</i>. But, as Farmer (2024) argued, the 2008 bubble was mostly internal. So, for such a system we need a feedback-rich complex adaptive system representation, in economics, in biology, in medicine, in environmental science. Only if the model can have peaks of the same order of magnitude as those observed, if response-times are quick (or drawn out) enough, if ranges of patterns can be produced that include the observed, only then is the model likely to be "rich" enough to also include the system under consideration.
+  <div class="references"> <p>Farmer, J. D. (2024). Making Sense of Chaos: A Better Economics for a Better World. Yale University Press. </p></div>
+
   
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
-  TEXT Employ existing knowledge.
+  TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.<p>Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling !!LINK.<p>One of the design decisions [!!LINK to Model characteristics] is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
   <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   
   --- Sensitivity analysis (global vs local)
-  TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. 
+  TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.<p>The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.<p>Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters. [!!LINK: MC]  
   <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
@@ -730,8 +743,8 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         Varies one parameter at a time around a nominal value.
         DETAIL [text]
   
-  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> 
-  TEXT <a href="ModelInversion.html">Model inversion</a> serves two purposes:
+  --- Model inversion (Calibration)
+  TEXT <a target="_blank" href="ModelInversion.html">Model inversion</a> serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
     Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
@@ -769,8 +782,21 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   TEXT External validation is an honest estimate of prediction quality.
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
   XLINK Validation planning belongs in the Long-term plan. | long-term-plan
-  --- Documentation of model code, model development, model testing, model validation, model usage. 
-  TEXT REFERENCES: TRACE: Schmolke et al. 2010; [less of a worry now thanks to LLMs: references]
+
+  --- Documentation of model: code, development, unit testing, validation, usage 
+  TEXT Documentation serves transparency of the science and use of the model. LLMs may be usefully employed to support documentation (particularly of code and use). In some fields, documentation standards exist (e.g. ODD: Grimm et al. 2010; TRACE: Schmolke et al. 2010).<p>
+    <ol>
+      <li>Code documentation: what is each element of the code doing (Swannack et al. 2025)?</li>
+      <li>Development: Versioning, allowing rollback to earlier version in case of bugs. Which data sets have been used for which model component?</li>
+     <li>Unit testing: how is code evaluated for correct working, which tests are actually implemented?</li>
+      <li>Validation: which data sets have been used to validate the model? How well did the model do? What are the prediction uncertainty levels derived from this validation?</li>
+      <li>Use: How can the model be used, how can predictions be made? This typically takes the form of one or several tutorials.</li>
+    </ol>
+  <div class="references"> 
+    <p>Grimm, V., Berger, U., DeAngelis, D. L., Polhill, J. G., Giske, J., & Railsback, S. F. (2010). The ODD protocol: A review and first update. Ecological Modelling, 221(23), 2760–2768. https://doi.org/10.1016/j.ecolmodel.2010.08.019</p>
+    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. https://doi.org/10.1016/j.tree.2010.05.001</p>
+    <p>Swannack, T. M., Cushway, K. C., Carrillo, C. C., Calvo, C., Determan, K. R., Mierzejewski, C. M., Quintana, V. M., Riggins, C. L., Sams, M. D., & Wadsworth, W. E. (2025). Cracking the code: Linking good modeling and coding practices for new ecological modelers. Ecological Modelling, 499, 110926. https://doi.org/10.1016/j.ecolmodel.2024.110926
+  </p></div>
 
 
 === 4. Predicting
@@ -778,19 +804,23 @@ ROLE Modeller
 RATIONALE This is the actual act of creating a quantitative “conditional” statement based on the model(s). “Conditional” means that the statement depends on the input provided; for scenarios the prediction would then be “projections”, for short term the prediction would be a “forecast”. The actual prediction products may need to be tailored to the stakeholder, but as scientific output they must adhere to some expected standards.
 
 --- Best answer with uncertainty indication #best-answer
-TEXT PDF, maps with uncertainty shading, confidence/prediction interval.
+TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making (Spiegelhalter 2025). If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty (Kaye et al. 2012). <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty !!LINK can help pinpoint the main sources of uncertainty, motivating future science.<div class="references"> 
+    <p>Kaye, N. R., Hartley, A., & Hemming, D. (2012). Mapping the climate: Guidance on appropriate techniques to map climate variables and their uncertainty. Geoscientific Model Development, 5(1), 245–256. https://doi.org/10.5194/gmd-5-245-2012</p> 
+    <p>Spiegelhalter, D., 2025. The Art of Uncertainty: How to Navigate Chance, Ignorance, Risk and Luck. W. W. Norton & Company, New York, NY.</p></div>
+
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
   and remain below maximum sustainable yield?
 IMPORTANT 🔔 Uncertainty quantification is mandatory.
   Co-interpretation of results and their uncertainty — PDF, also on maps — is required.
 
---- Uncertainty decomposition #uncertainty-decomp
-TEXT Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction. Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
-IMPORTANT 🔔 Always use several models for structural uncertainty.
-
 --- Plausibility check
-TEXT Check for outlier predictions; compare against previous predictions, literature, and common sense.
+TEXT The credo for this step is: "I don't want to look like a fool." To avoid embarrassment, predictions should be checked for plausibility. Apart from internal consistency (Can that much soil actually erode away? Do trees grow that fast?), the comparison with published data is an important step. If the prediction is widely outside previous observations, they may still be correct, but being an outlier certainly warrants double checking model(s), data, parameters and scenarios. <p>If predictions survive double-checking but still "feel wrong", it is particularly important to communicate the assumptions behind modelling approach, the model code and parameterisation. Also the (Mahalanobis) distance between training and prediction data can be quantified to illustrate how unusual the prediction situation is.
+
+
+--- Uncertainty decomposition #uncertainty-decomp
+TEXT The sources of uncertainty for a given prediction indicate our lack of knowledge, thereby giving real-world context to when prediction are reliable. For example, a major uncertainty in Earth System Models (and Global Circulation Models and atmospheric models) is how clouds respond to and thus affect temperature and precipitation. That in itself suggests that (a) cloud formation requires careful parameterisation, and (b) maybe long-term cloud behaviour can described phenomenological even without physical understanding. <p>In a similar way, uncertainty decomposition delineates areas of relative robust and more uncertain knowledge.Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction. <p>Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
+IMPORTANT 🔔 Always use several models for structural uncertainty.
 
 
 === 5. Utilisation
