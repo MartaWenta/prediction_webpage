@@ -372,6 +372,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   font-weight:600;
   text-decoration:none;
   line-height:1.25;
+  cursor:pointer;
 }
 .more-details-btn:hover{
   border-color:rgba(193,127,36,0.55);
@@ -574,6 +575,142 @@ footer a:hover{text-decoration:underline}
   margin:0;
 }
 
+/* ── DETAIL OVERLAY ─────────────────────────────────────── */
+.detail-overlay{
+  border:0;
+  padding:12px;
+  width:100vw;
+  height:100vh;
+  max-width:none;
+  background:transparent;
+  box-sizing:border-box;
+}
+.detail-overlay:not([open]){display:none}
+.detail-overlay[open]{display:grid;place-items:center}
+.detail-overlay::backdrop{
+  background:rgba(18,32,24,0.56);
+  backdrop-filter:blur(5px);
+}
+.detail-overlay-card{
+  width:min(1040px,calc(100vw - 24px));
+  background:
+    radial-gradient(circle at top left, rgba(82,183,136,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(193,127,36,0.12), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.99), rgba(245,240,232,0.99));
+  border:1px solid rgba(26,58,42,0.14);
+  border-top:4px solid var(--amber);
+  border-radius:28px;
+  box-shadow:0 24px 64px rgba(16,33,24,0.28);
+  overflow:hidden;
+  max-height:calc(100vh - 24px);
+  display:flex;
+  flex-direction:column;
+}
+.detail-overlay-hd{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:24px 28px 18px;
+  border-bottom:1px solid var(--rule);
+}
+.detail-overlay-kicker{
+  margin:0 0 6px;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--amber);
+}
+.detail-overlay-hd h2{
+  margin:0;
+  font-family:'Lora',serif;
+  font-size:clamp(1.3rem,2.4vw,1.8rem);
+  font-weight:600;
+  color:var(--green-deep);
+}
+.detail-overlay-close{
+  width:40px;
+  min-width:40px;
+  height:40px;
+  flex:0 0 40px;
+  padding:0;
+  border-radius:50%;
+  border:1px solid rgba(26,58,42,0.16);
+  background:linear-gradient(180deg,#fff,#f2eee4);
+  color:var(--green-deep);
+  font-size:1.4rem;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  appearance:none;
+  -webkit-appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.detail-overlay-close:hover{
+  border-color:rgba(193,127,36,0.5);
+  color:#7a4f10;
+}
+.detail-overlay-frame{
+  width:100%;
+  border:0;
+  flex:1;
+  min-height:0;
+  height:min(72vh,720px);
+  background:transparent;
+}
+body.detail-overlay-open{
+  overflow:hidden;
+}
+
+/* ── DETAIL PAGES ───────────────────────────────────────── */
+body.detail-page{
+  max-width:min(920px,calc(100% - 32px));
+  min-height:calc(100vh - 32px);
+  margin:16px auto;
+  padding:clamp(28px,5vw,56px);
+  background:
+    radial-gradient(circle at top left, rgba(82,183,136,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(193,127,36,0.12), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,240,232,0.98));
+  border:1px solid rgba(26,58,42,0.12);
+  border-top:4px solid var(--amber);
+  border-radius:30px;
+  box-shadow:0 20px 46px rgba(16,33,24,0.14);
+  overflow:hidden;
+}
+body.detail-page::before{
+  content:'Detail page';
+  display:block;
+  margin-bottom:12px;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--amber);
+}
+body.detail-page > h1:first-child{
+  font-family:'Lora',serif;
+  font-size:clamp(1.5rem,3vw,2.25rem);
+  font-weight:600;
+  color:var(--green-deep);
+  margin:0 0 18px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--rule);
+}
+body.detail-page > p{
+  font-size:.93rem;
+  color:var(--ink-mid);
+  line-height:1.75;
+  margin:0 0 12px;
+}
+body.detail-page > p strong,
+body.detail-page > p em{
+  color:var(--ink);
+}
+
 /* ── SVG CONNECTOR OVERLAY (document-anchored: scrolls with the page) ── */
 #connector-svg{
   position:absolute;top:0;left:0;width:100%;
@@ -604,5 +741,31 @@ body.show-links #connector-svg{display:block}
   }
   .control-chip{
     font-size:.71rem;
+  }
+  body.detail-page{
+    max-width:calc(100% - 20px);
+    min-height:calc(100vh - 20px);
+    margin:10px auto;
+    padding:24px 18px 28px;
+    border-radius:24px;
+  }
+  body.detail-page > h1:first-child{
+    font-size:1.45rem;
+  }
+  .detail-overlay{
+    padding:7px;
+    width:100vw;
+    height:100vh;
+  }
+  .detail-overlay-card{
+    width:calc(100vw - 14px);
+    max-height:calc(100vh - 14px);
+    border-radius:22px;
+  }
+  .detail-overlay-hd{
+    padding:18px 16px 14px;
+  }
+  .detail-overlay-frame{
+    height:min(64vh,620px);
   }
 }

@@ -69,6 +69,19 @@
 
 <main class="wrap" id="main"></main>
 
+<dialog id="detail-overlay" class="detail-overlay" aria-label="Detail page overlay">
+  <div class="detail-overlay-card">
+    <div class="detail-overlay-hd">
+      <div>
+        <p class="detail-overlay-kicker">Detail page</p>
+        <h2 id="detail-overlay-title">More details</h2>
+      </div>
+      <button type="button" class="detail-overlay-close" onclick="closeDetailOverlay()" aria-label="Close detail page">×</button>
+    </div>
+    <iframe id="detail-overlay-frame" class="detail-overlay-frame" title="Detail page content"></iframe>
+  </div>
+</dialog>
+
 <div class="wrap">
   <h2 class="sec-title collapsed" id="checklist" onclick="toggleSection('s-checklist',this)">
     Checklist — overlooked issues

@@ -1,5 +1,14 @@
 var PAGE_COLORS={ c1:'#2d6a4f', c2:'#1a5276', c3:'#6c3483', c4:'#b7471c', c5:'#117a65' };
 
+function escapeAttr(value){
+  return String(value)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
 function getDetailPageForLeaf(leafId){
   if(window.DETAIL_PAGES&&Object.prototype.hasOwnProperty.call(window.DETAIL_PAGES,leafId)){
     return window.DETAIL_PAGES[leafId];
@@ -7,10 +16,10 @@ function getDetailPageForLeaf(leafId){
   return null;
 }
 
-function renderDetailsButton(leafId){
+function renderDetailsButton(leafId, title){
   var page=getDetailPageForLeaf(leafId);
   if(typeof page==='string'&&page.trim()!==''){
-    return '<div class="details-row"><a class="more-details-btn" href="'+page+'" target="_blank" rel="noopener noreferrer">More details</a></div>';
+    return '<div class="details-row"><button class="more-details-btn" type="button" data-detail-page="'+escapeAttr(page)+'" data-detail-title="'+escapeAttr(title||leafId)+'">More details</button></div>';
   }
   return '<div class="details-row"><button class="more-details-btn is-disabled" type="button" disabled aria-disabled="true">More details (coming soon)</button></div>';
 }
@@ -25,7 +34,7 @@ function renderSubItems(items, bgWhite, parentLeafId){
     html+='<div class="si-body">';
     html+='<div class="si-name">'+s.name+(s.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'')+'</div>';
     if(s.desc&&s.desc!=='[text]') html+='<div class="si-desc">'+s.desc+'</div>';
-    html+=renderDetailsButton(subLeafId);
+    html+=renderDetailsButton(subLeafId,s.name);
     html+='</div>';
     html+='</div></li>';
   }
@@ -45,7 +54,7 @@ function renderSubNodes(nodes, color){
       var xl=n.xlinks[x];
       xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> '+xl.text+' <a href="#'+xl.target+'">Jump &rarr;</a></div>';
     }
-    var detailButtonHtml=renderDetailsButton(n.id);
+    var detailButtonHtml=renderDetailsButton(n.id,n.title);
     var exHtml=(n.example&&n.example!=='[text]')?'<div class="example">'+n.example+'</div>':'';
     var impHtml=(n.important&&n.important!=='[text]')?'<div class="important">'+n.important+'</div>':'';
     html+='<div class="sub-card" id="'+n.id+'" style="border-left-color:'+color+'">'
