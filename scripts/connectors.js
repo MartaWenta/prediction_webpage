@@ -10,6 +10,7 @@
   var CONNECTOR_Y_LIFT=6;
   var CONNECTOR_X_PAD=12;
 
+  // Gather cross-phase links from the parsed structure so they can be drawn as SVG connectors.
   function collectConnectors(phases){
     CONNECTOR_PAIRS=[];
     for(var i=0;i<phases.length;i++){
@@ -86,6 +87,7 @@
     g.appendChild(dot);
   }
 
+  // Draw SVG curves between linked content blocks that are currently visible.
   function drawConnectors(){
     var svg=document.getElementById('connector-svg');
     var g=document.getElementById('connector-lines');

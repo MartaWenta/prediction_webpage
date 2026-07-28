@@ -1,3 +1,4 @@
+// Central bibliography used by the citation and reference tooltip system.
 window.BASIS_BIBLIO={
   'schmolke 2010':'Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479-486. https://doi.org/10.1016/j.tree.2010.05.001',
   'getz 2018':'Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romanach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D\'Odorico, P., & O\'Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153-166. https://doi.org/10.1111/ele.12893',
@@ -18,6 +19,7 @@ window.BASIS_BIBLIO={
 
 window.MODEL_INVERSION_BIBLIO=window.BASIS_BIBLIO;
 
+// Enable tap-friendly tooltip behaviour for glossary and footnote references.
 function enableTapTooltips(){
   document.addEventListener('click',function(e){
     var tip=e.target.closest?e.target.closest('.def, .footnote-ref'):null;

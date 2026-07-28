@@ -1,3 +1,4 @@
+// Parse the source content into structured sections for the page renderer.
 function parseContent() {
   var raw=document.getElementById('page-content').textContent;
   var lines=raw.split('\n');
@@ -6,6 +7,8 @@ function parseContent() {
 
   function flush(){ curField=null; }
   function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+  // Walk the content line by line and build the structured phase, node, and glossary data.
   function stripHtml(s){ return s.replace(/<[^>]*>/g,''); }
   function trimVal(s){ return s.replace(/^\s+|\s+$/g,''); }
   function indentOf(line){ var m=line.match(/^(\s*)/); return m?m[1].length:0; }

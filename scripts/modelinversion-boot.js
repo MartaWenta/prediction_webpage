@@ -1,3 +1,4 @@
+// Initialise citation tools and interactive tooltips for the model inversion page.
 document.addEventListener('DOMContentLoaded',function(){
   if(window.CitationTools){
     window.CitationTools.hydrate({

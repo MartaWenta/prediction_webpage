@@ -1,3 +1,4 @@
+// Render the whole page from the parsed content and initialise the interactive widgets.
 function renderAll(){
   var data=parseContent();
 
@@ -61,6 +62,7 @@ function setFindHidden(el, hidden){
   else el.removeAttribute('hidden');
 }
 
+// Expand sections that become relevant after search or navigation updates.
 function revealCollapsedForSearch(target){
   var node=target;
   while(node&&node!==document.body){

@@ -102,6 +102,7 @@ function renderPhase(phase){
     +'</section>';
 }
 
+// Convert intro paragraphs into simple HTML blocks for the opening section.
 function renderIntro(lines){
   var paras=[], cur=[];
   for(var i=0;i<lines.length;i++){

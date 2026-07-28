@@ -1,3 +1,4 @@
+// Scan content for glossary terms and add hoverable definition spans.
 function autoDefine(root, glossary){
   if(!root) return;
   var lookup={}, terms=[];

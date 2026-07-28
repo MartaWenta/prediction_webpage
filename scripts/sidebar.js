@@ -1,3 +1,4 @@
+// Build the sidebar navigation for the phases and highlight the active section while scrolling.
 function buildSidebar(phases){
   var track=document.getElementById('sb-track');
   var html='';

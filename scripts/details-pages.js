@@ -1,5 +1,6 @@
 // Detail pages for sections, sub-sections, and sub-items.
 // Keys are IDs generated from the content parser.
+// This registry maps each content leaf to its extra detail page.
 // - Node/sub-node: "node-id"
 // - Sub-item: "parent-node-id__sub-item-id"
 window.DETAIL_PAGES={
