@@ -6,6 +6,7 @@ function parseContent() {
 
   function flush(){ curField=null; }
   function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+  function stripHtml(s){ return s.replace(/<[^>]*>/g,''); }
   function trimVal(s){ return s.replace(/^\s+|\s+$/g,''); }
   function indentOf(line){ var m=line.match(/^(\s*)/); return m?m[1].length:0; }
   function colorFor(num){ return ['c1','c2','c3','c4','c5'][num-1]||'c1'; }
@@ -13,8 +14,8 @@ function parseContent() {
     return line.indexOf('--- ')===0||line.indexOf('>>> ')===0||
            line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
            line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
-           line.indexOf('DETAIL ')===0||line.indexOf('EXAMPLE ')===0||
-           line.indexOf('IMPORTANT ')===0||line.indexOf('XLINK ')===0;
+           line.indexOf('EXAMPLE ')===0||line.indexOf('IMPORTANT ')===0||
+           line.indexOf('XLINK ')===0;
   }
 
   for(var i=0;i<lines.length;i++){
@@ -62,8 +63,22 @@ function parseContent() {
     if(line.indexOf('>>> ')===0){
       flush();
       var sRaw=trimVal(line.slice(4)), iconMatch=sRaw.match(/^(\S+)\s+(.*)/);
-      curSub={icon:iconMatch?iconMatch[1]:'',name:iconMatch?trimVal(iconMatch[2]):sRaw,role:null,desc:'',detail:null};
+      var subName=iconMatch?trimVal(iconMatch[2]):sRaw;
+      var subBaseId=slugify(stripHtml(subName))||'item';
       var siTarget=curSubNode||curNode;
+      var subId=subBaseId;
+      if(siTarget&&siTarget.subItems){
+        var suffix=2;
+        var exists=true;
+        while(exists){
+          exists=false;
+          for(var si=0;si<siTarget.subItems.length;si++){
+            if(siTarget.subItems[si].id===subId){ exists=true; break; }
+          }
+          if(exists){ subId=subBaseId+'-'+suffix; suffix++; }
+        }
+      }
+      curSub={id:subId,icon:iconMatch?iconMatch[1]:'',name:subName,role:null,desc:''};
       if(siTarget) siTarget.subItems.push(curSub);
       curField='sub-desc';
       continue;
@@ -81,7 +96,6 @@ function parseContent() {
       curField='text';
       continue;
     }
-    if(line.indexOf('DETAIL ')===0&&curSub){ curSub.detail=trimVal(line.slice(7)); curField='detail'; continue; }
     if(line.indexOf('EXAMPLE ')===0&&(curSubNode||curNode)){
       (curSubNode||curNode).example='<strong>'+trimVal(line.slice(8))+'</strong>';
       curField='example';
@@ -122,7 +136,6 @@ function parseContent() {
     if(!isKeyword(line)&&indentOf(raw_line)>=2){
       if(curField==='rationale'&&curPhase&&!curNode){ curPhase.rationale+=' '+line; continue; }
       if(curField==='text'){ var tt=curSubNode||curNode; if(tt){ tt.body+=' '+line; } continue; }
-      if(curField==='detail'&&curSub){ curSub.detail+=' '+line; continue; }
       if(curField==='example'){ var te=curSubNode||curNode; if(te){ te.example+=' '+line; } continue; }
       if(curField==='important'){ var ti=curSubNode||curNode; if(ti){ ti.important+=' '+line; } continue; }
       if(curField==='sub-desc'&&curSub){ curSub.desc=curSub.desc?curSub.desc+' '+line:line; continue; }

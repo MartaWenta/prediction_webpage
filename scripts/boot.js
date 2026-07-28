@@ -65,10 +65,7 @@ function revealCollapsedForSearch(target){
   var node=target;
   while(node&&node!==document.body){
     if(node.classList){
-      if(node.classList.contains('si-detail')){
-        node.parentElement.classList.add('open');
-        setFindHidden(node,false);
-      }else if(node.classList.contains('sub-card-body')){
+      if(node.classList.contains('sub-card-body')){
         node.parentElement.classList.add('open');
         setFindHidden(node,false);
       }else if(node.classList.contains('card-body')){
@@ -106,14 +103,6 @@ function togglePhase(phase){
   phase.classList.toggle('collapsed');
   setFindHidden(phase.querySelector('.phase-nodes'),phase.classList.contains('collapsed'));
   setTimeout(drawConnectors,220);
-}
-
-function toggleSub(el){
-  var detail=el.querySelector('.si-detail');
-  if(detail){
-    el.classList.toggle('open');
-    setFindHidden(detail,!el.classList.contains('open'));
-  }
 }
 
 function toggleSection(id,titleEl){
@@ -166,15 +155,6 @@ function setAllSectionsExpanded(expanded){
   for(var n=0;n<sections.length;n++){
     sections[n].classList.toggle('sec-collapsed',!expanded);
     setFindHidden(sections[n],!expanded);
-  }
-
-  var subItems=document.querySelectorAll('.sub-item');
-  for(var p=0;p<subItems.length;p++){
-    var detail=subItems[p].querySelector('.si-detail');
-    if(detail){
-      subItems[p].classList.toggle('open',expanded);
-      setFindHidden(detail,!expanded);
-    }
   }
 
   drawConnectors();

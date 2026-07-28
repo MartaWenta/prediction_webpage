@@ -10,6 +10,7 @@
 <script defer src="scripts/citation-tools.js"></script>
 <script defer src="scripts/references.js"></script>
 <script defer src="scripts/parser.js"></script>
+<script defer src="scripts/details-pages.js"></script>
 <script defer src="scripts/renderer.js"></script>
 <script defer src="scripts/sidebar.js"></script>
 <script defer src="scripts/definitions.js"></script>
@@ -124,7 +125,7 @@
 ║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
 ║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
 ║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
-║     DETAIL, EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is     ║
+║     EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is             ║
 ║   • Everything after a keyword on the same line is the value                 ║
 ║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
 ║   • Apostrophes are fine. Quotes are fine. No escaping needed.               ║
@@ -240,19 +241,14 @@ XLINK Data splits for validation must be planned here. | validation
 TEXT Consider:
   >>> 📋 Expert statements
       Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
-      DETAIL [text]
   >>> 🤖 ML / DL / AI / Statistics
       Data-driven, no constraints prediction approaches.
-      DETAIL [text]
   >>> 🔢 (O/P)DE
       Rigid mathematical structure for highly dynamic systems.
-      DETAIL [text]
   >>> ⚙️ Coded process model, incl. agent-based model
       Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
-      DETAIL [text]
   >>> &#128101; other
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
 If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
 
@@ -261,22 +257,16 @@ TEXT  with respect to
 IMPORTANT 🔔 Upscale of microlevel processes.
   >>> 🗺️ Spatially implicit / explicit
       [text]
-      DETAIL [text]
   >>> 🎲 Stochastic/deterministic
       [text]
-      DETAIL [text]
   >>> ⏱️ Continuous/Discrete time
       [text]
-      DETAIL [text]
   >>> 🐟 Discrete individuals/continuous biomass
       [text]
-      DETAIL [text]
   >>> 🔄 With / without feedback
       [text]
-      DETAIL [text]
   >>> &#128208; explicit management intervention rules
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
   Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. <sup class="cite-ref" data-cite="Dormann 2018"></sup>
 
@@ -285,14 +275,11 @@ IMPORTANT 🔔 Upscale of microlevel processes.
 TEXT This prediction is often part of a longer activity and commitment. Think through the next years and far beyond the current prediction activity. Think of all resources: stakeholder willingness, data availability, computational resources, developer time. Plan this prediction with a longer-term plan in your mind.
   >>> 👩‍🔬 Efficient use of experts and stakeholders
       All stakeholders require tactful handling, including not wasting their time on unnecessary meetings and deliberations. The must be employed for question framing and interpretation (first and last step of this Orientation), but will develop fatigue if over-used. 
-      DETAIL [text]
   >>> 📊 Data for many validations in the modelling cycle
       Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
-      IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt. <span style="color: red">Should be in same box as "Data for many ..."</span>
-      DETAIL <sup class="cite-ref" data-cite="Roberts 2017"></sup>
+      🔔 Overparameterised models make poor predictions — too much detail may hurt <sup class="cite-ref" data-cite="Roberts 2017"></sup>
   >>> 💻 Computational resources
       Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
-      DETAIL [text]
 
 
 === 3. Modelling
@@ -319,13 +306,11 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   TEXT Sensitivity analysis identifies more and less relevant elements of a model for the target. 
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
-        DETAIL [text]
     >>> 📍 Local SA
         Varies one parameter at a time around a nominal value.
-        DETAIL [text]
   
   --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
-  TEXT <a href="ModelInversion.html">Model inversion</a> serves two purposes:
+  TEXT Model inversion serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
     Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
@@ -333,16 +318,12 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   XLINK Calibration is not validation — see Validation. | validation
     >>> 🔬 Optimisation
         [text]
-        DETAIL [text]
     >>> 🎰 MCMC
         [text]
-        DETAIL [text]
     >>> 🧮 ABC
         [text]
-        DETAIL [text]
     >>> 🧩 POM
         [text]
-        DETAIL [text]
 
   --- Uncertainty analysis
   TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
@@ -386,10 +367,8 @@ RATIONALE [text]
 TEXT [text]
   >>> 📢 Communicate
       [text]
-      DETAIL [text]
   >>> ↩️ Feedback
       [text]
-      DETAIL [text]
 
 --- Use / exploit prediction
 TEXT Use or exploit the prediction — for example, to take management decisions.
