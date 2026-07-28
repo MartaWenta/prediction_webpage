@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+<title>Orientation: Model Inversion</title>
+</head>
+
+<body>
+
+
+ <h1>Model Inversion (Part of Orientation for Prediction)</h1>
+
+ Model inversion describes the estimation of model parameters from data and a defined measure of fit.<a id="footnote-1-ref" href="#footnote-1"><sup>1</sup></a>. Common examples include parameter estimation in engineering, geophysics (infer Earth properties from seismic data), remote sensing (infer land/atmosphere properties from satellite observations), and data assimilation in weather/climate, or for that matter <a href="https://www.youtube.com/watch?v=Y5TFSvE-lpg">cosmology</a>.
+ 
+ <p>Here we discuss the most formal way of model inversion by changing model parameters \(\theta\) so as to minimise (some measure of) the distance \(d\) between model prediction \(\hat{y}_i\)  and observation \(y_i\): \(\arg \min_\theta d(\hat{y}_i - y_i)\). 
+ 
+<p>In the simplest case, \(d = \sqrt{(\hat{y}_i - y_i)^2} \) = Euclidean distance, but many other measures are being used, in particular the negative log-likelihood. This makes the intimacy between model inversion and regression-like approaches clearest and shall hence briefly be explicated.</p>
+
+ <p>Let us assume that the data can be considered as draws from a probability distribution: 
+ 
+ <p>\( y \sim P(f(X, \theta)) \), </p>
+ 
+ <p>where \(f(X, \theta) \) is our model, which turns input (predictor) variables \(X\) into model prediction \(\hat{y}\), using model parameters \(\theta\). Fundamentally, it does not matter whether \(f\) is a regression line of type \(\beta_0 + X\beta\), a stochastic partial differential equation or an agent/individual-based model.
+
+Then model inversion using log-likelihood means finding values of \( \theta \) that make the observations \(y\) most likely, or the negative log-likelihood minimal:
+
+<p>\( \arg \min_\theta -\sum_i \log P(y_i \mid f(X_i, \theta)) \ \) <a id="footnote-2-ref" href="#footnote-2"><sup>2</sup></a></p>
+
+The technical challenge is to find optimisation algorithms that find the optimal values of \(\theta\) for complicated models \( f \) (think: stochastic models without analytical likelihood: Marjoram et al. 2003; very slow models where parameter evaluation becomes very costly; heavily over-parameterised models, where data cannot identify parameters, a.k.a. "equifinality": e.g. Luo et al. 2009; multi-dimensional \(y\) of very different information content: Oberpriller et al. 2021).
+
+<h2>Reasons why</h2>
+Model inversion serves two purposes (at least) in the context of predictions: (1) to improve the parameterisation of a model for the case study at hand; and (2) identify structural problems with the model.
+
+<h3>Improve parameterisation</h3>
+[hyper-link to parameterisation on main page!]
+Process-based models are developed with a specific question and/or system in mind. The majority of model parameters will be extracted from measurements in the lab or field (think: temperature-dependence of photosynthesis, water infiltration rate, flight speed of bat). However, for any given system, these parameters are unlikely to be the best possible. 
+<p>Smaller, or larger, changes of the default parameterisation will in most cases improve both fit to the local observations as well as prediction within that system. Hence, we can hope to gain a reduction in prediction bias by inverse modelling.</p>
+
+<h3>Identifying structural problems</h3>
+Model parameters typically have a mechanistic interpretation (think: the rate of photosynthesis at optimal conditions). As such, they have values that have been measured in experiments and a value range that we expect (think: mortality is between 0 and 1). 
+<p>The optimiser that fits the model to data can be told within which range to find suitable parameters (see below for details), either as upper/lower bound or as probability distribution (potentially extending to \(\pm \infty\)). Now, when during model inversion the best parameter estimate hits the boundary, or leaves the range of "permissible" values, we may treat that as a clear signal that "something is wrong". That something may be the specific function fitted, or a combination of modules within a model, either of which may be subsumed as "model structure" (sometimes also referred to as "model logic").</p>
+
+<h2>Techniques</h2>
+<h3>Parameter priors and bounds</h3>
+
+<hr>
+References
+<div class="references">
+  <p>Luo, Y., Weng, E., Wu, X., Gao, C., Zhou, X., & Zhang, L. (2009). Parameter identifiability, constraint, and equifinality in data assimilation with ecosystem models. Ecological Applications, 19(3), 571–574.</p>
+  <p>Marjoram, P., Molitor, J., Plagnol, V., & Tavaré, S. (2003). Markov chain Monte Carlo without likelihoods. Proceedings of the National Academy of Sciences, 100(26), 15324–15328. https://doi.org/10.1073/pnas.0306899100</p>
+  <p>Oberpriller, J., Cameron, D. R., Dietze, M. C., & Hartig, F. (2021). Towards robust statistical inference for complex computer models. Ecology Letters, 24(6), 1251–1261. https://doi.org/10.1111/ele.13728</p>
+
+</div>
+
+
+
+<hr>
+Footnotes
+ <p id="footnote-1">
+   1. Depending on the research field, this activity goes by "fitting", "calibration", "tuning", "parameterisation", "backwards modelling", each with slightly different meaning and goal. <a href="#footnote-1-ref">&#8617;</a> 
+<p id="footnote-2">
+   2. For example, if our individual-based model predicts the number of cuckoos in some landscape, then, assuming those to be represented by a Poisson distribution, we have: \(\text{number of cuckoos} \sim \text{Pois}(\lambda=\text{IBM}(X, \theta))\). The IBM also has the job of ensuring only valid values of \(\lambda\), allowing us to omit the link-function of a GLM. <a href="#footnote-2-ref">&#8617;</a> 
+</p>
+</body>
+</html>

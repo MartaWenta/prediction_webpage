@@ -43,7 +43,7 @@ window.DETAIL_PAGES={
   'is-model-rich-enough':'details/is-model-rich-enough.html',
   'parameterisation':'details/parameterisation.html',
   'sensitivity-analysis-global-vs-local':'details/sensitivity-analysis-global-vs-local.html',
-  'model-inversion':'details/ModelInversion.html',
+  'model-inversion':'details/model-inversion.html',
 
   // Phase 3 sub-items
   'sensitivity-analysis-global-vs-local__global-sa':'details/sensitivity-analysis-global-vs-local__global-sa.html',
