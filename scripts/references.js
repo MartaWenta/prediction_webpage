@@ -1,5 +1,15 @@
 // Central bibliography used by the citation and reference tooltip system.
 window.BASIS_BIBLIO={
+  'barber 2012':'Barber, D. (2012). Bayesian Reasoning and Machine Learning. Cambridge University Press.',
+  'bishop 2024':'Bishop, C. M., & Bishop, H. (2024). Deep Learning: Foundations and Concepts. Springer.',
+  'hastie 2009':'Hastie, T., Tibshirani, R. J., & Friedman, J. H. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction (2nd ed.). Springer.',
+  'hyndman 2021':'Hyndman, R. J., & Athanasopoulos, G. (2021). Forecasting: Principles and Practice (3rd ed.). OTexts. https://otexts.com/fpp3/',
+  'west 1997':'West, M., & Harrison, J. (1997). Bayesian Forecasting and Dynamic Models (2nd ed). Springer.',
+  'farmer 2024':'Farmer, J. D. (2024). Making Sense of Chaos: A Better Economics for a Better World. Yale University Press.',
+  'kaye 2012':'Kaye, N. R., Hartley, A., & Hemming, D. (2012). Mapping the climate: Guidance on appropriate techniques to map climate variables and their uncertainty. Geoscientific Model Development, 5(1), 245-256. https://doi.org/10.5194/gmd-5-245-2012',
+  'spiegelhalter 2025':'Spiegelhalter, D. (2025). The Art of Uncertainty: How to Navigate Chance, Ignorance, Risk and Luck. W. W. Norton & Company, New York, NY.',
+  'grimm 2010':'Grimm, V., Berger, U., DeAngelis, D. L., Polhill, J. G., Giske, J., & Railsback, S. F. (2010). The ODD protocol: A review and first update. Ecological Modelling, 221(23), 2760-2768. https://doi.org/10.1016/j.ecolmodel.2010.08.019',
+  'swannack 2025':'Swannack, T. M., Cushway, K. C., Carrillo, C. C., Calvo, C., Determan, K. R., Mierzejewski, C. M., Quintana, V. M., Riggins, C. L., Sams, M. D., & Wadsworth, W. E. (2025). Cracking the code: Linking good modeling and coding practices for new ecological modelers. Ecological Modelling, 499, 110926. https://doi.org/10.1016/j.ecolmodel.2024.110926',
   'schmolke 2010':'Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479-486. https://doi.org/10.1016/j.tree.2010.05.001',
   'getz 2018':'Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romanach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D\'Odorico, P., & O\'Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153-166. https://doi.org/10.1111/ele.12893',
   'sun 2015':'Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.',

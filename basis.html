@@ -254,14 +254,9 @@ XLINK Data splits for validation must be planned here. | validation
 TEXT Rarely is there only one right type of model. Depending on expertise, time, money, required realism, very different approaches are worth considering:
   >>> 📋 Expert statements
       Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
-      DETAIL REFERENCES
+    General references: <sup class="cite-ref" data-cite="barber 2012"></sup>, <sup class="cite-ref" data-cite="bishop 2024"></sup>, <sup class="cite-ref" data-cite="hastie 2009"></sup>, <sup class="cite-ref" data-cite="hyndman 2021"></sup>, <sup class="cite-ref" data-cite="west 1997"></sup>
   >>> 🤖 Machine/Deep-Learning, Statistical model
-      Data-driven, no constraints prediction approaches. <div class="references"> <p>Barber, D. (2012). Bayesian Reasoning and Machine Learning. Cambridge University Press.
-      <p>Bishop, C. M., & Bishop, H. (2024). Deep Learning: Foundations and Concepts. Springer.</p>
-      <p>Hastie, T., Tibshirani, R. J., & Friedman, J. H. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction (2nd ed.). Springer.</p>
-      <p>Hyndman, R. J., & Athanasopoulos, G. (2021). Forecasting: Principles and Practice (3rd ed.). OTexts. https://otexts.com/fpp3/
-      <p>West, M., & Harrison, J. (1997). Bayesian Forecasting and Dynamic Models (2nd ed). Springer.
- </div>
+    Data-driven, no constraints prediction approaches.
   >>> 🔢 (O/P)DE
       Rigorous mathematical structure for dynamic systems in continuous time (Ordinary or Partial Differential Equations) or discrete time (Difference Equations), possibly with stochastic elements and/or external events or forcings. <p>A key advantage is that a rich mathematical tradition and toolbox exists to analyse such models even across a wider range of parameters. However, many such analyses assume equilibrium conditions, while we may be facing predictions out of equilibrium ("transient dynamics"). Still, even when simulated as forward model, ODE/DE are well-understood model types with excellent software support.
   >>> ⚙️ Coded process model, incl. agent-based model
@@ -321,27 +316,24 @@ TEXT Any model used for prediction will need to be ru-run many times (e.g. in se
 
 --- Identifying trustworthy models
 TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
-  <div class="references">
-    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. <a target="_blank" href="https://doi.org/10.1016/j.tree.2010.05.001">doi:10.1016/j.tree.2010.05.001</a> </p>
-    <p>Getz, W. M., Marshall, C. R., Carlson, C. J., Giuggioli, L., Ryan, S. J., Romañach, S. S., Boettiger, C., Chamberlain, S. D., Larsen, L., D’Odorico, P., & O’Sullivan, D. (2018). Making ecological models adequate. Ecology Letters, 21(2), 153–166. <a  target="_blank"href="https://doi.org/10.1111/ele.12893">doi:10.1111/ele.12893</a> </p>
-  </div>
+  General references: <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="getz 2018"></sup>
   
   --- Code verification/unit testing (for own code)
   TEXT Coded models should be checked to be working correctly. This is important in model development (and there often referred to as <a target="_blank" href="https://en.wikipedia.org/wiki/Unit_testing">"unit testing"</a>), but also for users of models: we want to make sure that the model does what it is supposed to do.<p>The essential step to do so is by defining test cases, where the correct output of the model component is known; unless the model produces this known output, it is faulty. In advanced software development, unit testing is automatised and carried out after every major modification of code (e.g. for <a target="_blank" href="https://testthat.r-lib.org">R</a>, <a target="_blank" href="https://docs.python.org/3/library/unittest.html">Python</a>, <a target="_blank" href="https://www.geeksforgeeks.org/software-testing/embedded-c-cpp-unit-testing-basics">C++</a>). Unit testing is necessary but not sufficient for code verification; other elements of testing need to be considered as well (<a target="_blank" href="https://en.wikipedia.org/wiki/Software_testing">scalability, maintainability, performance</a>).
   
   --- Is model "rich" enough?
   TEXT When prediction is about a real world system, so is the model from which it is derived. Thus, the underlying model must be able to reproduce relevant features and dynamics of that real world system. To do so, its dynamics must be "rich" enough = sufficiently powerful = covering enough of the feature space of the system under consideration.<p>For example, typical models of the financial market are unable to produce the kind of bubbles and bursts we witnessed in the 1920 and 2008 <i>from endogenous dynamics</i>. But, as Farmer (2024) argued, the 2008 bubble was mostly internal. So, for such a system we need a feedback-rich complex adaptive system representation, in economics, in biology, in medicine, in environmental science. Only if the model can have peaks of the same order of magnitude as those observed, if response-times are quick (or drawn out) enough, if ranges of patterns can be produced that include the observed, only then is the model likely to be "rich" enough to also include the system under consideration.
-  <div class="references"> <p>Farmer, J. D. (2024). Making Sense of Chaos: A Better Economics for a Better World. Yale University Press. </p></div>
+  General references: <sup class="cite-ref" data-cite="farmer 2024"></sup>
 
   
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
   TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.<p>Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling !!LINK.<p>One of the design decisions [!!LINK to Model characteristics] is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
-  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
+  General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
   
   --- Sensitivity analysis (global vs local)
   TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.<p>The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.<p>Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters. [!!LINK: MC]  
-  <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
+  General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
     >>> 📍 Local SA
@@ -364,8 +356,8 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
         [text]
 
   --- Uncertainty analysis
-  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
-  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
+  TEXT Uncertainty analysis (UA) <sup class="cite-ref" data-cite="Committee 2012"></sup> aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling <sup class="cite-ref" data-cite="Taylor 1997"></sup>, <sup class="cite-ref" data-cite="Benaroya 2005"></sup>, <sup class="cite-ref" data-cite="Wolter 2007"></sup>. Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
+  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS <sup class="cite-ref" data-cite="Matheson 1976"></sup>). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
 
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
 
@@ -383,11 +375,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
       <li>Validation: which data sets have been used to validate the model? How well did the model do? What are the prediction uncertainty levels derived from this validation?</li>
       <li>Use: How can the model be used, how can predictions be made? This typically takes the form of one or several tutorials.</li>
     </ol>
-  <div class="references"> 
-    <p>Grimm, V., Berger, U., DeAngelis, D. L., Polhill, J. G., Giske, J., & Railsback, S. F. (2010). The ODD protocol: A review and first update. Ecological Modelling, 221(23), 2760–2768. https://doi.org/10.1016/j.ecolmodel.2010.08.019</p>
-    <p>Schmolke, A., Thorbek, P., DeAngelis, D. L., & Grimm, V. (2010). Ecological models supporting environmental decision making: A strategy for the future. Trends in Ecology and Evolution, 25(8), 479–486. https://doi.org/10.1016/j.tree.2010.05.001</p>
-    <p>Swannack, T. M., Cushway, K. C., Carrillo, C. C., Calvo, C., Determan, K. R., Mierzejewski, C. M., Quintana, V. M., Riggins, C. L., Sams, M. D., & Wadsworth, W. E. (2025). Cracking the code: Linking good modeling and coding practices for new ecological modelers. Ecological Modelling, 499, 110926. https://doi.org/10.1016/j.ecolmodel.2024.110926
-  </p></div>
+  General references: <sup class="cite-ref" data-cite="grimm 2010"></sup>, <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="swannack 2025"></sup>
 
 
 === 4. Predicting
@@ -395,9 +383,7 @@ ROLE Modeller
 RATIONALE This is the actual act of creating a quantitative “conditional” statement based on the model(s). “Conditional” means that the statement depends on the input provided; for scenarios the prediction would then be “projections”, for short term the prediction would be a “forecast”. The actual prediction products may need to be tailored to the stakeholder, but as scientific output they must adhere to some expected standards.
 
 --- Best answer with uncertainty indication #best-answer
-TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making (Spiegelhalter 2025). If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty (Kaye et al. 2012). <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty !!LINK can help pinpoint the main sources of uncertainty, motivating future science.<div class="references"> 
-    <p>Kaye, N. R., Hartley, A., & Hemming, D. (2012). Mapping the climate: Guidance on appropriate techniques to map climate variables and their uncertainty. Geoscientific Model Development, 5(1), 245–256. https://doi.org/10.5194/gmd-5-245-2012</p> 
-    <p>Spiegelhalter, D., 2025. The Art of Uncertainty: How to Navigate Chance, Ignorance, Risk and Luck. W. W. Norton & Company, New York, NY.</p></div>
+TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making. If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty. <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty !!LINK can help pinpoint the main sources of uncertainty, motivating future science. General references: <sup class="cite-ref" data-cite="kaye 2012"></sup>, <sup class="cite-ref" data-cite="spiegelhalter 2025"></sup>
 
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
@@ -436,8 +422,6 @@ XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
 </script>
 <!--
 UNCITED REFERENCES (update when citations change):
-- Getz 2018
-- Sun 2015
 - Benaroya 2005
 - Committee 2012
 - Matheson 1976
