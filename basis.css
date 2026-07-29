@@ -602,6 +602,7 @@ footer a:hover{text-decoration:underline}
   border-radius:28px;
   box-shadow:0 24px 64px rgba(16,33,24,0.28);
   overflow:hidden;
+  height:90vh;
   max-height:calc(100vh - 24px);
   display:flex;
   flex-direction:column;
@@ -658,7 +659,7 @@ footer a:hover{text-decoration:underline}
   border:0;
   flex:1;
   min-height:0;
-  height:min(72vh,720px);
+  height:100%;
   background:transparent;
 }
 body.detail-overlay-open{
@@ -759,6 +760,7 @@ body.show-links #connector-svg{display:block}
   }
   .detail-overlay-card{
     width:calc(100vw - 14px);
+    height:90vh;
     max-height:calc(100vh - 14px);
     border-radius:22px;
   }
@@ -766,6 +768,6 @@ body.show-links #connector-svg{display:block}
     padding:18px 16px 14px;
   }
   .detail-overlay-frame{
-    height:min(64vh,620px);
+    height:100%;
   }
 }
