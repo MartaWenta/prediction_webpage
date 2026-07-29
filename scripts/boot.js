@@ -8,20 +8,12 @@ function renderAll(){
   for(var i=0;i<data.phases.length;i++) html+=renderPhase(data.phases[i]);
   main.innerHTML=html;
 
-  var dHtml='';
-  for(var c=0;c<data.contentions.length;c++){
-    var con=data.contentions[c];
-    dHtml+='<div class="cont-card"><div class="cont-q">&#9878; '+con.q+'</div>';
-    if(con.body&&con.body!=='[text]') dHtml+='<div class="cont-body">'+con.body+'</div>';
-    dHtml+='</div>';
-  }
-  document.getElementById('disc-out').innerHTML=dHtml;
-
   var gHtml='';
   for(var d=0;d<data.glossary.length;d++){
     gHtml+='<div class="glos-item"><div class="glos-term">'+data.glossary[d].term+'</div><div class="glos-def">'+data.glossary[d].def+'</div></div>';
   }
-  document.getElementById('glos-out').innerHTML=gHtml;
+  var glosOut=document.getElementById('glos-out');
+  if(glosOut) glosOut.innerHTML=gHtml;
 
   var hHtml='';
   for(var h=0;h<data.checklist.length;h++){
@@ -29,7 +21,8 @@ function renderAll(){
     var jump=item.link?' <a href="#'+item.link+'" style="color:#cc3333;font-weight:600;text-decoration:none">&rarr;</a>':'';
     hHtml+='<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:9px 13px;margin-bottom:7px;font-size:0.84rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>'+item.text+jump+'</span></div>';
   }
-  document.getElementById('highlight-out').innerHTML=hHtml;
+  var highlightOut=document.getElementById('highlight-out');
+  if(highlightOut) highlightOut.innerHTML=hHtml;
 
   if(window.CitationTools){
     window.CitationTools.hydrate({
@@ -42,8 +35,7 @@ function renderAll(){
 
   autoDefine(document.getElementById('main'),data.glossary);
   autoDefine(document.getElementById('intro-body'),data.glossary);
-  autoDefine(document.getElementById('disc-out'),data.glossary);
-  autoDefine(document.getElementById('highlight-out'),data.glossary);
+  autoDefine(highlightOut,data.glossary);
   if(typeof enableTapTooltips==='function') enableTapTooltips();
 
   buildSidebar(data.phases);
@@ -153,7 +145,7 @@ function setAllSectionsExpanded(expanded){
   var secTitles=document.querySelectorAll('.sec-title:not(.no-toggle)');
   for(var m=0;m<secTitles.length;m++) secTitles[m].classList.toggle('collapsed',!expanded);
 
-  var sections=document.querySelectorAll('#s-checklist, #s-discussion, #s-glossary');
+  var sections=document.querySelectorAll('#s-checklist, #s-glossary');
   for(var n=0;n<sections.length;n++){
     sections[n].classList.toggle('sec-collapsed',!expanded);
     setFindHidden(sections[n],!expanded);

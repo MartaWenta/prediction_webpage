@@ -2,7 +2,7 @@
 function parseContent() {
   var raw=document.getElementById('page-content').textContent;
   var lines=raw.split('\n');
-  var result={ intro:[], glossary:[], checklist:[], contentions:[], phases:[] };
+  var result={ intro:[], glossary:[], checklist:[], phases:[] };
   var section=null, curPhase=null, curNode=null, curSubNode=null, curSub=null, curField=null;
 
   function flush(){ curField=null; }
@@ -126,14 +126,6 @@ function parseContent() {
     if(section==='CHECKLIST'){
       var cp=line.split('|'), lm=cp[1]&&trimVal(cp[1]).match(/LINK\s+(\S+)/);
       result.checklist.push({text:trimVal(cp[0]),link:lm?lm[1]:null});
-      continue;
-    }
-    if(section==='CONTENTION'){
-      if(indentOf(raw_line)===0) result.contentions.push({q:line,body:''});
-      else if(result.contentions.length>0){
-        var last=result.contentions[result.contentions.length-1];
-        last.body=last.body?last.body+' '+line:line;
-      }
       continue;
     }
     if(!isKeyword(line)&&indentOf(raw_line)>=2){

@@ -91,14 +91,6 @@
     <p class="sec-sub">Issues that are commonly missed.</p>
     <div id="highlight-out"></div>
   </div>
-  <h2 class="sec-title collapsed" id="discussion" onclick="toggleSection('s-discussion',this)">
-    Bones of contention
-    <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </h2>
-  <div id="s-discussion" class="sec-collapsed" hidden="until-found">
-    <p class="sec-sub">Open scientific debates.</p>
-    <div id="disc-out"></div>
-  </div>
   <h2 class="sec-title collapsed" id="glossary" onclick="toggleSection('s-glossary',this)">
     Glossary
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -170,42 +162,6 @@ Newcomers may want orientation — this resource provides it.
 A model is a flexible thing here: it can be a set of expert statements, a process model,
 or a deep-learning analysis. A prediction is a quantitative statement of a model,
 including forecasts and projections.
-
-
-## GLOSSARY
-model | A flexible thing: can be a set of expert statements, a process model, or a deep-learning analysis.
-prediction | A quantitative statement of a model; includes forecasts and projections.
-calibration | Fitting model parameters to observed data; equivalent to inverse modelling. Distinct from validation.
-validation | An honest, pre-planned test of predictive quality on data not used in calibration.
-SA | Sensitivity Analysis — identifies which parameters most strongly influence the target output.
-ABM | Agent-Based Model — simulates individual entities and their interactions to produce system-level patterns.
-ODE | Ordinary Differential Equation — describes continuous-time dynamics of system state variables.
-MSY | Maximum Sustainable Yield — the largest catch that can be taken from a stock indefinitely.
-PDF | Probability Density Function — the full distribution of a predicted quantity, encoding uncertainty.
-MCMC | Markov Chain Monte Carlo — samples posterior parameter distributions in Bayesian calibration.
-ABC | Approximate Bayesian Computation — likelihood-free inference for complex simulators.
-POM | Pattern-Oriented Modelling — calibration using multiple observed patterns simultaneously.
-structural uncertainty | Uncertainty from not knowing the correct model structure; addressed by using multiple model types.
-scenario planning | Generating predictions under a range of plausible future conditions to explore assumption sensitivity.
-
-
-## CHECKLIST
-Overparameterised models make poor predictions: too much detail may hurt | LINK long-term-planning
-Validation needs to be planned: split data into MANY subsets | LINK validation
-Upscale of microlevel processes | LINK model-types
-Always use several models for structural uncertainty | LINK uncertainty-decomp
-Calibration is really useful | LINK model-inversion
-Uncertainty quantification is mandatory | LINK best-answer
-Co-interpretation of results and their uncertainty: PDF, also on maps | LINK communication
-
-
-## CONTENTION
-Should models be more detailed or fitted?
-  Do we need microlevel representation?
-
-How to establish a moderated discussion to resolve or highlight differences?
-  [text]
-
 
 ## PHASES
 
@@ -418,6 +374,36 @@ EXAMPLE 🪏 Worked example (fisheries)
 --- Follow-up planning
 TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
 XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
+
+
+## GLOSSARY
+model | A flexible thing: can be a set of expert statements, a process model, or a deep-learning analysis.
+prediction | A quantitative statement of a model; includes forecasts and projections.
+calibration | Fitting model parameters to observed data; equivalent to inverse modelling. Distinct from validation.
+validation | An honest, pre-planned test of predictive quality on data not used in calibration.
+SA | Sensitivity Analysis — identifies which parameters most strongly influence the target output.
+ABM | Agent-Based Model — simulates individual entities and their interactions to produce system-level patterns.
+ODE | Ordinary Differential Equation — describes continuous-time dynamics of system state variables.
+MSY | Maximum Sustainable Yield — the largest catch that can be taken from a stock indefinitely.
+PDF | Probability Density Function — the full distribution of a predicted quantity, encoding uncertainty.
+MCMC | Markov Chain Monte Carlo — samples posterior parameter distributions in Bayesian calibration.
+ABC | Approximate Bayesian Computation — likelihood-free inference for complex simulators.
+POM | Pattern-Oriented Modelling — calibration using multiple observed patterns simultaneously.
+structural uncertainty | Uncertainty from not knowing the correct model structure; addressed by using multiple model types.
+scenario planning | Generating predictions under a range of plausible future conditions to explore assumption sensitivity.
+
+
+## CHECKLIST
+Overparameterised models make poor predictions: too much detail may hurt | LINK long-term-planning
+Validation needs to be planned: split data into MANY subsets | LINK validation
+Upscale of microlevel processes | LINK model-types
+Always use several models for structural uncertainty | LINK uncertainty-decomp
+Calibration is really useful | LINK model-inversion
+Uncertainty quantification is mandatory | LINK best-answer
+Co-interpretation of results and their uncertainty: PDF, also on maps | LINK communication
+Should models be more detailed or fitted? Do we need microlevel representation?
+How to establish a moderated discussion to resolve or highlight differences?
+
 
 </script>
 <!--

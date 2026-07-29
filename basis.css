@@ -523,17 +523,6 @@ body.show-links .xlink{display:block}
   pointer-events:none;
 }
 .sec-sub{color:var(--ink-muted);font-size:.84rem;margin-bottom:18px}
-.cont-card{
-  background:#fff;border:1px solid var(--rule);
-  border-left:4px solid #5a4fcf;border-radius:10px;
-  padding:16px 20px;margin-bottom:12px;
-  box-shadow:0 1px 4px rgba(0,0,0,.06);
-}
-.cont-q{
-  font-family:'Lora',serif;font-size:.95rem;font-weight:600;
-  color:var(--ink);margin-bottom:8px;line-height:1.4;
-}
-.cont-body{font-size:.83rem;color:var(--ink-mid);line-height:1.7;margin-bottom:6px}
 .glos-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
   gap:9px;margin-top:12px;
