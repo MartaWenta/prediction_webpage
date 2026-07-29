@@ -52,7 +52,7 @@ function renderSubNodes(nodes, color){
     var xlHtml='';
     for(var x=0;x<n.xlinks.length;x++){
       var xl=n.xlinks[x];
-      xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> '+xl.text+' <a href="#'+xl.target+'">Jump &rarr;</a></div>';
+      xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> <a href="#'+xl.target+'">Jump &rarr;</a></div>';
     }
     var detailButtonHtml=renderDetailsButton(n.id,n.title);
     var exHtml=(n.example&&n.example!=='[text]')?'<div class="example">'+n.example+'</div>':'';
@@ -72,7 +72,7 @@ function renderNode(node, color){
   var xlHtml='';
   for(var x=0;x<node.xlinks.length;x++){
     var xl=node.xlinks[x];
-    xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> '+xl.text+' <a href="#'+xl.target+'">Jump &rarr;</a></div>';
+    xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> <a href="#'+xl.target+'">Jump &rarr;</a></div>';
   }
   var exHtml=(node.example&&node.example!=='[text]')?'<div class="example">'+node.example+'</div>':'';
   var impHtml=(node.important&&node.important!=='[text]')?'<div class="important">'+node.important+'</div>':'';

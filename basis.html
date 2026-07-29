@@ -130,15 +130,13 @@
 ║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
 ║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
 ║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
-║     EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is             ║
+║     EXAMPLE, IMPORTANT) are field labels — keep them as-is             ║
 ║   • Everything after a keyword on the same line is the value                 ║
 ║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
-║   • Apostrophes are fine. Quotes are fine. No escaping needed.               ║
 ║   • To leave a field empty, write [text] as a placeholder                    ║
-║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
 ║                                                                              ║
 ║   CROSS-PHASE CONNECTORS:                                                    ║
-║     XLINK       label | target-id   links THIS box with target               ║
+║     LINK        target-id            links THIS box with target               ║
 ║   (target-id is the #id or auto-slug of the box you are linking to)          ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -146,6 +144,7 @@
 <script type="text/content" id="page-content">
 
 ## INTRO
+
 Predictions serve two goals: addressing practical, applied questions with stakeholders,
 AND advancing scientific understanding of a system by falsifying causal predictions.
 
@@ -166,6 +165,7 @@ including forecasts and projections.
 ## PHASES
 
 === 1. Setting the stage: Why predict?
+
 ROLE Modeller + Stakeholder
 RATIONALE <p>This step specifies the actual prediction target and the context in which the prediction is to be evaluated.</p> <p>Specifying the prediction target - including the quantities to be predicted, the relevant drivers, and the spatial, temporal, and organizational scales of interest - defines the scope of the prediction problem. This determines which processes and data are relevant, ensures that the model, available data, and prediction objective are aligned, constrains model complexity to what is required, and provides an early opportunity to assess whether the necessary information exists before substantial modeling effort is invested.</p> <p>
   <b>Key questions</b></p><p>
@@ -203,8 +203,8 @@ ROLE Modeller
 RATIONALE This step explores whether data and modelling approaches are available to allow predicting the system and target identified in the previous step to a degree useful for answering the question.
 
 --- Are necessary <i>data of sufficient quality</i> are available? No: STOP! #data-available
-TEXT Data requirements depend on the scale and precision of the desired prediction. When only rough estimates are needed, also coarse or older data may suffice. If a model needs to be developed/parameterised!!LINK/validated!!LINK, there must be sufficient data for several iterations (see long-term planning!!LINK). When the model needs to be developed, data are required not only for the overall modelled state variable, but for each of the model's components or modules; if those are from other sources: can these sources be assumed to be useful for the question at hand? (For example, if a tree-growth model uses a nutrient acquisition model from another tree in another ecosystem, possibly a local data set must be found to re-calibrate the modules parameters.!!LINK to model inversion)
-XLINK Data splits for validation must be planned here. | validation
+TEXT Data requirements depend on the scale and precision of the desired prediction. When only rough estimates are needed, also coarse or older data may suffice. If a model needs to be developed, parameterised, and validated, there must be sufficient data for several iterations (see long-term planning). When the model needs to be developed, data are required not only for the overall modelled state variable, but for each of the model's components or modules; if those are from other sources, can these sources be assumed to be useful for the question at hand? (For example, if a tree-growth model uses a nutrient acquisition model from another tree in another ecosystem, possibly a local data set must be found to re-calibrate the module parameters and support model inversion.)
+LINK validation
 
 --- Select / develop modelling approaches matching question and data #modelling-approaches
 TEXT Rarely is there only one right type of model. Depending on expertise, time, money, required realism, very different approaches are worth considering:
@@ -268,7 +268,7 @@ ROLE Modeller
 RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so. (This section contains the majority of technical detail.)
 
 --- Establish workflow for running models
-TEXT Any model used for prediction will need to be ru-run many times (e.g. in sensitivity !!LINKG or uncertainty analysis !!LINK, or in model inversion !!LINK, or as part of model development's debugging). A pipeline to easily run the prediction machinery is essential for efficient work, to launch it on HPC, and it also helps with documentation !!LINK and reproducibility !!LINK.<p>The pipeline may be a simple script in a higher-level language or in bash; or it may link in formal <a target="_blank" href="https://en.wikipedia.org/wiki/Scientific_workflow_system">scientific workflow software</a>. Open-source software is preferable; versioning is mandatory.<p> This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP.
+TEXT Any model used for prediction will need to be ru-run many times (e.g. in sensitivity analysis or uncertainty analysis, or in model inversion, or as part of model development's debugging). A pipeline to easily run the prediction machinery is essential for efficient work, to launch it on HPC, and it also helps with documentation and reproducibility.<p>The pipeline may be a simple script in a higher-level language or in bash; or it may link in formal <a target="_blank" href="https://en.wikipedia.org/wiki/Scientific_workflow_system">scientific workflow software</a>. Open-source software is preferable; versioning is mandatory.<p> This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP.
 
 --- Identifying trustworthy models
 TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
@@ -284,11 +284,11 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
-  TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.<p>Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling !!LINK.<p>One of the design decisions [!!LINK to Model characteristics] is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
+  TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.<p>Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling.<p>One of the design decisions about model characteristics is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
   General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
   
   --- Sensitivity analysis (global vs local)
-  TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.<p>The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.<p>Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters. [!!LINK: MC]  
+  TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.<p>The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.<p>Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters. [model characteristics]  
   General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
@@ -301,7 +301,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
     (2) Improve representation of observations.
     Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
   IMPORTANT 🔔 Calibration is really useful.
-  XLINK Calibration is not validation — see Validation. | validation
+  LINK validation
     >>> 🔬 Optimisation
         [text]
     >>> 🎰 MCMC
@@ -320,7 +320,7 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   --- Validation
   TEXT External validation is an honest estimate of prediction quality.
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
-  XLINK Validation planning belongs in the Long-term plan. | long-term-plan
+  LINK long-term-plan
 
   --- Documentation of model: code, development, unit testing, validation, usage 
   TEXT Documentation serves transparency of the science and use of the model. LLMs may be usefully employed to support documentation (particularly of code and use). In some fields, documentation standards exist (e.g. ODD: Grimm et al. 2010; TRACE: Schmolke et al. 2010).<p>
@@ -339,7 +339,7 @@ ROLE Modeller
 RATIONALE This is the actual act of creating a quantitative “conditional” statement based on the model(s). “Conditional” means that the statement depends on the input provided; for scenarios the prediction would then be “projections”, for short term the prediction would be a “forecast”. The actual prediction products may need to be tailored to the stakeholder, but as scientific output they must adhere to some expected standards.
 
 --- Best answer with uncertainty indication #best-answer
-TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making. If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty. <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty !!LINK can help pinpoint the main sources of uncertainty, motivating future science. General references: <sup class="cite-ref" data-cite="kaye 2012"></sup>, <sup class="cite-ref" data-cite="spiegelhalter 2025"></sup>
+TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making. If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty. <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty can help pinpoint the main sources of uncertainty, motivating future science. General references: <sup class="cite-ref" data-cite="kaye 2012"></sup>, <sup class="cite-ref" data-cite="spiegelhalter 2025"></sup>
 
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
@@ -373,7 +373,7 @@ EXAMPLE 🪏 Worked example (fisheries)
 
 --- Follow-up planning
 TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
-XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
+LINK specific-question
 
 
 ## GLOSSARY

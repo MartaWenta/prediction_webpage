@@ -18,7 +18,7 @@ function parseContent() {
            line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
            line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
            line.indexOf('EXAMPLE ')===0||line.indexOf('IMPORTANT ')===0||
-           line.indexOf('XLINK ')===0;
+           line.indexOf('LINK ')===0;
   }
 
   for(var i=0;i<lines.length;i++){
@@ -109,11 +109,9 @@ function parseContent() {
       curField='important';
       continue;
     }
-    if((line.indexOf('XLINK ')===0)&&(curSubNode||curNode)){
+    if((line.indexOf('LINK ')===0)&&(curSubNode||curNode)){
       var xTarget=curSubNode||curNode;
-      var body=line.slice(6);
-      var xlParts=body.split('|');
-      xTarget.xlinks.push({text:trimVal(xlParts[0]),target:xlParts[1]?trimVal(xlParts[1]):''});
+      xTarget.xlinks.push({text:'',target:trimVal(line.slice(5))});
       flush();
       continue;
     }
