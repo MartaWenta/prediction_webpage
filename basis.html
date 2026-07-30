@@ -6,409 +6,16 @@
 <title>Orientation for environmental predictions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ── TOKENS ─────────────────────────────────────────────── */
-:root {
-  --green-deep:  #1a3a2a;
-  --green-mid:   #2d6a4f;
-  --green-light: #52b788;
-  --amber:       #c17f24;
-  --amber-pale:  #fef3cd;
-  --parchment:   #f5f0e8;
-  --parchment2:  #ede7d9;
-  --ink:         #1c1c1c;
-  --ink-mid:     #3d3d3a;
-  --ink-muted:   #6b6b67;
-  --rule:        rgba(26,58,42,0.12);
-  --c1: #2d6a4f; --c2: #1a5276; --c3: #6c3483; --c4: #b7471c; --c5: #117a65;
-  --sidebar-w: 56px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:var(--ink);line-height:1.65;font-size:15px}
-
-/* ── SIDEBAR ─────────────────────────────────────────────── */
-.sidebar{
-  position:fixed;left:0;top:0;bottom:0;
-  width:var(--sidebar-w);
-  background:var(--green-deep);
-  display:flex;flex-direction:column;align-items:center;
-  padding:80px 0 24px;
-  z-index:400;
-  box-shadow:2px 0 12px rgba(0,0,0,0.15);
-}
-.sb-track{
-  display:flex;flex-direction:column;align-items:center;
-  gap:0;flex:1;justify-content:center;
-}
-.sb-item{
-  display:flex;flex-direction:column;align-items:center;
-  text-decoration:none;position:relative;
-}
-.sb-dot{
-  width:11px;height:11px;border-radius:50%;
-  border:2px solid rgba(255,255,255,0.3);
-  background:transparent;
-  transition:background .2s,border-color .2s,transform .2s;
-  cursor:pointer;
-}
-.sb-item.active .sb-dot{
-  background:var(--amber);border-color:var(--amber);
-  transform:scale(1.4);
-  box-shadow:0 0 8px rgba(193,127,36,0.6);
-}
-.sb-item:hover .sb-dot{
-  border-color:rgba(255,255,255,0.8);
-  background:rgba(255,255,255,0.2);
-}
-.sb-connector{width:1px;height:28px;background:rgba(255,255,255,0.15)}
-.sb-label{
-  position:absolute;left:calc(var(--sidebar-w) + 6px);top:50%;
-  transform:translateY(-50%);
-  background:var(--green-deep);color:#fff;
-  font-size:.72rem;white-space:nowrap;
-  padding:5px 10px;border-radius:6px;
-  pointer-events:none;opacity:0;
-  transition:opacity .15s;
-  font-family:'Inter',sans-serif;
-  box-shadow:0 2px 8px rgba(0,0,0,0.25);
-  border:1px solid rgba(255,255,255,0.1);
-}
-.sb-label::before{
-  content:'';position:absolute;right:100%;top:50%;
-  transform:translateY(-50%);
-  border:5px solid transparent;
-  border-right-color:var(--green-deep);
-}
-.sb-item:hover .sb-label{opacity:1}
-.sb-phase-num{
-  font-size:.6rem;font-weight:700;color:rgba(255,255,255,0.35);
-  margin-top:3px;font-family:'Inter',sans-serif;letter-spacing:.05em;
-}
-.sb-item.active .sb-phase-num{color:var(--amber)}
-
-/* ── LAYOUT ─────────────────────────────────────────────── */
-.page-body{margin-left:var(--sidebar-w);position:relative;}
-.site-header{
-  background:var(--green-deep);color:#fff;
-  padding:36px 40px 30px;border-bottom:3px solid var(--amber);
-}
-.site-header h1{
-  font-family:'Lora',serif;
-  font-size:clamp(1.4rem,2.8vw,2.1rem);
-  font-weight:400;font-style:italic;margin-bottom:6px;
-}
-.site-header .tagline{
-  color:var(--green-light);font-size:.75rem;
-  font-weight:600;text-transform:uppercase;letter-spacing:.1em;
-  margin-bottom:10px;
-}
-.site-header .intro{
-  max-width:600px;color:rgba(255,255,255,0.7);
-  font-size:.875rem;line-height:1.7;
-}
-.wrap{max-width:840px;margin:0 auto;padding:36px 28px 80px}
-
-/* ── CONTROLS BAR ────────────────────────────────────────── */
-.controls{
-  display:flex;align-items:center;gap:16px;
-  padding:10px 0 4px;flex-wrap:wrap;
-}
-.links-toggle label{
-  font-size:.82rem;color:var(--ink-muted);cursor:pointer;
-  display:flex;align-items:center;gap:6px;user-select:none;
-}
-.links-toggle input{accent-color:var(--amber);width:15px;height:15px;cursor:pointer}
-
-/* ── PHASE CARD ──────────────────────────────────────────── */
-.phase{
-  background:#fff;
-  border:1px solid var(--rule);
-  border-top:4px solid var(--green-mid);
-  border-radius:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.07);
-  margin-bottom:20px;
-  overflow:hidden;
-  transition:box-shadow .2s;
-}
-.phase:hover{box-shadow:0 4px 18px rgba(0,0,0,0.11)}
-.phase-hd{
-  display:flex;align-items:center;gap:12px;
-  padding:18px 20px 16px;
-  cursor:pointer;user-select:none;
-}
-.phase-hd:hover .phase-title{color:var(--green-mid)}
-.phase-num-badge{
-  width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;
-}
-.phase-title{
-  font-family:'Lora',serif;font-size:1.15rem;
-  font-weight:600;color:var(--green-deep);
-  transition:color .15s;flex:1;
-}
-.phase-role{
-  font-size:.65rem;font-weight:600;text-transform:uppercase;
-  letter-spacing:.07em;padding:3px 8px;border-radius:20px;
-  background:var(--parchment2);color:var(--ink-muted);
-  border:1px solid var(--rule);white-space:nowrap;
-}
-.phase-chev{
-  width:18px;height:18px;color:var(--ink-muted);
-  flex-shrink:0;transition:transform .2s;margin-left:6px;
-}
-.phase.collapsed .phase-chev{transform:rotate(-90deg)}
-.phase-nodes{padding:0 20px 18px}
-.phase.collapsed .phase-nodes{display:none}
-
-/* ── RATIONALE ───────────────────────────────────────────── */
-.rationale{
-  background:var(--parchment2);border:1px solid var(--rule);
-  border-left:3px solid var(--amber);border-radius:6px;
-  padding:8px 14px;margin-bottom:14px;
-  display:flex;gap:8px;align-items:flex-start;
-}
-.rat-label{
-  font-size:.62rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.09em;color:var(--amber);
-  white-space:nowrap;padding-top:2px;
-}
-.rat-text{font-size:.81rem;color:var(--ink-muted);font-style:normal;line-height:1.5}
-
-/* ── NODE CARD ───────────────────────────────────────────── */
-.card{
-  background:#fff;border-radius:8px;
-  border:1px solid var(--rule);
-  border-left:3px solid var(--green-mid);
-  margin-bottom:8px;overflow:hidden;
-  transition:box-shadow .15s,border-left-color .15s;
-}
-.card:hover{box-shadow:0 2px 10px rgba(0,0,0,0.09)}
-.card-hd{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 14px;cursor:pointer;user-select:none;
-}
-.card-hd:hover{background:rgba(0,0,0,0.013)}
-.card-title{
-  font-family:'Lora',serif;font-size:.92rem;
-  font-weight:600;flex:1;color:var(--ink);
-}
-.chevron{
-  width:16px;height:16px;color:var(--ink-muted);
-  flex-shrink:0;transition:transform .2s;
-}
-.card.open .chevron{transform:rotate(90deg)}
-.card-body{
-  display:none;padding:4px 14px 14px;
-  border-top:1px solid var(--rule);
-}
-.card.open .card-body{display:block}
-.card-body p{
-  font-size:.845rem;color:var(--ink-mid);
-  margin:9px 0 6px;line-height:1.7;
-}
-
-/* ── SUB-CARD (nested nodes like Parameterisation etc.) ─── */
-.sub-card{
-  background:var(--parchment);border-radius:7px;
-  border:1px solid var(--rule);
-  border-left:3px solid var(--green-mid);
-  margin:8px 0 0;overflow:hidden;
-}
-.sub-card-hd{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 13px;cursor:pointer;user-select:none;
-}
-.sub-card-hd:hover{background:rgba(0,0,0,0.025)}
-.sub-card-title{
-  font-family:'Lora',serif;font-size:.85rem;
-  font-weight:600;flex:1;color:var(--ink);
-}
-.sub-card-chev{
-  width:14px;height:14px;color:var(--ink-muted);
-  flex-shrink:0;transition:transform .2s;
-}
-.sub-card.open .sub-card-chev{transform:rotate(90deg)}
-.sub-card-body{
-  display:none;padding:4px 13px 11px;
-  border-top:1px solid var(--rule);
-}
-.sub-card.open .sub-card-body{display:block}
-.sub-card-body p{font-size:.83rem;color:var(--ink-mid);margin:8px 0 5px;line-height:1.65}
-
-/* ── SUB-ITEMS (expandable method rows) ─────────────────── */
-.sub-list{list-style:none;margin:8px 0 0}
-.sub-item{
-  display:flex;align-items:flex-start;gap:9px;
-  padding:7px 10px;background:#fff;
-  border-radius:6px;border:1px solid var(--rule);
-  font-size:.82rem;cursor:pointer;margin-bottom:4px;
-  transition:background .1s;
-}
-.sub-item:hover{background:var(--parchment2)}
-.si-icon{flex-shrink:0;margin-top:1px;font-size:.95rem}
-.si-body{flex:1}
-.si-name{font-weight:600;color:var(--ink)}
-.si-desc{color:var(--ink-muted);font-size:.76rem;margin-top:1px}
-.si-detail{
-  display:none;font-size:.79rem;color:var(--ink-mid);
-  margin-top:6px;line-height:1.55;padding-top:6px;
-  border-top:1px dashed var(--rule);
-}
-.sub-item.open .si-detail{display:block}
-.si-chev{
-  color:var(--ink-muted);font-size:.68rem;
-  padding-top:3px;flex-shrink:0;transition:transform .15s;
-}
-.sub-item.open .si-chev{transform:rotate(90deg)}
-
-/* ── ROLE TAG ────────────────────────────────────────────── */
-.role-tag{
-  display:inline-block;font-size:.58rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:.05em;
-  padding:1px 6px;border-radius:20px;
-  margin-left:6px;vertical-align:middle;white-space:nowrap;
-}
-.role-sh{background:#e8f4ff;color:#1a5276;border:1px solid #b8d8f0}
-
-/* ── TOOLTIPS ────────────────────────────────────────────── */
-.def{
-  border-bottom:1.5px dashed var(--green-mid);
-  cursor:help;position:relative;display:inline;
-}
-.def::after{
-  content:attr(data-def);
-  position:absolute;bottom:calc(100% + 8px);left:50%;
-  transform:translateX(-50%);
-  background:var(--green-deep);color:#fff;
-  font-size:.75rem;font-family:'Inter',sans-serif;font-style:normal;
-  padding:7px 11px;border-radius:7px;width:215px;
-  text-align:left;line-height:1.45;
-  pointer-events:none;opacity:0;transition:opacity .15s;
-  z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:normal;
-}
-.def::before{
-  content:'';position:absolute;bottom:calc(100% + 2px);left:50%;
-  transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:var(--green-deep);
-  pointer-events:none;opacity:0;transition:opacity .15s;z-index:501;
-}
-.def:hover::after,.def:hover::before,
-.def.tapped::after,.def.tapped::before{opacity:1}
-
-/* ── CROSS-LINKS ─────────────────────────────────────────── */
-.xlink{
-  display:none;margin:8px 0 0;padding:7px 11px;
-  background:#fffbf0;border:1px dashed var(--amber);
-  border-radius:6px;font-size:.78rem;color:#7a4f10;line-height:1.5;
-}
-.xlink a{color:var(--amber);font-weight:600;text-decoration:none}
-.xlink a:hover{text-decoration:underline}
-body.show-links .xlink{display:block}
-
-/* ── EXAMPLE & IMPORTANT ─────────────────────────────────── */
-.example{
-  margin:8px 0 0;padding:10px 13px;
-  background:var(--amber-pale);border-radius:7px;
-  border-left:3px solid var(--amber);
-  font-size:.81rem;color:#5a3a08;line-height:1.6;
-}
-.example strong{
-  display:block;margin-bottom:3px;font-size:.7rem;
-  text-transform:uppercase;letter-spacing:.06em;color:var(--amber);
-}
-.important{
-  margin:8px 0 0;padding:9px 13px;background:#fff0f0;
-  border-radius:7px;border-left:3px solid #cc3333;
-  font-size:.81rem;color:#7a1010;line-height:1.6;
-}
-.important strong{
-  display:block;margin-bottom:3px;font-size:.7rem;
-  text-transform:uppercase;letter-spacing:.06em;color:#cc3333;
-}
-
-/* ── SECTIONS ────────────────────────────────────────────── */
-.sec-title{
-  font-family:'Lora',serif;font-size:1.35rem;font-weight:600;
-  color:var(--green-deep);margin:48px 0 4px;padding-top:26px;
-  border-top:2px solid var(--rule);
-  display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;user-select:none;
-}
-.sec-title.no-toggle{cursor:default}
-.sec-title:hover:not(.no-toggle){color:var(--green-mid)}
-.sec-chev{
-  width:18px;height:18px;color:var(--ink-muted);
-  flex-shrink:0;transition:transform .2s;margin-left:8px;
-}
-.sec-title.collapsed .sec-chev{transform:rotate(-90deg)}
-.sec-collapsed{display:none}
-.sec-sub{color:var(--ink-muted);font-size:.84rem;margin-bottom:18px}
-.cont-card{
-  background:#fff;border:1px solid var(--rule);
-  border-left:4px solid #5a4fcf;border-radius:10px;
-  padding:16px 20px;margin-bottom:12px;
-  box-shadow:0 1px 4px rgba(0,0,0,.06);
-}
-.cont-q{
-  font-family:'Lora',serif;font-size:.95rem;font-weight:600;
-  color:var(--ink);margin-bottom:8px;line-height:1.4;
-}
-.cont-body{font-size:.83rem;color:var(--ink-mid);line-height:1.7;margin-bottom:6px}
-.glos-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:9px;margin-top:12px;
-}
-.glos-item{
-  background:#fff;border:1px solid var(--rule);
-  border-radius:7px;padding:10px 13px;
-  box-shadow:0 1px 3px rgba(0,0,0,.05);
-}
-.glos-term{
-  font-weight:700;font-size:.78rem;font-family:monospace;
-  color:var(--green-deep);border-bottom:1px solid var(--rule);
-  padding-bottom:5px;margin-bottom:5px;
-}
-.glos-def{font-size:.79rem;color:var(--ink-mid);line-height:1.5}
-.ack{
-  background:#fff;border:1px solid var(--rule);border-radius:10px;
-  padding:16px 20px;font-size:.83rem;color:var(--ink-mid);line-height:1.8;
-}
-.ack a{color:var(--green-mid);text-decoration:none}
-.ack a:hover{text-decoration:underline}
-
-.references p {
-  font-size: 0.6rem;
-  margin: 0;
-  padding-left: 0.5cm;   /* moves subsequent lines right */
-  text-indent: -0.5cm;  /* pulls the first line back */
-}
-
-/* ── FOOTER ─────────────────────────────────────────────── */
-footer{
-  margin-top:56px;padding:20px 32px;
-  background:var(--green-deep);color:rgba(255,255,255,.45);
-  font-size:.77rem;text-align:center;line-height:1.7;
-}
-footer a{color:var(--green-light);text-decoration:none}
-footer a:hover{text-decoration:underline}
-
-/* ── SVG ARROW OVERLAY (document-anchored: scrolls with the page) ── */
-#arrow-svg{
-  position:absolute;top:0;left:0;width:100%;
-  pointer-events:none;z-index:5;display:none;
-  overflow:visible;
-}
-body.show-links #arrow-svg{display:block}
-
-/* ── MISC ────────────────────────────────────────────────── */
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-@media(max-width:700px){
-  .sidebar{display:none}
-  .page-body{margin-left:0}
-}
-</style>
+<link rel="stylesheet" href="basis.css">
+<script defer src="scripts/citation-tools.js"></script>
+<script defer src="scripts/references.js"></script>
+<script defer src="scripts/parser.js"></script>
+<script defer src="scripts/details-pages.js"></script>
+<script defer src="scripts/renderer.js"></script>
+<script defer src="scripts/sidebar.js"></script>
+<script defer src="scripts/definitions.js"></script>
+<script defer src="scripts/connectors.js"></script>
+<script defer src="scripts/boot.js"></script>
 </head>
 <body>
 
@@ -419,24 +26,15 @@ body.show-links #arrow-svg{display:block}
 
 <div class="page-body">
 
-<!-- SVG ARROW OVERLAY (inside page-body so it scrolls with the document) -->
-<svg id="arrow-svg" aria-hidden="true">
-  <defs>
-    <marker id="arr-tip" markerWidth="14" markerHeight="14"
-            refX="9" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M1.5,1 Q9,4.5 11,6 Q9,7.5 1.5,11 Q5,6 1.5,1 Z"
-            fill="#c17f24" opacity=".9"/>
-    </marker>
-    <marker id="arr-tip-start" markerWidth="14" markerHeight="14"
-            refX="3" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M10.5,1 Q3,4.5 1,6 Q3,7.5 10.5,11 Q7,6 10.5,1 Z"
-            fill="#c17f24" opacity=".9"/>
-    </marker>
-  </defs>
-  <g id="arrow-lines"></g>
+<!-- SVG CONNECTOR OVERLAY (inside page-body so it scrolls with the document) -->
+<svg id="connector-svg" aria-hidden="true">
+  <g id="connector-lines"></g>
 </svg>
 
 <header class="site-header">
+  <a class="ff-corner-logo" href="https://uni-freiburg.de/futureforests/" target="_blank" rel="noopener noreferrer" aria-label="Future Forests website">
+    <img src="logos/futureforests.png" alt="Future Forests logo">
+  </a>
   <p class="tagline">A community resource</p>
   <h1>Orientation for environmental predictions</h1>
   <p class="intro">An orientation for practitioners on designing, executing, and communicating rigorous quantitative predictions in environmental science. Hover over <span class="def" data-def="Dashed underlines mark terms with definitions — hover to read.">underlined terms</span> for definitions.</p>
@@ -451,24 +49,45 @@ body.show-links #arrow-svg{display:block}
     </div>
     <div class="card-body" id="intro-body"></div>
   </div>
-  <div class="controls">
-    <div class="links-toggle">
-      <label>
-        <input type="checkbox" id="chk-links" onchange="toggleLinks(this)">
-        Show cross-phase linkage arrows
-      </label>
-    </div>
-  </div>
 </div>
 
+<aside class="floating-controls" id="floating-controls" aria-label="Quick display controls">
+  <div class="control-panel" id="floating-controls-panel">
+    <label class="control-chip">
+      <input type="checkbox" onchange="toggleLinksState(this.checked)">
+      <span>Show cross-phase linkage</span>
+    </label>
+    <label class="control-chip">
+      <input type="checkbox" onchange="setAllSectionsExpanded(this.checked)">
+      <span>Expand all sections</span>
+    </label>
+  </div>
+  <button type="button" class="floating-toggle" onclick="toggleFloatingControls(this)" aria-controls="floating-controls-panel" aria-expanded="true" aria-label="Collapse quick controls" title="Collapse quick controls">
+    <span class="floating-toggle-arrow" aria-hidden="true">&#9664;</span>
+  </button>
+</aside>
+
 <main class="wrap" id="main"></main>
+
+<dialog id="detail-overlay" class="detail-overlay" aria-label="Detail page overlay">
+  <div class="detail-overlay-card">
+    <div class="detail-overlay-hd">
+      <div>
+        <p class="detail-overlay-kicker">Detail page</p>
+        <h2 id="detail-overlay-title">More details</h2>
+      </div>
+      <button type="button" class="detail-overlay-close" onclick="closeDetailOverlay()" aria-label="Close detail page">×</button>
+    </div>
+    <iframe id="detail-overlay-frame" class="detail-overlay-frame" title="Detail page content"></iframe>
+  </div>
+</dialog>
 
 <div class="wrap">
   <h2 class="sec-title collapsed" id="checklist" onclick="toggleSection('s-checklist',this)">
     Checklist — overlooked issues
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-checklist" class="sec-collapsed">
+  <div id="s-checklist" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Issues that are commonly missed.</p>
     <div id="highlight-out"></div>
   </div>
@@ -476,7 +95,7 @@ body.show-links #arrow-svg{display:block}
     Bones of contention
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-discussion" class="sec-collapsed">
+  <div id="s-discussion" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Open scientific debates.</p>
     <div id="disc-out"></div>
   </div>
@@ -484,22 +103,24 @@ body.show-links #arrow-svg{display:block}
     Glossary
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
-  <div id="s-glossary" class="sec-collapsed">
+  <div id="s-glossary" class="sec-collapsed" hidden="until-found">
     <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
     <div class="glos-grid" id="glos-out"></div>
-  </div>
-  <h2 class="sec-title no-toggle" id="acknowledgements">
-  <div class="ack">
-    <p>This resource was developed by an author collective (no individual names). With thanks to:</p>
-    <p style="margin-top:6px"><strong>ANDINA</strong> &nbsp;·&nbsp; <strong>EEFI</strong> &nbsp;·&nbsp; <strong>FuFo</strong> &nbsp;·&nbsp; feedback from participants of the <a href="https://iite.info/seminar/" target="_blank">IITE Seminar</a></p>
   </div>
 </div>
 
 <footer>
-  <a href="#checklist">Checklist</a> &nbsp;·&nbsp;
-  <a href="#discussion">Bones of contention</a> &nbsp;·&nbsp;
-  <a href="#glossary">Glossary</a> &nbsp;·&nbsp;
-  <a href="#acknowledgements">Acknowledgements</a>
+  <p class="footer-ack-title">Acknowledgements</p>
+  <p class="footer-ack-links">
+    <a href="https://andinaspain2026.com/" target="_blank" rel="noopener noreferrer">ANDINA</a>
+    -
+    <a href="https://euro-ecoforecast.wordpress.com/" target="_blank" rel="noopener noreferrer">European EFI</a>
+    -
+    <a href="https://uni-freiburg.de/futureforests/" target="_blank" rel="noopener noreferrer">Future Forests</a>
+    -
+    feedback from participants of the
+    <a href="https://iite.info/seminar/" target="_blank" rel="noopener noreferrer">IITE</a>
+  </p>
 </footer>
 
 </div><!-- end .page-body -->
@@ -508,7 +129,7 @@ body.show-links #arrow-svg{display:block}
 <!--
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                              ║
-║   CONTENT EDITOR — everything between the two double lines is yours to edit  ║
+║   CONTENT EDITOR — start of editable content                                 ║
 ║                                                                              ║
 ║   RULES (please read once):                                                  ║
 ║                                                                              ║
@@ -517,17 +138,15 @@ body.show-links #arrow-svg{display:block}
 ║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
 ║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
 ║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
-║     DETAIL, EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is     ║
+║     EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is             ║
 ║   • Everything after a keyword on the same line is the value                 ║
 ║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
 ║   • Apostrophes are fine. Quotes are fine. No escaping needed.               ║
 ║   • To leave a field empty, write [text] as a placeholder                    ║
 ║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
 ║                                                                              ║
-║   CROSS-PHASE ARROWS (direction is chosen by the keyword you use):           ║
-║     XLINK       label | target-id   arrow points  THIS box → target          ║
-║     XLINK-BACK  label | target-id   arrow points  target → THIS box          ║
-║     XLINK-BOTH  label | target-id   arrow has heads on BOTH ends (feedback)   ║
+║   CROSS-PHASE CONNECTORS:                                                    ║
+║     XLINK       label | target-id   links THIS box with target               ║
 ║   (target-id is the #id or auto-slug of the box you are linking to)          ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -571,13 +190,13 @@ scenario planning | Generating predictions under a range of plausible future con
 
 
 ## CHECKLIST
-Overparameterised models make poor predictions: too much detail may hurt. | LINK long-term-plan
-Validation needs to be planned: split data into MANY subsets. | LINK validation
-Upscale of microlevel processes. | LINK model-types
-Always use several models for structural uncertainty. | LINK uncertainty-decomp
-Calibration is really useful. | LINK calibration
-Uncertainty quantification is mandatory. | LINK best-answer
-Co-interpretation of results and their uncertainty: PDF, also on maps. | LINK communication
+Overparameterised models make poor predictions: too much detail may hurt | LINK long-term-planning
+Validation needs to be planned: split data into MANY subsets | LINK validation
+Upscale of microlevel processes | LINK model-types
+Always use several models for structural uncertainty | LINK uncertainty-decomp
+Calibration is really useful | LINK model-inversion
+Uncertainty quantification is mandatory | LINK best-answer
+Co-interpretation of results and their uncertainty: PDF, also on maps | LINK communication
 
 
 ## CONTENTION
@@ -609,13 +228,12 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
   malaria infection rates, but the modeller has no ability to quantify malaria 
   transmissions near stagnant water bodies. Then a prediction task seems infeasible. 
   &#128721;)<p>
-  <div class="references"> <p>Actual references</p> </div>
 
 --- Target that can be modelled and observed
 TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. <p>At this point, also the precision required should be specified. Is it enough to know the flooding level up to a 95%-confidence interval of 1 m? Would knowing the distribution of an introduced mosquito carrying an infectious disease to the nearest 50 km x 50 km pixel on a map be sufficient? If not: STOP sign) <div class="references"> <p>Actual references</p> </div>
 
 --- Scenario planning: Are imaginable results useful to the question?
-TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
+TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign.
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
   and remain below maximum sustainable yield? <span style="color: red">There is text in the html to go below this point!</span>
@@ -646,13 +264,10 @@ TEXT Rarely is there only one right type of model. Depending on expertise, time,
  </div>
   >>> 🔢 (O/P)DE
       Rigorous mathematical structure for dynamic systems in continuous time (Ordinary or Partial Differential Equations) or discrete time (Difference Equations), possibly with stochastic elements and/or external events or forcings. <p>A key advantage is that a rich mathematical tradition and toolbox exists to analyse such models even across a wider range of parameters. However, many such analyses assume equilibrium conditions, while we may be facing predictions out of equilibrium ("transient dynamics"). Still, even when simulated as forward model, ODE/DE are well-understood model types with excellent software support.
-      DETAIL blubb
   >>> ⚙️ Coded process model, incl. agent-based model
       Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
-      DETAIL [text]
   >>> &#128101; other
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
 If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
 
@@ -672,38 +287,29 @@ TEXT  The prediction purpose of stage 1 may be specific enough to narrow down th
 IMPORTANT 🔔 Upscale of microlevel processes.
   >>> 🗺️ Spatially implicit / explicit
       Otto
-      DETAIL [text]
   >>> 🎲 Stochastic/deterministic
       [text]
-      DETAIL [text]
   >>> ⏱️ Continuous/Discrete time
       [text]
-      DETAIL [text]
   >>> 🐟 Discrete individuals/continuous biomass
       [text]
-      DETAIL [text]
   >>> 🔄 With / without feedback
       [text]
-      DETAIL [text]
   >>> &#128208; explicit management intervention rules
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
 
-  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. REFERENCES (Dormann et al. 2018)
+  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. <sup class="cite-ref" data-cite="Dormann 2018"></sup>
 
 
 --- Long-term planning
 TEXT This prediction is often part of a longer activity and commitment. Think through the next years and far beyond the current prediction activity. Think of all resources: stakeholder willingness, data availability, computational resources, developer time. Plan this prediction with a longer-term plan in your mind.
   >>> 👩‍🔬 Efficient use of experts and stakeholders
       All stakeholders require tactful handling, including not wasting their time on unnecessary meetings and deliberations. The must be employed for question framing and interpretation (first and last step of this Orientation), but will develop fatigue if over-used. 
-      DETAIL REFERENCES
   >>> 📊 Data for many validations in the modelling cycle
       Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
-      IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt. <span style="color: red">Should be in same box as "Data for many ..."</span>
-      DETAIL REFERENCES (Roberts et al. 2017)
+      🔔 Overparameterised models make poor predictions — too much detail may hurt <sup class="cite-ref" data-cite="Roberts 2017"></sup>
   >>> 💻 Computational resources
       Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
-      DETAIL REFERENCES
 
 
 === 3. Modelling
@@ -738,43 +344,28 @@ TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a m
   <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
     >>> 🌐 Global SA
         Varies all parameters simultaneously across their full range.
-        DETAIL [text]
     >>> 📍 Local SA
         Varies one parameter at a time around a nominal value.
-        DETAIL [text]
   
-  --- Model inversion (Calibration)
-  TEXT <a target="_blank" href="ModelInversion.html">Model inversion</a> serves two purposes:
+  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
+  TEXT Model inversion serves two purposes:
     (1) Identify structural errors in the model.
     (2) Improve representation of observations.
     Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
-    <div class="references"> <p>Sun, N.-Z., & Sun, A. (2015). Model Calibration and Parameter Estimation: For Environmental and Water Resource Systems. Springer.</p> </div>
   IMPORTANT 🔔 Calibration is really useful.
   XLINK Calibration is not validation — see Validation. | validation
     >>> 🔬 Optimisation
         [text]
-        DETAIL [text]
     >>> 🎰 MCMC
         [text]
-        DETAIL [text]
     >>> 🧮 ABC
         [text]
-        DETAIL [text]
     >>> 🧩 POM
         [text]
-        DETAIL [text]
 
   --- Uncertainty analysis
-  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: Dormann et al. 2026). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
-  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (Wesselkamp et al. 2025).
-  <div class="references"> 
-    <p>Benaroya, H., & Han, S. M. (2005). Probability Models in Engineering and Science. Taylor & Francis.</p<>
-    <p>Committee on Mathematical Foundations of Verification, Validation, and Uncertainty Quantification, & Board on Mathematical Sciences and Their Applications, Division on Engineering and Physical Sciences, National Research Council. (2012). Assessing the Reliability of Complex Models: Mathematical and Statistical Foundations of Verification, Validation and Uncertainty Quantification. The National Academic Press. https://doi.org/10.17226/13395</p>
-    <p>Dormann, C. F., Käber, Y., & Hartig, F. (2026). Full prediction uncertainty quantification: A plea from science and decision making. In Advances in Ecological Research (Vol. 74, pp. 191–212). Elsevier. https://doi.org/10.1016/bs.aecr.2026.02.003</p>
-    <p>Matheson, J. E., & Winkler, R. L. (1976). Scoring rules for continuous probability distributions. Management Science, 22(10), 1087–1096. https://doi.org/10.1287/mnsc.22.10.1087</p>
-    <p>Taylor, J. R. (1997). An Introduction to Error Analysis: The Study of Uncertainties in Physical Measurements (2nd edn.). University Science Books.</p>
-    <p>Wesselkamp, M., Albrecht, J., Pinnington, E., Castillo, W. J., Pappenberger, F., & Dormann, C. F. (2025). The ecological forecast limit revisited: Potential, absolute and relative system predictability. Methods in Ecology and Evolution, 16(7), 1521–1541. https://doi.org/10.1111/2041-210X.70049</p>
-    <p>Wolter, K. M. (2007). Introduction to Variance Estimation (2nd ed). Springer.</p> </div>
+  TEXT Uncertainty analysis (UA: Committee on Mathematical Foundations 2012) aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling (Taylor, 1997, Benaroya and Han, 2005, Wolter, 2007). Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
+  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS: Matheson & Winkler 1976). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
 
   IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
 
@@ -817,11 +408,9 @@ IMPORTANT 🔔 Uncertainty quantification is mandatory.
 --- Plausibility check
 TEXT The credo for this step is: "I don't want to look like a fool." To avoid embarrassment, predictions should be checked for plausibility. Apart from internal consistency (Can that much soil actually erode away? Do trees grow that fast?), the comparison with published data is an important step. If the prediction is widely outside previous observations, they may still be correct, but being an outlier certainly warrants double checking model(s), data, parameters and scenarios. <p>If predictions survive double-checking but still "feel wrong", it is particularly important to communicate the assumptions behind modelling approach, the model code and parameterisation. Also the (Mahalanobis) distance between training and prediction data can be quantified to illustrate how unusual the prediction situation is.
 
-
 --- Uncertainty decomposition #uncertainty-decomp
 TEXT The sources of uncertainty for a given prediction indicate our lack of knowledge, thereby giving real-world context to when prediction are reliable. For example, a major uncertainty in Earth System Models (and Global Circulation Models and atmospheric models) is how clouds respond to and thus affect temperature and precipitation. That in itself suggests that (a) cloud formation requires careful parameterisation, and (b) maybe long-term cloud behaviour can described phenomenological even without physical understanding. <p>In a similar way, uncertainty decomposition delineates areas of relative robust and more uncertain knowledge.Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction. <p>Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
 IMPORTANT 🔔 Always use several models for structural uncertainty.
-
 
 === 5. Utilisation
 ROLE Modeller + Stakeholder
@@ -831,10 +420,8 @@ RATIONALE [text]
 TEXT [text]
   >>> 📢 Communicate
       [text]
-      DETAIL [text]
   >>> ↩️ Feedback
       [text]
-      DETAIL [text]
 
 --- Use / exploit prediction
 TEXT Use or exploit the prediction — for example, to take management decisions.
@@ -844,574 +431,19 @@ EXAMPLE 🪏 Worked example (fisheries)
 
 --- Follow-up planning
 TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
-XLINK-BOTH Follow-up feeds back into Phase 1 and Phase 2. | specific-question
+XLINK Follow-up feeds back into Phase 1 and Phase 2. | specific-question
 
 </script>
 <!--
+UNCITED REFERENCES (update when citations change):
+- Getz 2018
+- Sun 2015
+- Benaroya 2005
+- Committee 2012
+- Matheson 1976
+- Taylor 1997
+- Wolter 2007
 ╚══════════════════════════════════════════════════════════════════════════════╝
-   END OF EDITABLE CONTENT — do not edit below this line
-╔══════════════════════════════════════════════════════════════════════════════╝
 -->
-
-
-<script>
-/* ════════════════════════════════════════════════════════════════════
-   PARSER
-════════════════════════════════════════════════════════════════════ */
-function parseContent() {
-  var raw = document.getElementById('page-content').textContent;
-  var lines = raw.split('\n');
-  var result = { intro:[], glossary:[], checklist:[], contentions:[], phases:[] };
-  var section=null, curPhase=null, curNode=null, curSubNode=null, curSub=null, curField=null;
-
-  function flush(){ curField=null; }
-  function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
-  function trimVal(s){ return s.replace(/^\s+|\s+$/g,''); }
-  function indentOf(line){ var m=line.match(/^(\s*)/); return m?m[1].length:0; }
-  function colorFor(num){ return ['c1','c2','c3','c4','c5'][num-1]||'c1'; }
-  function isKeyword(line){
-    return line.indexOf('--- ')===0||line.indexOf('>>> ')===0||
-           line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
-           line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
-           line.indexOf('DETAIL ')===0||line.indexOf('EXAMPLE ')===0||
-           line.indexOf('IMPORTANT ')===0||line.indexOf('XLINK ')===0||
-           line.indexOf('XLINK-BACK ')===0||line.indexOf('XLINK-BOTH ')===0;
-  }
-
-  for(var i=0;i<lines.length;i++){
-    var raw_line=lines[i], line=trimVal(raw_line);
-    if(line===''){
-      if(section==='INTRO'&&curField==='intro') result.intro.push('');
-      curField=null; continue;
-    }
-    if(line.indexOf('## ')===0){
-      section=trimVal(line.slice(3)); curPhase=null; curNode=null; curSubNode=null; curSub=null; curField=null; continue;
-    }
-    if(line.indexOf('=== ')===0){
-      flush();
-      var pRaw=trimVal(line.slice(4)), dotPos=pRaw.indexOf('.');
-      var pNum=dotPos>-1?parseInt(pRaw.slice(0,dotPos),10):(result.phases.length+1);
-      var pTitle=dotPos>-1?trimVal(pRaw.slice(dotPos+1)):pRaw;
-      curPhase={id:'phase'+pNum,title:pTitle,role:'',color:colorFor(pNum),phaseNum:String(pNum),rationale:'',nodes:[]};
-      result.phases.push(curPhase); curNode=null; curSubNode=null; curSub=null; continue;
-    }
-    if(line.indexOf('--- ')===0){
-      flush();
-      var nTitleRaw=trimVal(line.slice(4));
-      // Optional stable id: "--- Title #short-id"  → id=short-id, title=Title
-      var nId, nTitle;
-      var idMatch=nTitleRaw.match(/^(.*?)\s+#([a-z0-9\-]+)\s*$/);
-      if(idMatch){ nTitle=trimVal(idMatch[1]); nId=idMatch[2]; }
-      else { nTitle=nTitleRaw; nId=slugify(nTitleRaw); }
-      if(indentOf(raw_line)>=2&&curNode){
-        curSubNode={id:nId,title:nTitle,role:null,body:'',subItems:[],xlinks:[],example:null,important:null};
-        if(!curNode.subNodes) curNode.subNodes=[];
-        curNode.subNodes.push(curSubNode); curSub=null;
-      } else {
-        curSubNode=null;
-        curNode={id:nId,title:nTitle,role:null,badges:[],body:'',subItems:[],xlinks:[],example:null,important:null,subNodes:[]};
-        if(curPhase) curPhase.nodes.push(curNode); curSub=null;
-      }
-      continue;
-    }
-    if(line.indexOf('>>> ')===0){
-      flush();
-      var sRaw=trimVal(line.slice(4)), iconMatch=sRaw.match(/^(\S+)\s+(.*)/);
-      curSub={icon:iconMatch?iconMatch[1]:'',name:iconMatch?trimVal(iconMatch[2]):sRaw,role:null,desc:'',detail:null};
-      var siTarget=curSubNode||curNode; if(siTarget) siTarget.subItems.push(curSub);
-      curField='sub-desc'; continue;
-    }
-    if(line.indexOf('ROLE ')===0&&curPhase&&!curNode){ curPhase.role=trimVal(line.slice(5)); flush(); continue; }
-    if(line.indexOf('RATIONALE ')===0&&curPhase&&!curNode){ curPhase.rationale=trimVal(line.slice(10)); curField='rationale'; continue; }
-    if(line==='STAKEHOLDER'){
-      if(curSub) curSub.role='sh'; else if(curSubNode) curSubNode.role='sh'; else if(curNode) curNode.role='sh';
-      flush(); continue;
-    }
-    if(line.indexOf('TEXT ')===0&&(curSubNode||curNode)){
-      var tgt=curSubNode||curNode; tgt.body=trimVal(line.slice(5)); curField='text'; continue;
-    }
-    if(line.indexOf('DETAIL ')===0&&curSub){ curSub.detail=trimVal(line.slice(7)); curField='detail'; continue; }
-    if(line.indexOf('EXAMPLE ')===0&&(curSubNode||curNode)){
-      var tgt=curSubNode||curNode; tgt.example='<strong>'+trimVal(line.slice(8))+'</strong>'; curField='example'; continue;
-    }
-    if(line.indexOf('IMPORTANT ')===0&&(curSubNode||curNode)){
-      var tgt=curSubNode||curNode; tgt.important='<strong>'+trimVal(line.slice(10))+'</strong>'; curField='important'; continue;
-    }
-    if((line.indexOf('XLINK-BOTH ')===0||line.indexOf('XLINK-BACK ')===0||line.indexOf('XLINK ')===0)&&(curSubNode||curNode)){
-      var tgt=curSubNode||curNode;
-      var dir='fwd', body=line;
-      if(line.indexOf('XLINK-BOTH ')===0){ dir='both'; body=line.slice(11); }
-      else if(line.indexOf('XLINK-BACK ')===0){ dir='back'; body=line.slice(11); }
-      else { dir='fwd'; body=line.slice(6); }
-      var xlParts=body.split('|');
-      tgt.xlinks.push({text:trimVal(xlParts[0]),target:xlParts[1]?trimVal(xlParts[1]):'',dir:dir}); flush(); continue;
-    }
-    if(section==='INTRO'){ result.intro.push(line); curField='intro'; continue; }
-    if(section==='GLOSSARY'){ var gp=line.split('|'); if(gp.length>=2) result.glossary.push({term:trimVal(gp[0]),def:trimVal(gp[1])}); continue; }
-    if(section==='CHECKLIST'){ var cp=line.split('|'),lm=cp[1]&&trimVal(cp[1]).match(/LINK\s+(\S+)/); result.checklist.push({text:trimVal(cp[0]),link:lm?lm[1]:null}); continue; }
-    if(section==='CONTENTION'){
-      if(indentOf(raw_line)===0) result.contentions.push({q:line,body:''});
-      else if(result.contentions.length>0){ var last=result.contentions[result.contentions.length-1]; last.body=last.body?last.body+' '+line:line; }
-      continue;
-    }
-    if(!isKeyword(line)&&indentOf(raw_line)>=2){
-      if(curField==='rationale'&&curPhase&&!curNode){ curPhase.rationale+=' '+line; continue; }
-      if(curField==='text'){ var tgt=curSubNode||curNode; if(tgt){tgt.body+=' '+line;} continue; }
-      if(curField==='detail'&&curSub){ curSub.detail+=' '+line; continue; }
-      if(curField==='example'){ var tgt=curSubNode||curNode; if(tgt){tgt.example+=' '+line;} continue; }
-      if(curField==='important'){ var tgt=curSubNode||curNode; if(tgt){tgt.important+=' '+line;} continue; }
-      if(curField==='sub-desc'&&curSub){ curSub.desc=curSub.desc?curSub.desc+' '+line:line; continue; }
-    }
-  }
-  return result;
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   RENDERER
-════════════════════════════════════════════════════════════════════ */
-var COLORS={ c1:'#2d6a4f', c2:'#1a5276', c3:'#6c3483', c4:'#b7471c', c5:'#117a65' };
-var SVG_NS='http://www.w3.org/2000/svg';
-
-function renderSubItems(items, bgWhite){
-  if(!items||!items.length) return '';
-  var html='<ul class="sub-list">';
-  for(var i=0;i<items.length;i++){
-    var s=items[i], hasDetail=s.detail&&s.detail!=='[text]';
-    html+='<li><div class="sub-item" '+(bgWhite?'style="background:var(--parchment)"':'')+' onclick="toggleSub(this)">';
-    html+='<span class="si-icon">'+s.icon+'</span>';
-    html+='<div class="si-body">';
-    html+='<div class="si-name">'+s.name+(s.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'')+'</div>';
-    if(s.desc&&s.desc!=='[text]') html+='<div class="si-desc">'+s.desc+'</div>';
-    if(hasDetail) html+='<div class="si-detail">'+s.detail+'</div>';
-    html+='</div>';
-    if(hasDetail) html+='<span class="si-chev">&#9658;</span>';
-    html+='</div></li>';
-  }
-  html+='</ul>'; return html;
-}
-
-function renderSubNodes(nodes, color){
-  if(!nodes||!nodes.length) return '';
-  var html='<div style="margin-top:10px">';
-  for(var i=0;i<nodes.length;i++){
-    var n=nodes[i];
-    var roleTag=n.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'';
-    var bodyHtml=(n.body&&n.body!=='[text]')?'<p>'+n.body+'</p>':'';
-    var xlHtml='';
-    for(var x=0;x<n.xlinks.length;x++){
-      var xl=n.xlinks[x];
-      xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> '+xl.text+' <a href="#'+xl.target+'">Jump &rarr;</a></div>';
-    }
-    var exHtml=(n.example&&n.example!=='[text]')?'<div class="example">'+n.example+'</div>':'';
-    var impHtml=(n.important&&n.important!=='[text]')?'<div class="important">'+n.important+'</div>':'';
-    html+='<div class="sub-card" id="'+n.id+'" style="border-left-color:'+color+'">'
-      +'<div class="sub-card-hd" onclick="toggleSubCard(this.parentElement)">'
-      +'<span class="sub-card-title">'+n.title+roleTag+'</span>'
-      +'<svg class="sub-card-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-      +'</div>'
-      +'<div class="sub-card-body">'+bodyHtml+renderSubItems(n.subItems,true)+xlHtml+exHtml+impHtml+'</div></div>';
-  }
-  html+='</div>'; return html;
-}
-
-function renderNode(node, color){
-  var xlHtml='';
-  for(var x=0;x<node.xlinks.length;x++){
-    var xl=node.xlinks[x];
-    xlHtml+='<div class="xlink">&#8596; <strong>Cross-phase:</strong> '+xl.text+' <a href="#'+xl.target+'">Jump &rarr;</a></div>';
-  }
-  var exHtml=(node.example&&node.example!=='[text]')?'<div class="example">'+node.example+'</div>':'';
-  var impHtml=(node.important&&node.important!=='[text]')?'<div class="important">'+node.important+'</div>':'';
-  var roleTag=node.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'';
-  var bodyHtml=(node.body&&node.body!=='[text]')?'<p>'+node.body+'</p>':'<p style="color:var(--ink-muted);font-style:italic;font-size:.81rem">[text to be added]</p>';
-  return '<div class="card" id="'+node.id+'" style="border-left-color:'+color+'">'
-    +'<div class="card-hd" onclick="toggleCard(this.parentElement)">'
-    +'<span class="card-title">'+node.title+roleTag+'</span>'
-    +'<svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    +'</div>'
-    +'<div class="card-body">'+bodyHtml+renderSubItems(node.subItems,false)
-    +(node.subNodes&&node.subNodes.length?renderSubNodes(node.subNodes,color):'')
-    +xlHtml+exHtml+impHtml+'</div></div>';
-}
-
-function renderPhase(phase){
-  var color=COLORS[phase.color]||'#2d6a4f';
-  var nodesHtml='';
-  for(var n=0;n<phase.nodes.length;n++) nodesHtml+=renderNode(phase.nodes[n],color);
-  var ratHtml=(phase.rationale&&phase.rationale!=='[text]')
-    ?'<div class="rationale"><span class="rat-label">Rationale</span><span class="rat-text">'+phase.rationale+'</span></div>':'';
-  return '<section class="phase collapsed" id="'+phase.id+'" style="border-top-color:'+color+'">'
-    +'<div class="phase-hd" onclick="togglePhase(this.parentElement)">'
-    +'<div class="phase-num-badge" style="background:'+color+'">'+phase.phaseNum+'</div>'
-    +'<h2 class="phase-title">'+phase.title+'</h2>'
-    +(phase.role?'<span class="phase-role">'+phase.role+'</span>':'')
-    +'<svg class="phase-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    +'</div>'
-    +'<div class="phase-nodes">'+ratHtml+nodesHtml+'</div>'
-    +'</section>';
-}
-
-function renderIntro(lines){
-  var paras=[],cur=[];
-  for(var i=0;i<lines.length;i++){
-    if(lines[i]===''){if(cur.length){paras.push(cur.join(' '));cur=[];}}
-    else cur.push(lines[i]);
-  }
-  if(cur.length) paras.push(cur.join(' '));
-  return paras.map(function(p){return '<p>'+p+'</p>';}).join('');
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   SIDEBAR
-════════════════════════════════════════════════════════════════════ */
-function buildSidebar(phases){
-  var track=document.getElementById('sb-track');
-  var html='';
-  for(var i=0;i<phases.length;i++){
-    var p=phases[i], color=COLORS[p.color]||'#2d6a4f';
-    if(i>0) html+='<div class="sb-connector"></div>';
-    html+='<a class="sb-item" id="sb-'+p.id+'" href="#'+p.id+'">'
-      +'<div class="sb-dot" style="border-color:'+color+'60"></div>'
-      +'<div class="sb-phase-num">'+p.phaseNum+'</div>'
-      +'<span class="sb-label">'+p.phaseNum+'. '+p.title+'</span>'
-      +'</a>';
-  }
-  track.innerHTML=html;
-
-  if(!window.IntersectionObserver) return;
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      var dot=document.getElementById('sb-'+entry.target.id);
-      if(dot){
-        if(entry.isIntersecting) dot.classList.add('active');
-        else dot.classList.remove('active');
-      }
-    });
-  },{threshold:0.1,rootMargin:'-10% 0px -60% 0px'});
-  for(var j=0;j<phases.length;j++){
-    var sec=document.getElementById(phases[j].id);
-    if(sec) obs.observe(sec);
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   ARROWS
-════════════════════════════════════════════════════════════════════ */
-var ARROW_PAIRS=[];
-
-function collectArrows(phases){
-  ARROW_PAIRS=[];
-  for(var i=0;i<phases.length;i++){
-    var nodes=phases[i].nodes;
-    for(var j=0;j<nodes.length;j++){
-      var node=nodes[j];
-      collectFromNode(node);
-      if(node.subNodes) for(var k=0;k<node.subNodes.length;k++) collectFromNode(node.subNodes[k]);
-    }
-  }
-}
-
-function collectFromNode(node){
-  for(var x=0;x<node.xlinks.length;x++){
-    var xl=node.xlinks[x], t=xl.target;
-    if(t&&t!==node.id) ARROW_PAIRS.push({from:node.id,to:t,dir:xl.dir||'fwd'});
-  }
-}
-
-function getRect(id){
-  var el=document.getElementById(id);
-  if(!el) return null;
-  var r=el.getBoundingClientRect();
-  if(r.width===0&&r.height===0) return null;
-  return r;
-}
-
-function isVisible(el){
-  // walk up and check nothing is display:none
-  var p=el;
-  while(p&&p!==document.body){
-    if(p.style&&p.style.display==='none') return false;
-    var cls=p.className||'';
-    if(cls.indexOf('collapsed')!==-1) return false;
-    p=p.parentElement;
-  }
-  return true;
-}
-
-function ensurePhaseOpen(id){
-  var el=document.getElementById(id);
-  if(!el) return;
-  // walk up to find parent phase and open it
-  var p=el.parentElement;
-  while(p){
-    if(p.classList&&p.classList.contains('phase')&&p.classList.contains('collapsed')){
-      p.classList.remove('collapsed');
-    }
-    p=p.parentElement;
-  }
-  // also open parent card if inside card-body
-  var cb=el.closest ? el.closest('.card-body') : null;
-  if(cb) cb.parentElement.classList.add('open');
-}
-
-function getAnchorPoint(el, originLeft, originTop){
-  // Returns the mid-RIGHT point of the element's visible header, in coordinates
-  // relative to the .page-body origin (so the absolutely-positioned SVG, which
-  // is anchored to .page-body, lines up and scrolls naturally with the content).
-  var hd = el.querySelector ? (el.querySelector('.card-hd') || el.querySelector('.sub-card-hd') || el.querySelector('.phase-hd')) : null;
-  var target = hd || el;
-  var r = target.getBoundingClientRect();
-
-  // Collapsed/hidden → zero rect. Fall back to the enclosing phase header.
-  if(r.width===0 && r.height===0){
-    var anc = el.parentElement;
-    while(anc && anc !== document.body){
-      if(anc.classList && anc.classList.contains('phase')){
-        var ph = anc.querySelector('.phase-hd');
-        if(ph){
-          var pr = ph.getBoundingClientRect();
-          if(pr.width!==0 || pr.height!==0){
-            return { right: pr.right-originLeft, y: pr.top+pr.height/2-originTop, fallback:true };
-          }
-        }
-      }
-      anc = anc.parentElement;
-    }
-    return null;
-  }
-  return { right: r.right-originLeft, y: r.top+r.height/2-originTop, fallback:false };
-}
-
-function drawArrows(){
-  var svg=document.getElementById('arrow-svg');
-  var g=document.getElementById('arrow-lines');
-  g.innerHTML='';
-  if(!document.body.classList.contains('show-links')) return;
-
-  var pageBody=document.querySelector('.page-body');
-  if(!pageBody) return;
-  var pbRect=pageBody.getBoundingClientRect();
-  var originLeft=pbRect.left;   // viewport-left of page-body
-  var originTop=pbRect.top;     // viewport-top of page-body
-
-  // Size the SVG to the full document so arrows can live anywhere on the page.
-  svg.style.height = pageBody.scrollHeight + 'px';
-  var pbWidth = pageBody.clientWidth;
-
-  for(var i=0;i<ARROW_PAIRS.length;i++){
-    var pair=ARROW_PAIRS[i];
-    var fromEl=document.getElementById(pair.from);
-    var toEl=document.getElementById(pair.to);
-    if(!fromEl||!toEl) continue;
-    if(!isVisible(fromEl)&&!isVisible(toEl)) continue;
-
-    var fromA=getAnchorPoint(fromEl, originLeft, originTop);
-    var toA  =getAnchorPoint(toEl,   originLeft, originTop);
-    if(!fromA||!toA) continue;
-
-    // Document-space coordinates (relative to page-body). No scroll math needed —
-    // the SVG scrolls with the page, so these stay correct without redrawing.
-    var x1=fromA.right, y1=fromA.y;
-    var x4=toA.right,   y4=toA.y;
-
-    // Cubic bezier. Push the curve a bit further out (70px) so it bows clearly
-    // away from the cards, and skew the landing: the second control point sits
-    // ABOVE the target so the arrow sweeps down into it at an angle rather than
-    // arriving flat. Clamp X so it can't run off-page.
-    var maxCx=pbWidth-12;
-    var outset=70;
-    var skew=22;                       // how much the approach tilts
-    var dirSign=(y4>=y1)?1:-1;         // tilt with the overall direction of travel
-    var cx1=Math.min(x1+outset, maxCx);
-    var cy1=y1 + dirSign*6;            // gentle outward lift at the source
-    var cx2=Math.min(x4+outset, maxCx);
-    var cy2=y4 - dirSign*skew;         // lift the landing control point → angled arrival
-
-    var d='M'+x1+','+y1+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+x4+','+y4;
-
-    var path=document.createElementNS(SVG_NS,'path');
-    path.setAttribute('d',d);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#c17f24');
-    path.setAttribute('stroke-width','1.6');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('opacity','0.8');
-
-    // Direction: 'fwd' = arrowhead at target (default),
-    //            'back' = arrowhead at this node (source),
-    //            'both' = arrowheads at both ends.
-    var dir=pair.dir||'fwd';
-    if(dir==='fwd'||dir==='both') path.setAttribute('marker-end','url(#arr-tip)');
-    if(dir==='back'||dir==='both') path.setAttribute('marker-start','url(#arr-tip-start)');
-    g.appendChild(path);
-
-    // Place a small tail dot only on the end(s) WITHOUT an arrowhead.
-    function addDot(cx,cy){
-      var dot=document.createElementNS(SVG_NS,'circle');
-      dot.setAttribute('cx',String(cx)); dot.setAttribute('cy',String(cy));
-      dot.setAttribute('r','3.5'); dot.setAttribute('fill','#c17f24'); dot.setAttribute('opacity','0.8');
-      g.appendChild(dot);
-    }
-    if(dir==='fwd')  addDot(x1,y1);      // tail at source
-    if(dir==='back') addDot(x4,y4);      // tail at target
-    // 'both' has arrowheads on both ends → no tail dot
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   DEFINITIONS
-════════════════════════════════════════════════════════════════════ */
-function autoDefine(root,glossary){
-  if(!root) return;
-  var lookup={},terms=[];
-  for(var i=0;i<glossary.length;i++){
-    lookup[glossary[i].term.toLowerCase()]=glossary[i].def;
-    terms.push(glossary[i].term);
-  }
-  terms.sort(function(a,b){return b.length-a.length;});
-
-  var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false);
-  var textNodes=[],node;
-  while((node=walker.nextNode())){
-    var skip=false,anc=node.parentNode;
-    while(anc&&anc!==root){
-      var cls=anc.className&&anc.className.indexOf?anc.className:'',tag=anc.nodeName;
-      if(tag==='A'||tag==='H2'||tag==='H1'||
-        (cls&&(cls.indexOf('def')!==-1||cls.indexOf('badge')!==-1||
-               cls.indexOf('role-tag')!==-1||cls.indexOf('rat-label')!==-1||
-               cls.indexOf('card-hd')!==-1||cls.indexOf('card-title')!==-1||
-               cls.indexOf('sub-card-hd')!==-1||cls.indexOf('sub-card-title')!==-1||
-               cls.indexOf('phase-hd')!==-1||cls.indexOf('sub-item')!==-1))){
-        skip=true;break;
-      }
-      anc=anc.parentNode;
-    }
-    if(!skip&&node.nodeValue&&node.nodeValue.trim().length>1) textNodes.push(node);
-  }
-
-  function isWordChar(ch){return /[A-Za-z0-9_]/.test(ch);}
-
-  for(var t=0;t<textNodes.length;t++){
-    var tn=textNodes[t],text=tn.nodeValue,lower=text.toLowerCase();
-    var bestIdx=-1,bestTerm=null;
-    for(var k=0;k<terms.length;k++){
-      var term=terms[k],tl=term.toLowerCase(),searchFrom=0,idx;
-      while((idx=lower.indexOf(tl,searchFrom))!==-1){
-        var before=idx===0?' ':text.charAt(idx-1);
-        var afterPos=idx+tl.length;
-        var after=afterPos>=text.length?' ':text.charAt(afterPos);
-        if(!isWordChar(before)&&!isWordChar(after)){
-          if(bestIdx===-1||idx<bestIdx||(idx===bestIdx&&term.length>bestTerm.length)){bestIdx=idx;bestTerm=term;}
-          break;
-        }
-        searchFrom=idx+1;
-      }
-    }
-    if(bestTerm!==null){
-      var matchEnd=bestIdx+bestTerm.length;
-      var def=lookup[bestTerm.toLowerCase()];
-      var frag=document.createDocumentFragment();
-      if(bestIdx>0) frag.appendChild(document.createTextNode(text.substring(0,bestIdx)));
-      var span=document.createElement('span');
-      span.className='def';
-      span.setAttribute('data-def',def);
-      span.setAttribute('tabindex','0');
-      span.textContent=text.substring(bestIdx,matchEnd);
-      frag.appendChild(span);
-      if(matchEnd<text.length) frag.appendChild(document.createTextNode(text.substring(matchEnd)));
-      tn.parentNode.replaceChild(frag,tn);
-    }
-  }
-}
-
-function enableTapTooltips(){
-  document.addEventListener('click',function(e){
-    var def=e.target.closest?e.target.closest('.def'):null;
-    if(def){
-      var wasOpen=def.classList.contains('tapped');
-      var open=document.querySelectorAll('.def.tapped');
-      for(var i=0;i<open.length;i++) open[i].classList.remove('tapped');
-      if(!wasOpen) def.classList.add('tapped');
-      e.stopPropagation(); return;
-    }
-    var all=document.querySelectorAll('.def.tapped');
-    for(var j=0;j<all.length;j++) all[j].classList.remove('tapped');
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){
-      var all=document.querySelectorAll('.def.tapped');
-      for(var i=0;i<all.length;i++) all[i].classList.remove('tapped');
-    }
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   BOOT
-════════════════════════════════════════════════════════════════════ */
-function renderAll(){
-  var data=parseContent();
-
-  document.getElementById('intro-body').innerHTML=renderIntro(data.intro);
-
-  var main=document.getElementById('main'), html='';
-  for(var i=0;i<data.phases.length;i++) html+=renderPhase(data.phases[i]);
-  main.innerHTML=html;
-
-  var dHtml='';
-  for(var c=0;c<data.contentions.length;c++){
-    var con=data.contentions[c];
-    dHtml+='<div class="cont-card"><div class="cont-q">&#9878; '+con.q+'</div>';
-    if(con.body&&con.body!=='[text]') dHtml+='<div class="cont-body">'+con.body+'</div>';
-    dHtml+='</div>';
-  }
-  document.getElementById('disc-out').innerHTML=dHtml;
-
-  var gHtml='';
-  for(var d=0;d<data.glossary.length;d++){
-    gHtml+='<div class="glos-item"><div class="glos-term">'+data.glossary[d].term+'</div><div class="glos-def">'+data.glossary[d].def+'</div></div>';
-  }
-  document.getElementById('glos-out').innerHTML=gHtml;
-
-  var hHtml='';
-  for(var h=0;h<data.checklist.length;h++){
-    var item=data.checklist[h];
-    var jump=item.link?' <a href="#'+item.link+'" style="color:#cc3333;font-weight:600;text-decoration:none">&rarr;</a>':'';
-    hHtml+='<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:9px 13px;margin-bottom:7px;font-size:0.84rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>'+item.text+jump+'</span></div>';
-  }
-  document.getElementById('highlight-out').innerHTML=hHtml;
-
-  autoDefine(document.getElementById('main'),data.glossary);
-  autoDefine(document.getElementById('intro-body'),data.glossary);
-  autoDefine(document.getElementById('disc-out'),data.glossary);
-  autoDefine(document.getElementById('highlight-out'),data.glossary);
-  enableTapTooltips();
-
-  buildSidebar(data.phases);
-  collectArrows(data.phases);
-  drawArrows();
-}
-
-document.addEventListener('DOMContentLoaded',renderAll);
-
-/* ── INTERACTION ─────────────────────────────────────────── */
-function toggleCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
-function toggleSubCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
-function togglePhase(phase){ phase.classList.toggle('collapsed'); setTimeout(drawArrows,220); }
-function toggleSub(el){ if(el.querySelector('.si-detail')) el.classList.toggle('open'); }
-function toggleSection(id,titleEl){
-  var content=document.getElementById(id);
-  var collapsed=content.classList.toggle('sec-collapsed');
-  titleEl.classList.toggle('collapsed',collapsed);
-  setTimeout(drawArrows,220);
-}
-function toggleLinks(chk){
-  document.body.classList.toggle('show-links',chk.checked);
-  drawArrows();
-}
-
-// Arrows are drawn in document coordinates and scroll with the page,
-// so no scroll listener is needed. Redraw only when layout actually changes.
-window.addEventListener('resize', drawArrows, {passive:true});
-</script>
 </body>
 </html>
