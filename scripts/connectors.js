@@ -18,14 +18,13 @@
       for(var j=0;j<nodes.length;j++){
         var node=nodes[j];
         collectFromNode(node);
-        if(node.subNodes) for(var k=0;k<node.subNodes.length;k++) collectFromNode(node.subNodes[k]);
       }
     }
   }
 
   function collectFromNode(node){
     for(var x=0, xLen=node.xlinks.length;x<xLen;x++){
-      var xl=node.xlinks[x], t=xl.target;
+      var t=node.xlinks[x];
       if(t&&t!==node.id) CONNECTOR_PAIRS.push({from:node.id,to:t});
     }
   }
@@ -42,7 +41,7 @@
   }
 
   function getAnchorPoint(el, originLeft, originTop){
-    var hd=el.querySelector ? (el.querySelector('.card-hd') || el.querySelector('.sub-card-hd') || el.querySelector('.phase-hd')) : null;
+    var hd=el.querySelector ? (el.querySelector('.card-hd') || el.querySelector('.phase-hd')) : null;
     var target=hd || el;
     var r=target.getBoundingClientRect();
 
