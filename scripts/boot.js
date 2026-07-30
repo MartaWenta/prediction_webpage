@@ -6,8 +6,8 @@ function typesetMath(roots){
 }
 window.typesetMath=typesetMath;
 
-function renderAll(){
-  var data=parseContent();
+function renderAll(raw){
+  var data=parseContent(raw);
 
   document.getElementById('intro-body').innerHTML=renderIntro(data.intro);
 
@@ -42,7 +42,34 @@ function renderAll(){
   typesetMath([main, document.getElementById('intro-body'), highlightOut]);
 }
 
-document.addEventListener('DOMContentLoaded',renderAll);
+function showContentLoadError(err){
+  console.error(err);
+  var main=document.getElementById('main');
+  if(main){
+    main.innerHTML='<p style="padding:2rem;color:#cc3333;line-height:1.6">Could not load <code>webpage.html</code>. '
+      +'Open the site via a local web server (e.g. <code>python -m http.server</code> in the project folder), then refresh.</p>';
+  }
+}
+
+function extractPageContent(raw){
+  var match=raw.match(/^## INTRO\b/m);
+  return match?raw.slice(match.index):raw;
+}
+
+function loadPageContent(){
+  return fetch('webpage.html').then(function(res){
+    if(!res.ok) throw new Error('HTTP '+res.status+' loading webpage.html');
+    return res.text();
+  }).then(function(html){
+    var doc=new DOMParser().parseFromString(html,'text/html');
+    var el=doc.getElementById('page-content');
+    return extractPageContent(el?el.textContent:html);
+  });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  loadPageContent().then(renderAll).catch(showContentLoadError);
+});
 document.addEventListener('beforematch',function(e){
   revealCollapsedForSearch(e.target);
 },true);

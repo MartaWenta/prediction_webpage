@@ -1,6 +1,9 @@
 // Parse the source content into structured sections for the page renderer.
-function parseContent() {
-  var raw=document.getElementById('page-content').textContent;
+function parseContent(raw) {
+  if(raw==null){
+    var el=document.getElementById('page-content');
+    raw=el?el.textContent:'';
+  }
   var lines=raw.split('\n');
   var result={ intro:[], glossary:[], checklist:[], phases:[] };
   var section=null, curPhase=null, curNode=null, curSub=null, curField=null;
