@@ -1,4 +1,5 @@
 /* ── TOKENS ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
 :root {
   --green-deep:  #1a3a2a;
   --green-mid:   #2d6a4f;
@@ -675,49 +676,132 @@ body.detail-overlay-open{
 }
 
 /* ── DETAIL PAGES ───────────────────────────────────────── */
-body.detail-page{
-  max-width:min(920px,calc(100% - 32px));
+body.detail-page,
+body.embedded-detail{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--ink);
+  line-height:1.65;
+}
+body.detail-page:not(.embedded-detail){
+  max-width:min(840px,calc(100% - 32px));
   min-height:calc(100vh - 32px);
   margin:16px auto;
-  padding:clamp(28px,5vw,56px);
-  background:
-    radial-gradient(circle at top left, rgba(82,183,136,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(193,127,36,0.12), transparent 24%),
-    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,240,232,0.98));
-  border:1px solid rgba(26,58,42,0.12);
-  border-top:4px solid var(--amber);
-  border-radius:30px;
-  box-shadow:0 20px 46px rgba(16,33,24,0.14);
-  overflow:hidden;
+  padding:36px 32px 48px;
+  background:#fff;
+  border:1px solid var(--rule);
+  border-left:3px solid var(--green-mid);
+  border-radius:8px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
 }
-body.detail-page::before{
+body.detail-page:not(.embedded-detail)::before{
   content:'Detail page';
   display:block;
-  margin-bottom:12px;
+  margin-bottom:10px;
   font-size:.68rem;
   font-weight:700;
   letter-spacing:.12em;
   text-transform:uppercase;
   color:var(--amber);
 }
-body.detail-page > h1:first-child{
+body.embedded-detail{
+  max-width:none;
+  min-height:0;
+  margin:0;
+  padding:32px 36px 40px;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  overflow:visible;
+  box-sizing:border-box;
+}
+body.embedded-detail::before{display:none}
+body.detail-page h1,
+body.embedded-detail h1,
+body.detail-page h2,
+body.embedded-detail h2,
+body.detail-page h3,
+body.embedded-detail h3{
   font-family:'Lora',serif;
-  font-size:clamp(1.5rem,3vw,2.25rem);
-  font-weight:600;
   color:var(--green-deep);
-  margin:0 0 18px;
-  padding-bottom:14px;
+  font-weight:600;
+}
+body.detail-page h1,
+body.embedded-detail h1{
+  font-size:clamp(1.35rem,2.8vw,1.85rem);
+  margin:0 0 16px;
+  padding-bottom:12px;
   border-bottom:1px solid var(--rule);
 }
-body.detail-page > p{
-  font-size:.93rem;
-  color:var(--ink-mid);
-  line-height:1.75;
-  margin:0 0 12px;
+body.detail-page h2,
+body.embedded-detail h2{
+  font-size:1.1rem;
+  margin:28px 0 10px;
 }
-body.detail-page > p strong,
-body.detail-page > p em{
+body.detail-page h3,
+body.embedded-detail h3{
+  font-size:.95rem;
+  margin:20px 0 8px;
+}
+body.detail-page p,
+body.embedded-detail p,
+body.detail-page li,
+body.embedded-detail li{
+  font-size:.845rem;
+  color:var(--ink-mid);
+  line-height:1.7;
+}
+body.detail-page p,
+body.embedded-detail p{
+  margin:9px 0 6px;
+}
+body.detail-page p:last-child,
+body.embedded-detail p:last-child{
+  margin-bottom:0;
+}
+body.detail-page ol,
+body.embedded-detail ol,
+body.detail-page ul:not(.sub-list),
+body.embedded-detail ul:not(.sub-list){
+  margin:8px 0;
+  padding-left:1.25rem;
+}
+body.detail-page li,
+body.embedded-detail li{
+  margin:3px 0;
+}
+body.detail-page hr,
+body.embedded-detail hr{
+  border:0;
+  border-top:1px solid var(--rule);
+  margin:24px 0;
+}
+body.detail-page .references,
+body.embedded-detail .references{
+  background:var(--parchment);
+  border:1px solid var(--rule);
+  border-radius:7px;
+  padding:12px 16px;
+  margin:16px 0;
+}
+body.detail-page .references p,
+body.embedded-detail .references p{
+  font-size:.79rem;
+  margin:6px 0;
+}
+body.detail-page strong,
+body.embedded-detail strong,
+body.detail-page em,
+body.embedded-detail em{
   color:var(--ink);
+}
+body.detail-page a,
+body.embedded-detail a{
+  color:var(--green-mid);
+}
+body.detail-page a:hover,
+body.embedded-detail a:hover{
+  color:var(--green-deep);
 }
 
 /* ── SVG CONNECTOR OVERLAY (document-anchored: scrolls with the page) ── */
@@ -751,15 +835,18 @@ body.show-links #connector-svg{display:block}
   .control-chip{
     font-size:.71rem;
   }
-  body.detail-page{
+  body.detail-page:not(.embedded-detail){
     max-width:calc(100% - 20px);
     min-height:calc(100vh - 20px);
     margin:10px auto;
-    padding:24px 18px 28px;
-    border-radius:24px;
+    padding:28px 22px 32px;
   }
-  body.detail-page > h1:first-child{
-    font-size:1.45rem;
+  body.embedded-detail{
+    padding:24px 20px 28px;
+  }
+  body.detail-page h1,
+  body.embedded-detail h1{
+    font-size:1.35rem;
   }
   .detail-overlay{
     padding:7px;

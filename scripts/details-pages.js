@@ -31,13 +31,6 @@ function openDetailOverlay(page, title){
       var doc=frame.contentDocument;
       if(!doc||!doc.body) return;
       doc.body.classList.add('embedded-detail');
-      var style=doc.getElementById('embedded-detail-overrides');
-      if(!style){
-        style=doc.createElement('style');
-        style.id='embedded-detail-overrides';
-        style.textContent='body.detail-page.embedded-detail{max-width:none;min-height:0;margin:0;padding:22px 26px 24px;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible;box-sizing:border-box}body.detail-page.embedded-detail::before{display:none}body.detail-page.embedded-detail>h1:first-child{margin:0 0 14px;padding:0;border:0}body.detail-page.embedded-detail>p{margin:0 0 10px}';
-        doc.head.appendChild(style);
-      }
       typesetDetailFrame(doc);
     }catch(err){}
   };
