@@ -28,27 +28,3 @@ window.BASIS_BIBLIO={
 };
 
 window.MODEL_INVERSION_BIBLIO=window.BASIS_BIBLIO;
-
-// Enable tap-friendly tooltip behaviour for glossary and footnote references.
-function enableTapTooltips(){
-  document.addEventListener('click',function(e){
-    var tip=e.target.closest?e.target.closest('.def, .footnote-ref'):null;
-    if(tip){
-      var wasOpen=tip.classList.contains('tapped');
-      var open=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
-      for(var i=0;i<open.length;i++) open[i].classList.remove('tapped');
-      if(!wasOpen) tip.classList.add('tapped');
-      e.stopPropagation();
-      return;
-    }
-    var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
-    for(var j=0;j<all.length;j++) all[j].classList.remove('tapped');
-  });
-
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){
-      var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
-      for(var i=0;i<all.length;i++) all[i].classList.remove('tapped');
-    }
-  });
-}

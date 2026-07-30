@@ -315,7 +315,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   margin:9px 0 6px;line-height:1.7;
 }
 .card-body ol,
-.sub-card-body ol,
 .rat-text ol,
 .phase-body ol,
 .si-desc ol{
@@ -324,7 +323,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   list-style-position:inside;
 }
 .card-body ul:not(.sub-list),
-.sub-card-body ul:not(.sub-list),
 .rat-text ul,
 .phase-body ul,
 .si-desc ul{
@@ -332,50 +330,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   padding-left:1.15rem;
 }
 .card-body li,
-.sub-card-body li,
 .rat-text li,
 .phase-body li,
 .si-desc li{
   margin:3px 0;
 }
-
-/* ── SUB-CARD (nested nodes like Parameterisation etc.) ─── */
-.sub-card{
-  background:var(--parchment);border-radius:7px;
-  border:1px solid var(--rule);
-  border-left:3px solid var(--green-mid);
-  margin:8px 0 0;overflow:visible;
-}
-.sub-card-hd{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 13px;cursor:pointer;user-select:none;
-}
-.sub-card-hd:hover{background:rgba(0,0,0,0.025)}
-.sub-card-title{
-  font-family:'Lora',serif;font-size:.85rem;
-  font-weight:600;flex:1;color:var(--ink);
-}
-.sub-card-chev{
-  width:14px;height:14px;color:var(--ink-muted);
-  flex-shrink:0;transition:transform .2s;
-}
-.sub-card.open .sub-card-chev{transform:rotate(90deg)}
-.sub-card-body{
-  display:block;
-  padding:4px 13px 11px;
-  border-top:1px solid var(--rule);
-  max-height:0;
-  opacity:0;
-  overflow:hidden;
-  pointer-events:none;
-}
-.sub-card.open .sub-card-body{
-  max-height:none;
-  opacity:1;
-  overflow:visible;
-  pointer-events:auto;
-}
-.sub-card-body p{font-size:.83rem;color:var(--ink-mid);margin:8px 0 5px;line-height:1.65}
 
 /* ── SUB-ITEMS (expandable method rows) ─────────────────── */
 .sub-list{list-style:none;margin:8px 0 0}
@@ -561,6 +520,15 @@ body.show-links .xlink{display:block}
   pointer-events:none;
 }
 .sec-sub{color:var(--ink-muted);font-size:.84rem;margin-bottom:18px}
+.checklist-item{
+  display:flex;gap:10px;align-items:flex-start;
+  background:#fff;border:1px solid var(--rule);
+  border-left:3px solid #cc3333;border-radius:7px;
+  padding:9px 13px;margin-bottom:7px;
+  font-size:0.84rem;color:var(--ink-mid);line-height:1.6;
+}
+.checklist-icon{flex-shrink:0}
+.checklist-jump{color:#cc3333;font-weight:600;text-decoration:none}
 .glos-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
   gap:9px;margin-top:12px;

@@ -43,7 +43,7 @@
 
 <div class="wrap" style="padding-bottom:0">
   <div class="card" id="intro-card" style="border-left-color:var(--amber);margin-top:28px">
-    <div class="card-hd" onclick="toggleCard(this.parentElement)">
+    <div class="card-hd">
       <span class="card-title">Introduction — start here</span>
       <span style="font-size:.68rem;padding:2px 7px;border-radius:20px;font-weight:600;background:#e8e8fd;color:#2a2a8b;border:1px solid #b0b0f5;margin-right:4px">For newcomers</span>
       <svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -84,7 +84,7 @@
 </dialog>
 
 <div class="wrap">
-  <h2 class="sec-title collapsed" id="checklist" onclick="toggleSection('s-checklist',this)">
+  <h2 class="sec-title collapsed" id="checklist" data-sec="s-checklist">
     Checklist — overlooked issues
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
@@ -92,7 +92,7 @@
     <p class="sec-sub">Issues that are commonly missed.</p>
     <div id="highlight-out"></div>
   </div>
-  <h2 class="sec-title collapsed" id="glossary" onclick="toggleSection('s-glossary',this)">
+  <h2 class="sec-title collapsed" id="glossary" data-sec="s-glossary">
     Glossary
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
@@ -100,7 +100,7 @@
     <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
     <div class="glos-grid" id="glos-out"></div>
   </div>
-  <h2 class="sec-title collapsed" id="references" onclick="toggleSection('s-references',this)">
+  <h2 class="sec-title collapsed" id="references" data-sec="s-references">
     References
     <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </h2>
@@ -374,7 +374,7 @@ General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
   >>> 📍 Local SA #local-sa
       Varies one parameter at a time around a nominal value.
 
---- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
+--- Model inversion, Calibration #model-inversion
 TEXT Model inversion serves two purposes:
 
 <ol>
@@ -491,7 +491,7 @@ scenario planning | Generating predictions under a range of plausible future con
 ## CHECKLIST
 Overparameterised models make poor predictions: too much detail may hurt | LINK long-term-planning
 Validation needs to be planned: split data into MANY subsets | LINK validation
-Upscale of microlevel processes | LINK model-types
+Upscale of microlevel processes | LINK specify-model
 Always use several models for structural uncertainty | LINK uncertainty-decomp
 Calibration is really useful | LINK model-inversion
 Uncertainty quantification is mandatory | LINK best-answer

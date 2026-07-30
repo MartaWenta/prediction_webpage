@@ -4,6 +4,7 @@ function typesetMath(roots){
   var els=[].concat(roots||[]).filter(Boolean);
   if(els.length) MathJax.typesetPromise(els);
 }
+window.typesetMath=typesetMath;
 
 function renderAll(){
   var data=parseContent();
@@ -14,21 +15,11 @@ function renderAll(){
   for(var i=0;i<data.phases.length;i++) html+=renderPhase(data.phases[i]);
   main.innerHTML=html;
 
-  var gHtml='';
-  for(var d=0;d<data.glossary.length;d++){
-    gHtml+='<div class="glos-item"><div class="glos-term">'+data.glossary[d].term+'</div><div class="glos-def">'+data.glossary[d].def+'</div></div>';
-  }
   var glosOut=document.getElementById('glos-out');
-  if(glosOut) glosOut.innerHTML=gHtml;
+  if(glosOut) glosOut.innerHTML=renderGlossary(data.glossary);
 
-  var hHtml='';
-  for(var h=0;h<data.checklist.length;h++){
-    var item=data.checklist[h];
-    var jump=item.link?' <a href="#'+item.link+'" style="color:#cc3333;font-weight:600;text-decoration:none">&rarr;</a>':'';
-    hHtml+='<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:9px 13px;margin-bottom:7px;font-size:0.84rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>'+item.text+jump+'</span></div>';
-  }
   var highlightOut=document.getElementById('highlight-out');
-  if(highlightOut) highlightOut.innerHTML=hHtml;
+  if(highlightOut) highlightOut.innerHTML=renderChecklist(data.checklist);
 
   if(window.CitationTools){
     window.CitationTools.hydrate({
@@ -40,10 +31,10 @@ function renderAll(){
     });
   }
 
-  autoDefine(document.getElementById('main'),data.glossary);
+  autoDefine(main,data.glossary);
   autoDefine(document.getElementById('intro-body'),data.glossary);
   autoDefine(highlightOut,data.glossary);
-  if(typeof enableTapTooltips==='function') enableTapTooltips();
+  enableTapTooltips();
 
   buildSidebar(data.phases);
   collectConnectors(data.phases);
@@ -62,15 +53,28 @@ function setFindHidden(el, hidden){
   else el.removeAttribute('hidden');
 }
 
-// Expand sections that become relevant after search or navigation updates.
+function setExpanded(container, bodySel, expanded, inverted){
+  var body=container.querySelector(bodySel);
+  if(inverted){
+    container.classList.toggle('collapsed',!expanded);
+    setFindHidden(body,!expanded);
+  }else{
+    container.classList.toggle('open',expanded);
+    setFindHidden(body,!expanded);
+  }
+}
+
+function toggleContainer(container, bodySel, inverted){
+  var expanded=inverted?container.classList.contains('collapsed'):!container.classList.contains('open');
+  setExpanded(container, bodySel, expanded, inverted);
+  setTimeout(drawConnectors,220);
+}
+
 function revealCollapsedForSearch(target){
   var node=target;
   while(node&&node!==document.body){
     if(node.classList){
-      if(node.classList.contains('sub-card-body')){
-        node.parentElement.classList.add('open');
-        setFindHidden(node,false);
-      }else if(node.classList.contains('card-body')){
+      if(node.classList.contains('card-body')){
         node.parentElement.classList.add('open');
         setFindHidden(node,false);
       }else if(node.classList.contains('phase-nodes')){
@@ -79,9 +83,8 @@ function revealCollapsedForSearch(target){
       }else if(node.classList.contains('sec-collapsed')){
         node.classList.remove('sec-collapsed');
         setFindHidden(node,false);
-        if(node.previousElementSibling&&node.previousElementSibling.classList&&node.previousElementSibling.classList.contains('sec-title')){
-          node.previousElementSibling.classList.remove('collapsed');
-        }
+        var prev=node.previousElementSibling;
+        if(prev&&prev.classList.contains('sec-title')) prev.classList.remove('collapsed');
       }
     }
     node=node.parentElement;
@@ -89,31 +92,22 @@ function revealCollapsedForSearch(target){
   setTimeout(drawConnectors,0);
 }
 
-function toggleCard(card){
-  card.classList.toggle('open');
-  setFindHidden(card.querySelector('.card-body'),!card.classList.contains('open'));
-  setTimeout(drawConnectors,220);
-}
-
-function toggleSubCard(card){
-  card.classList.toggle('open');
-  setFindHidden(card.querySelector('.sub-card-body'),!card.classList.contains('open'));
-  setTimeout(drawConnectors,220);
-}
-
-function togglePhase(phase){
-  phase.classList.toggle('collapsed');
-  setFindHidden(phase.querySelector('.phase-nodes'),phase.classList.contains('collapsed'));
-  setTimeout(drawConnectors,220);
-}
-
-function toggleSection(id,titleEl){
-  var content=document.getElementById(id);
+function toggleSection(contentId, titleEl){
+  var content=document.getElementById(contentId);
   var collapsed=content.classList.toggle('sec-collapsed');
   titleEl.classList.toggle('collapsed',collapsed);
   setFindHidden(content,collapsed);
   setTimeout(drawConnectors,220);
 }
+
+document.addEventListener('click',function(e){
+  var cardHd=e.target.closest&&e.target.closest('.card-hd');
+  if(cardHd){ toggleContainer(cardHd.parentElement,'.card-body',false); return; }
+  var phaseHd=e.target.closest&&e.target.closest('.phase-hd');
+  if(phaseHd){ toggleContainer(phaseHd.parentElement,'.phase-nodes',true); return; }
+  var secTitle=e.target.closest&&e.target.closest('.sec-title[data-sec]');
+  if(secTitle){ toggleSection(secTitle.getAttribute('data-sec'),secTitle); return; }
+});
 
 function toggleLinksState(enabled){
   document.body.classList.toggle('show-links',enabled);
@@ -133,22 +127,10 @@ function toggleFloatingControls(btn){
 
 function setAllSectionsExpanded(expanded){
   var phases=document.querySelectorAll('.phase');
-  for(var i=0;i<phases.length;i++){
-    phases[i].classList.toggle('collapsed',!expanded);
-    setFindHidden(phases[i].querySelector('.phase-nodes'),!expanded);
-  }
+  for(var i=0;i<phases.length;i++) setExpanded(phases[i],'.phase-nodes',expanded,true);
 
   var cards=document.querySelectorAll('.card');
-  for(var j=0;j<cards.length;j++){
-    cards[j].classList.toggle('open',expanded);
-    setFindHidden(cards[j].querySelector('.card-body'),!expanded);
-  }
-
-  var subCards=document.querySelectorAll('.sub-card');
-  for(var k=0;k<subCards.length;k++){
-    subCards[k].classList.toggle('open',expanded);
-    setFindHidden(subCards[k].querySelector('.sub-card-body'),!expanded);
-  }
+  for(var j=0;j<cards.length;j++) setExpanded(cards[j],'.card-body',expanded,false);
 
   var secTitles=document.querySelectorAll('.sec-title:not(.no-toggle)');
   for(var m=0;m<secTitles.length;m++) secTitles[m].classList.toggle('collapsed',!expanded);

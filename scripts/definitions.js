@@ -18,7 +18,6 @@ function autoDefine(root, glossary){
         (cls&&(cls.indexOf('def')!==-1||cls.indexOf('badge')!==-1||
                cls.indexOf('role-tag')!==-1||cls.indexOf('rat-label')!==-1||
                cls.indexOf('card-hd')!==-1||cls.indexOf('card-title')!==-1||
-               cls.indexOf('sub-card-hd')!==-1||cls.indexOf('sub-card-title')!==-1||
                cls.indexOf('phase-hd')!==-1||cls.indexOf('sub-item')!==-1))){
         skip=true;
         break;
@@ -66,4 +65,27 @@ function autoDefine(root, glossary){
       tn.parentNode.replaceChild(frag,tn);
     }
   }
+}
+
+function enableTapTooltips(){
+  document.addEventListener('click',function(e){
+    var tip=e.target.closest?e.target.closest('.def, .footnote-ref'):null;
+    if(tip){
+      var wasOpen=tip.classList.contains('tapped');
+      var open=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
+      for(var i=0;i<open.length;i++) open[i].classList.remove('tapped');
+      if(!wasOpen) tip.classList.add('tapped');
+      e.stopPropagation();
+      return;
+    }
+    var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
+    for(var j=0;j<all.length;j++) all[j].classList.remove('tapped');
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var all=document.querySelectorAll('.def.tapped, .footnote-ref.tapped');
+      for(var i=0;i<all.length;i++) all[i].classList.remove('tapped');
+    }
+  });
 }

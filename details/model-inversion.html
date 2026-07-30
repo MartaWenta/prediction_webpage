@@ -6,7 +6,21 @@
 <link rel="stylesheet" href="../basis.css">
 <script defer src="../scripts/citation-tools.js"></script>
 <script defer src="../scripts/references.js"></script>
-<script defer src="../scripts/modelinversion-boot.js"></script>
+<script defer src="../scripts/definitions.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  if(window.CitationTools){
+    window.CitationTools.hydrate({
+      biblioGlobal:'MODEL_INVERSION_BIBLIO',
+      citationSelector:'.cite-ref[data-cite]',
+      footnoteSupSelector:'.footnote-ref',
+      footnoteLabelSelector:'.footnote-label',
+      missingPrefix:'Reference details not found for '
+    });
+  }
+  enableTapTooltips();
+});
+</script>
 <title>Orientation: Model Inversion</title>
 </head>
 

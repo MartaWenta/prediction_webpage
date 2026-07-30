@@ -3,13 +3,13 @@ function typesetDetailFrame(doc){
   if(!doc||!doc.body) return;
   var win=doc.defaultView;
   if(win.MathJax&&win.MathJax.typesetPromise){
-    win.MathJax.typesetPromise();
+    win.MathJax.typesetPromise([doc.body]);
     return;
   }
   var s=doc.createElement('script');
   s.src='https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js';
   s.onload=function(){
-    if(win.MathJax&&win.MathJax.typesetPromise) win.MathJax.typesetPromise();
+    if(win.MathJax&&win.MathJax.typesetPromise) win.MathJax.typesetPromise([doc.body]);
   };
   doc.head.appendChild(s);
 }
@@ -83,9 +83,9 @@ document.addEventListener('click',function(e){
   e.preventDefault();
   var title=btn.getAttribute('data-detail-title')||'';
   if(!title||/^[a-z0-9-]+$/.test(title)){
-    var source=btn.closest('.card,.sub-card,.sub-item');
+    var source=btn.closest('.card,.sub-item,.phase');
     if(source){
-      var titleEl=source.querySelector('.card-title,.sub-card-title,.si-name');
+      var titleEl=source.querySelector('.card-title,.phase-title,.si-name');
       if(titleEl){
         var clone=titleEl.cloneNode(true);
         var roleTags=clone.querySelectorAll('.role-tag');
