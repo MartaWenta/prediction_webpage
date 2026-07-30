@@ -22,13 +22,18 @@
       .replace(/'/g,'&#39;');
   }
 
+  // Turn bare URLs in a bibliography entry into anchors. `label` replaces the
+  // visible URL text when given (used in tooltips, where space is tight).
+  function linkifyUrls(detail, label){
+    return escapeHtml(detail||'').replace(/https?:\/\/[^\s)<]+/gi,function(url){
+      var href=url.replace(/[.,;:]+$/,'');
+      var trailing=url.slice(href.length);
+      return '<a href="'+href+'" target="_blank" rel="noopener noreferrer">'+(label||href)+'</a>'+trailing;
+    });
+  }
+
   function citationHtml(detail){
-    var safe=escapeHtml(detail||'');
-    var m=(detail||'').match(/https?:\/\/doi\.org\/[^\s)]+/i);
-    if(!m) return safe;
-    var doiUrl=m[0].replace(/[.,;:]$/,'');
-    var safeDoi=escapeHtml(doiUrl);
-    return safe.replace(safeDoi,'<a href="'+safeDoi+'" target="_blank" rel="noopener noreferrer">link</a>');
+    return linkifyUrls(detail,'link');
   }
 
   function ensureTooltip(){
@@ -120,7 +125,7 @@
     for(var i=0;i<orderedKeys.length;i++){
       var key=orderedKeys[i];
       var detail=bib[key]||(missingPrefix+key+'.');
-      html.push('<p>['+(i+1)+'] '+escapeHtml(detail)+'</p>');
+      html.push('<p>['+(i+1)+'] '+linkifyUrls(detail)+'</p>');
     }
     outEl.innerHTML=html.join('');
   }

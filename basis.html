@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="basis.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 <script defer src="scripts/citation-tools.js"></script>
 <script defer src="scripts/references.js"></script>
 <script defer src="scripts/parser.js"></script>
@@ -99,6 +100,13 @@
     <p class="sec-sub">Definitions for all technical terms used in this resource.</p>
     <div class="glos-grid" id="glos-out"></div>
   </div>
+  <h2 class="sec-title collapsed" id="references" onclick="toggleSection('s-references',this)">
+    References
+    <svg class="sec-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </h2>
+  <div id="s-references" class="sec-collapsed" hidden="until-found">
+    <div class="refs-list" id="refs-out"></div>
+  </div>
 </div>
 
 <footer>
@@ -125,19 +133,55 @@
 ║                                                                              ║
 ║   RULES (please read once):                                                  ║
 ║                                                                              ║
-║   • Lines starting with ## are SECTION headings — do not change the ##       ║
-║   • Lines starting with === are PHASE headings — do not change the ===       ║
-║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
-║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
-║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
-║     EXAMPLE, IMPORTANT) are field labels — keep them as-is             ║
-║   • Everything after a keyword on the same line is the value                 ║
-║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
-║   • To leave a field empty, write [text] as a placeholder                    ║
+║   STRUCTURE — the start of a line decides what the line becomes:             ║
 ║                                                                              ║
-║   CROSS-PHASE CONNECTORS:                                                    ║
-║     LINK        target-id            links THIS box with target               ║
-║   (target-id is the #id or auto-slug of the box you are linking to)          ║
+║     ## SECTION     Top-level section. Only INTRO, PHASES, GLOSSARY and       ║
+║                    CHECKLIST are recognised.                                 ║
+║     === PHASE      Phase heading.                                            ║
+║     --- ITEM       Collapsible card inside the current phase.                ║
+║     >>> SUB-ITEM   Bullet inside the current item.                           ║
+║                                                                              ║
+║     Every phase, item and sub-item should end with an explicit id:           ║
+║         #my-id                                                               ║
+║     Example: "--- Specific question #specific-question"                      ║
+║                                                                              ║
+║   FIELDS — different keywords can be used:                                   ║
+║                                                                              ║
+║     ROLE           Who is responsible; shown as a tag next to the title.     ║
+║                    Put it directly under === for a whole phase. One line.    ║
+║     RATIONALE      Why this phase exists; shown in the "Rationale" block     ║
+║                    at the top of the phase. Phase-level only, so it must     ║
+║                    come before the first --- of that phase.                  ║
+║     TEXT           Card body text. Use before >>> sub-items and optionally   ║
+║                    again after them.                                         ║
+║     EXAMPLE        A highlighted example box at the bottom of the card.      ║
+║     IMPORTANT      A highlighted warning box at the bottom of the card.      ║
+║                    For both boxes, text put on the keyword line itself       ║
+║                    becomes the bold heading, and the lines below it the      ║
+║                    normal text.                                              ║
+║     LINK target-id Draws a cross-phase connector and a "Jump" link from      ║
+║                    this card to the card carrying that id.                   ║
+║                                                                              ║
+║   CITATIONS:                                                                 ║
+║                                                                              ║
+║     Cite a work with:                                                        ║
+║         <sup class="cite-ref" data-cite="dormann 2026"></sup>                ║
+║     The key has to exist in scripts/references.js                            ║
+║                                                                              ║
+║   GLOSSARY (under ## GLOSSARY):                                              ║
+║                                                                              ║
+║     One entry per line, as "term | definition".                              ║
+║     Terms are underlined automatically wherever they appear in the text      ║
+║     (once per paragraph), and show their definition on hover.                ║
+║                                                                              ║
+║   CHECKLIST (under ## CHECKLIST):                                            ║
+║                                                                              ║
+║     One entry per line, either "text" on its own, or                         ║
+║                                                                              ║
+║   "MORE DETAILS" PAGES:                                                      ║
+║                                                                              ║
+║     Every phase, item and sub-item carries a "More details" button.          ║
+║     Add a page at details/{id}.html — the {id} is the #id on that line.      ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
@@ -148,85 +192,95 @@
 Predictions serve two goals: addressing practical, applied questions with stakeholders,
 AND advancing scientific understanding of a system by falsifying causal predictions.
 
-There is a philosophical difference between predictions in applied and fundamental
-science. Only under very specific conditions is prediction science — in particular when
-it achieves validation of structure. A "context" explanation points to a system defined
-too narrowly, and may lead eventually to incompressible system descriptions if everything
-always remains context-dependent. Keep the long-term view of science in mind.
+There is a philosophical difference between predictions in applied and fundamental science. Only under very specific conditions is prediction science, in particular when it achieves validation of structure. A "context" explanation points to a system defined too narrowly, and may lead eventually to incompressible system descriptions if everything always remains context-dependent. Keep the long-term view of science in mind.
 
 The quality of predictions is currently unknown due to lack of uncertainty quantification.
 
-Newcomers may want orientation — this resource provides it.
+Newcomers may want orientation, this resource provides it.
 
-A model is a flexible thing here: it can be a set of expert statements, a process model,
-or a deep-learning analysis. A prediction is a quantitative statement of a model,
-including forecasts and projections.
+A model is a flexible thing here: it can be a set of expert statements, a process model, or a deep-learning analysis. A prediction is a quantitative statement of a model, including forecasts and projections.
 
 ## PHASES
 
-=== 1. Setting the stage: Why predict?
+=== 1. Setting the stage: Why predict? #setting-stage
 
 ROLE Modeller + Stakeholder
-RATIONALE <p>This step specifies the actual prediction target and the context in which the prediction is to be evaluated.</p> <p>Specifying the prediction target - including the quantities to be predicted, the relevant drivers, and the spatial, temporal, and organizational scales of interest - defines the scope of the prediction problem. This determines which processes and data are relevant, ensures that the model, available data, and prediction objective are aligned, constrains model complexity to what is required, and provides an early opportunity to assess whether the necessary information exists before substantial modeling effort is invested.</p> <p>
-  <b>Key questions</b></p><p>
-  <em>Purpose:</em> Why is the prediction needed, who will use it, and what decision or action will it inform? <p>
-  <em>Prediction target:</em> Which quantities should be predicted? At what spatial, temporal, and organizational scales, and over what prediction horizon? Which drivers and processes are expected to determine the target<p> 
-  <em>Feasibility:</em> Can the target quantity be observed or measured for model development and evaluation? Are sufficient data, knowledge, and other resources available? Are the intended scenarios and assumptions within the domain where the model is expected to be valid? How good does a prediction need to be to be "useful" in a particular context?  No prediction papers ever address this. How good can we reasonably expect our prediction to be given the current data set and its limitations?  Hence, how much effort needs to be put into getting better data.<p>
-  <em>Performance requirements:</em> What level of accuracy and uncertainty is acceptable for the intended application? <p>
-  <em>Assumptions and scope:</em> What simplifying assumptions are necessary, and how might they affect the interpretation and applicability of the predictions? </p>
+RATIONALE
 
+This step specifies the actual prediction target and the context in which the prediction is to be evaluated.
 
---- Specific question
-STAKEHOLDER
-TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller, to ensure 
-  that the prediction is useful to the stakeholder and feasible as model target. 
-  (For example, a stakeholder may want to know the effect of building a dam on 
-  malaria infection rates, but the modeller has no ability to quantify malaria 
-  transmissions near stagnant water bodies. Then a prediction task seems infeasible. 
-  &#128721;)<p>
+Specifying the prediction target - including the quantities to be predicted, the relevant drivers, and the spatial, temporal, and organizational scales of interest - defines the scope of the prediction problem. This determines which processes and data are relevant, ensures that the model, available data, and prediction objective are aligned, constrains model complexity to what is required, and provides an early opportunity to assess whether the necessary information exists before substantial modeling effort is invested.
 
---- Target that can be modelled and observed
-TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. <p>At this point, also the precision required should be specified. Is it enough to know the flooding level up to a 95%-confidence interval of 1 m? Would knowing the distribution of an introduced mosquito carrying an infectious disease to the nearest 50 km x 50 km pixel on a map be sufficient? If not: STOP sign) <div class="references"> <p>Actual references</p> </div>
+<b>Key questions</b>
 
---- Scenario planning: Are imaginable results useful to the question?
-TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign.
+<em>Purpose:</em> Why is the prediction needed, who will use it, and what decision or action will it inform?
+
+<em>Prediction target:</em> Which quantities should be predicted? At what spatial, temporal, and organizational scales, and over what prediction horizon? Which drivers and processes are expected to determine the target?
+
+<em>Feasibility:</em> Can the target quantity be observed or measured for model development and evaluation? Are sufficient data, knowledge, and other resources available? Are the intended scenarios and assumptions within the domain where the model is expected to be valid? How good does a prediction need to be to be "useful" in a particular context? No prediction papers ever address this. How good can we reasonably expect our prediction to be given the current data set and its limitations? Hence, how much effort needs to be put into getting better data.
+
+<em>Performance requirements:</em> What level of accuracy and uncertainty is acceptable for the intended application?
+
+<em>Assumptions and scope:</em> What simplifying assumptions are necessary, and how might they affect the interpretation and applicability of the predictions?
+
+--- Specific question #specific-question
+ROLE  Stakeholder
+TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller, to ensure that the prediction is useful to the stakeholder and feasible as model target. 
+
+For example, a stakeholder may want to know the effect of building a dam on malaria infection rates, but the modeller has no ability to quantify malaria transmissions near stagnant water bodies. Then a prediction task seems infeasible 🛑
+
+--- Target that can be modelled and observed #target-modelled
+TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, "environmental health" is no suitable target of a model prediction, while "bird species richness" or "tick density" are. Vague targets indicate unclear question and lead to arbitrary decisions.)
+
+At this point, also the precision required should be specified. Is it enough to know the flooding level up to a 95%-confidence interval of 1 m? Would knowing the distribution of an introduced mosquito carrying an infectious disease to the nearest 50 km x 50 km pixel on a map be sufficient? If not: 🛑
+
+--- Scenario planning: Are imaginable results useful to the question? #scenario-planning
+TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. 
+
+For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time 🛑
+
 EXAMPLE 🪏 Worked example (fisheries)
-  How much fish biomass can be extracted from this region of the ocean next year
-  and remain below maximum sustainable yield? <span style="color: red">There is text in the html to go below this point!</span>
-
-
+How much fish biomass can be extracted from this region of the ocean next year and remain below maximum sustainable yield?
 Yields: specific question to be addressed by predictions; identified specific prediction target(s) and required precision; clear usefulness whatever the prediction will be.
 
 
-=== 2. Identifying data and modelling approaches
+=== 2. Identifying data and modelling approaches #identifying-data
 ROLE Modeller
 RATIONALE This step explores whether data and modelling approaches are available to allow predicting the system and target identified in the previous step to a degree useful for answering the question.
 
---- Are necessary <i>data of sufficient quality</i> are available? No: STOP! #data-available
-TEXT Data requirements depend on the scale and precision of the desired prediction. When only rough estimates are needed, also coarse or older data may suffice. If a model needs to be developed, parameterised, and validated, there must be sufficient data for several iterations (see long-term planning). When the model needs to be developed, data are required not only for the overall modelled state variable, but for each of the model's components or modules; if those are from other sources, can these sources be assumed to be useful for the question at hand? (For example, if a tree-growth model uses a nutrient acquisition model from another tree in another ecosystem, possibly a local data set must be found to re-calibrate the module parameters and support model inversion.)
+--- Are necessary <i>data of sufficient quality</i> are available? No: 🛑 #data-available
+TEXT Data requirements depend on the scale and precision of the desired prediction. When only rough estimates are needed, also coarse or older data may suffice. If a model needs to be developed, parameterised, and validated, there must be sufficient data for several iterations (see long-term planning). When the model needs to be developed, data are required not only for the overall modelled state variable, but for each of the model's components or modules; if those are from other sources, can these sources be assumed to be useful for the question at hand? 
+
+For example, if a tree-growth model uses a nutrient acquisition model from another tree in another ecosystem, possibly a local data set must be found to re-calibrate the module parameters and support model inversion.
+
 LINK validation
 
 --- Select / develop modelling approaches matching question and data #modelling-approaches
 TEXT Rarely is there only one right type of model. Depending on expertise, time, money, required realism, very different approaches are worth considering:
-  >>> 📋 Expert statements
-      Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
+
+  >>> 📋 Expert statements #expert-statements
+    Form a commission to evaluate data based on their knowledge and make quantitative statements with uncertainty estimates, incl. minority opinions.
+
     General references: <sup class="cite-ref" data-cite="barber 2012"></sup>, <sup class="cite-ref" data-cite="bishop 2024"></sup>, <sup class="cite-ref" data-cite="hastie 2009"></sup>, <sup class="cite-ref" data-cite="hyndman 2021"></sup>, <sup class="cite-ref" data-cite="west 1997"></sup>
-  >>> 🤖 Machine/Deep-Learning, Statistical model
+  >>> 🤖 Machine/Deep-Learning, Statistical model #ml-dl
     Data-driven, no constraints prediction approaches.
-  >>> 🔢 (O/P)DE
-      Rigorous mathematical structure for dynamic systems in continuous time (Ordinary or Partial Differential Equations) or discrete time (Difference Equations), possibly with stochastic elements and/or external events or forcings. <p>A key advantage is that a rich mathematical tradition and toolbox exists to analyse such models even across a wider range of parameters. However, many such analyses assume equilibrium conditions, while we may be facing predictions out of equilibrium ("transient dynamics"). Still, even when simulated as forward model, ODE/DE are well-understood model types with excellent software support.
-  >>> ⚙️ Coded process model, incl. agent-based model
-      Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
-  >>> &#128101; other
-      [text]
+  >>> 🔢 (O/P)DE #o-p-de
+    Rigorous mathematical structure for dynamic systems in continuous time (Ordinary or Partial Differential Equations) or discrete time (Difference Equations), possibly with stochastic elements and/or external events or forcings.
 
-If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
+    A key advantage is that a rich mathematical tradition and toolbox exists to analyse such models even across a wider range of parameters. However, many such analyses assume equilibrium conditions, while we may be facing predictions out of equilibrium ("transient dynamics"). Still, even when simulated as forward model, ODE/DE are well-understood model types with excellent software support.
+  >>> ⚙️ Coded process model, incl. agent-based model #coded-process
+    Mathematical model implementation with flexibility in specification, allowing, e.g., for rules, thresholds, strict conditions. Require many often arbitrary decisions WRT implementational details; see model characteristics below.
+  >>> 👥 other #other
+    [text]
 
---- Specify required model characteristics
+TEXT If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: <a target="_blank" href="https://en.wikipedia.org/wiki/Argumentum_ad_populum">argumentum ad populum</a>). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: 🛑 
+
+--- Specify required model characteristics #specify-model
 TEXT  The prediction purpose of stage 1 may be specific enough to narrow down the implementation with respect to the following characteristics. If not, here are few questions that may help select among the opposites listed below:
+
 <ol>
   <li>Is the purpose to explore a proof-of-principle or strategy?</li>
-  <li>Model as repository of knowledge or as Unix philosophy: "Do one thing, and do that well." DOTADTW</li>
+  <li>Model as repository of knowledge or as Unix philosophy: "Do one thing, and do that well."</li>
   <li>Will the model be fitted?</li>
   <li>Is there clear demonstration in the literature that a certain approach is necessary, e.g. resolution, complexity?</li>
   <li>Are you familiar with some but not other approaches? This is a poor but common guide!</li>
@@ -234,144 +288,185 @@ TEXT  The prediction purpose of stage 1 may be specific enough to narrow down th
   <li>Do you have many or few data?</li>
   <li>Is your understanding of system and model components very complete?</li>
 </ol>
-<p>In case of doubt, the simpler version may be preferable:
+
+In case of doubt, the simpler version may be preferable:
+
 IMPORTANT 🔔 Upscale of microlevel processes.
-  >>> 🗺️ Spatially implicit / explicit
-      Otto
-  >>> 🎲 Stochastic/deterministic
+  >>> 🗺️ Spatially implicit / explicit #spatially-implicit
       [text]
-  >>> ⏱️ Continuous/Discrete time
+  >>> 🎲 Stochastic/deterministic #stochastic-deterministic
       [text]
-  >>> 🐟 Discrete individuals/continuous biomass
+  >>> ⏱️ Continuous/Discrete time #continuous-discrete
       [text]
-  >>> 🔄 With / without feedback
+  >>> 🐟 Discrete individuals/continuous biomass #discrete-individuals-continuous-biomass
       [text]
-  >>> &#128208; explicit management intervention rules
+  >>> 🔄 With / without feedback #with-without
+      [text]
+  >>> 📐 Explicit management intervention rules #explicit-management
       [text]
 
-  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. <sup class="cite-ref" data-cite="Dormann 2018"></sup>
+TEXT Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. <sup class="cite-ref" data-cite="Dormann 2018"></sup>
 
 
---- Long-term planning
+--- Long-term planning #long-term-planning
 TEXT This prediction is often part of a longer activity and commitment. Think through the next years and far beyond the current prediction activity. Think of all resources: stakeholder willingness, data availability, computational resources, developer time. Plan this prediction with a longer-term plan in your mind.
-  >>> 👩‍🔬 Efficient use of experts and stakeholders
+  >>> 👩‍🔬 Efficient use of experts and stakeholders #efficient-use
       All stakeholders require tactful handling, including not wasting their time on unnecessary meetings and deliberations. The must be employed for question framing and interpretation (first and last step of this Orientation), but will develop fatigue if over-used. 
-  >>> 📊 Data for many validations in the modelling cycle
+  >>> 📊 Data for many validations in the modelling cycle #data-validations
       Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
-      🔔 Overparameterised models make poor predictions — too much detail may hurt <sup class="cite-ref" data-cite="Roberts 2017"></sup>
-  >>> 💻 Computational resources
+      🔔 Overparameterised models make poor predictions, too much detail may hurt <sup class="cite-ref" data-cite="Roberts 2017"></sup>
+  >>> 💻 Computational resources #computational-resources
       Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
 
 
-=== 3. Modelling
+=== 3. Modelling #modelling
 ROLE Modeller
 RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so. (This section contains the majority of technical detail.)
 
---- Establish workflow for running models
-TEXT Any model used for prediction will need to be ru-run many times (e.g. in sensitivity analysis or uncertainty analysis, or in model inversion, or as part of model development's debugging). A pipeline to easily run the prediction machinery is essential for efficient work, to launch it on HPC, and it also helps with documentation and reproducibility.<p>The pipeline may be a simple script in a higher-level language or in bash; or it may link in formal <a target="_blank" href="https://en.wikipedia.org/wiki/Scientific_workflow_system">scientific workflow software</a>. Open-source software is preferable; versioning is mandatory.<p> This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP.
+--- Establish workflow for running models #establish-workflow
+TEXT
+Any model used for prediction will need to be ru-run many times (e.g. in sensitivity analysis or uncertainty analysis, or in model inversion, or as part of model development's debugging). A pipeline to easily run the prediction machinery is essential for efficient work, to launch it on HPC, and it also helps with documentation and reproducibility.
 
---- Identifying trustworthy models
-TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP 
-  General references: <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="getz 2018"></sup>
+The pipeline may be a simple script in a higher-level language or in bash; or it may link in formal <a target="_blank" href="https://en.wikipedia.org/wiki/Scientific_workflow_system">scientific workflow software</a>. Open-source software is preferable; versioning is mandatory.
+
+This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: 🛑
+
+--- Identifying trustworthy models #identifying-models
+TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: 🛑
+
+General references: <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="getz 2018"></sup>
   
-  --- Code verification/unit testing (for own code)
-  TEXT Coded models should be checked to be working correctly. This is important in model development (and there often referred to as <a target="_blank" href="https://en.wikipedia.org/wiki/Unit_testing">"unit testing"</a>), but also for users of models: we want to make sure that the model does what it is supposed to do.<p>The essential step to do so is by defining test cases, where the correct output of the model component is known; unless the model produces this known output, it is faulty. In advanced software development, unit testing is automatised and carried out after every major modification of code (e.g. for <a target="_blank" href="https://testthat.r-lib.org">R</a>, <a target="_blank" href="https://docs.python.org/3/library/unittest.html">Python</a>, <a target="_blank" href="https://www.geeksforgeeks.org/software-testing/embedded-c-cpp-unit-testing-basics">C++</a>). Unit testing is necessary but not sufficient for code verification; other elements of testing need to be considered as well (<a target="_blank" href="https://en.wikipedia.org/wiki/Software_testing">scalability, maintainability, performance</a>).
-  
-  --- Is model "rich" enough?
-  TEXT When prediction is about a real world system, so is the model from which it is derived. Thus, the underlying model must be able to reproduce relevant features and dynamics of that real world system. To do so, its dynamics must be "rich" enough = sufficiently powerful = covering enough of the feature space of the system under consideration.<p>For example, typical models of the financial market are unable to produce the kind of bubbles and bursts we witnessed in the 1920 and 2008 <i>from endogenous dynamics</i>. But, as Farmer (2024) argued, the 2008 bubble was mostly internal. So, for such a system we need a feedback-rich complex adaptive system representation, in economics, in biology, in medicine, in environmental science. Only if the model can have peaks of the same order of magnitude as those observed, if response-times are quick (or drawn out) enough, if ranges of patterns can be produced that include the observed, only then is the model likely to be "rich" enough to also include the system under consideration.
-  General references: <sup class="cite-ref" data-cite="farmer 2024"></sup>
+--- Code verification/unit testing (for own code) #code-verification
+TEXT
+Coded models should be checked to be working correctly. This is important in model development (and there often referred to as <a target="_blank" href="https://en.wikipedia.org/wiki/Unit_testing">"unit testing"</a>), but also for users of models: we want to make sure that the model does what it is supposed to do.
 
-  
-  --- Parameterisation
-  Modeller, STAKEHOLDER <!-- currently ignored -->
-  TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.<p>Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling.<p>One of the design decisions about model characteristics is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
-  General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
-  
-  --- Sensitivity analysis (global vs local)
-  TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.<p>The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.<p>Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters. [model characteristics]  
-  General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
-    >>> 🌐 Global SA
-        Varies all parameters simultaneously across their full range.
-    >>> 📍 Local SA
-        Varies one parameter at a time around a nominal value.
-  
-  --- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
-  TEXT Model inversion serves two purposes:
-    (1) Identify structural errors in the model.
-    (2) Improve representation of observations.
-    Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
-  IMPORTANT 🔔 Calibration is really useful.
-  LINK validation
-    >>> 🔬 Optimisation
-        [text]
-    >>> 🎰 MCMC
-        [text]
-    >>> 🧮 ABC
-        [text]
-    >>> 🧩 POM
-        [text]
+The essential step to do so is by defining test cases, where the correct output of the model component is known; unless the model produces this known output, it is faulty. In advanced software development, unit testing is automatised and carried out after every major modification of code (e.g. for <a target="_blank" href="https://testthat.r-lib.org">R</a>, <a target="_blank" href="https://docs.python.org/3/library/unittest.html">Python</a>, <a target="_blank" href="https://www.geeksforgeeks.org/software-testing/embedded-c-cpp-unit-testing-basics">C++</a>). Unit testing is necessary but not sufficient for code verification; other elements of testing need to be considered as well (<a target="_blank" href="https://en.wikipedia.org/wiki/Software_testing">scalability, maintainability, performance</a>).
 
-  --- Uncertainty analysis
-  TEXT Uncertainty analysis (UA) <sup class="cite-ref" data-cite="Committee 2012"></sup> aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling <sup class="cite-ref" data-cite="Taylor 1997"></sup>, <sup class="cite-ref" data-cite="Benaroya 2005"></sup>, <sup class="cite-ref" data-cite="Wolter 2007"></sup>. Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.<p>
-  After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty (“uncertainty decomposition”), using ANOVA or variable-importance-based approaches. If test/validation data are available:  (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and  (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS <sup class="cite-ref" data-cite="Matheson 1976"></sup>). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
+--- Is model "rich" enough? #model-rich
+TEXT When prediction is about a real world system, so is the model from which it is derived. Thus, the underlying model must be able to reproduce relevant features and dynamics of that real world system. To do so, its dynamics must be "rich" enough = sufficiently powerful = covering enough of the feature space of the system under consideration.
 
-  IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
+For example, typical models of the financial market are unable to produce the kind of bubbles and bursts we witnessed in the 1920 and 2008 <i>from endogenous dynamics</i>. But, as Farmer (2024) argued, the 2008 bubble was mostly internal. So, for such a system we need a feedback-rich complex adaptive system representation, in economics, in biology, in medicine, in environmental science. Only if the model can have peaks of the same order of magnitude as those observed, if response-times are quick (or drawn out) enough, if ranges of patterns can be produced that include the observed, only then is the model likely to be "rich" enough to also include the system under consideration.
 
-  --- Validation
-  TEXT External validation is an honest estimate of prediction quality.
-  IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
-  LINK long-term-plan
-
-  --- Documentation of model: code, development, unit testing, validation, usage 
-  TEXT Documentation serves transparency of the science and use of the model. LLMs may be usefully employed to support documentation (particularly of code and use). In some fields, documentation standards exist (e.g. ODD: Grimm et al. 2010; TRACE: Schmolke et al. 2010).<p>
-    <ol>
-      <li>Code documentation: what is each element of the code doing (Swannack et al. 2025)?</li>
-      <li>Development: Versioning, allowing rollback to earlier version in case of bugs. Which data sets have been used for which model component?</li>
-     <li>Unit testing: how is code evaluated for correct working, which tests are actually implemented?</li>
-      <li>Validation: which data sets have been used to validate the model? How well did the model do? What are the prediction uncertainty levels derived from this validation?</li>
-      <li>Use: How can the model be used, how can predictions be made? This typically takes the form of one or several tutorials.</li>
-    </ol>
-  General references: <sup class="cite-ref" data-cite="grimm 2010"></sup>, <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="swannack 2025"></sup>
+General references: <sup class="cite-ref" data-cite="farmer 2024"></sup>
 
 
-=== 4. Predicting
+--- Parameterisation #parameterisation
+ROLE Modeller + stakeholder
+TEXT It seems an ideal of (environmental) modelling that all model parameters are physically/chemically/biologically interpretable. For such parameters, field and lab measurements can be used to state values for the parameter in the model. This is the "parameterisation" of a model.
+
+Unobservable model parameters and processes ("latent parameters/processes") cannot be determined by measurement. Some of these are (sometimes disrespectfully) referred to as "fudge factors", particularly if they cannot be scientifically interpreted. Their value can be found by, formally or informally, "tuning" them to make the overall model reproduce the desired patterns. The formal way to do so would use inverse modelling.
+
+One of the design decisions about model characteristics is particularly pertinent to parameterisation: is the model a repository of knowledge or a "Do one thing and do that well." (DOTADTW)? A repository inevitable needs to represent alternative formulations of a process, when the knowledge has not condensed yet (think: different ways to represent water uptake by plants). A DOTADTW "only" needs to work well for the system state under consideration, with no attention to processes further away from the target process. A repository-style model with rarely be fit-able to data; literature/field/lab-derived parameter values (and their uncertainty) are the norm.
+
+General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
+
+--- Sensitivity analysis (global vs local) #sensitivity-analysis
+TEXT A sensitivity analysis (SA) quantifies the influence of model parameter uncertainty by computing the effect of changing a model parameter on a model output \(\hat{y}\). So, if a model represents several state variables, then there will be a SA for each of them. A local SA investigates the response of \(\hat{y}\) to changing one parameter, a global SA changes all model parameters simultaneously.
+
+The "elasticity" of a model parameter is the standardised sensitivity of a parameter, i.e. the change in the SA divided by how much the parameter was changed. Often elasticities are presented in a SA because they are comparable across parameters.
+
+Sensitivity analysis is a well-established yet wide modelling activity. There are different frameworks (Morris, Sobol', Bayesian and machine-learning-based), differing in efficiency and ability to accommodate the shape of the parameters' PDF and the correlation among parameters.
+
+General references: <sup class="cite-ref" data-cite="sun 2015"></sup>
+
+  >>> 🌐 Global SA #global-sa
+      Varies all parameters simultaneously across their full range.
+  >>> 📍 Local SA #local-sa
+      Varies one parameter at a time around a nominal value.
+
+--- Model inversion, Calibration <span style="color: red">Find better term, in the sense of "Fitting the model to data"</span> #model-inversion
+TEXT Model inversion serves two purposes:
+
+<ol>
+  <li> Identify structural errors in the model.
+  <li> Improve representation of observations.
+</ol>
+
+Model inversion requires some technical overhead to "invert" the model. Optimising multiple criteria is the key challenge. Model outputs are sometimes biased or systematically distorted and require, well, calibrating (in the sense of a calibration curve in chemistry).
+
+IMPORTANT 🔔 Calibration is really useful.
+LINK validation
+  >>> 🔬 Optimisation #optimisation
+      [text]
+  >>> 🎰 MCMC #mcmc
+      [text]
+  >>> 🧮 ABC #abc
+      [text]
+  >>> 🧩 POM #pom
+      [text]
+
+--- Uncertainty analysis #uncertainty-analysis
+TEXT Uncertainty analysis (UA) <sup class="cite-ref" data-cite="Committee 2012"></sup> aims at representing the consequences of all sources of variation on the prediction (data, model structure, model parameters, model stochasticity, initial values, scenarios, and so forth: <sup class="cite-ref" data-cite="Dormann 2026"></sup>). Methods to propagate uncertainty through a model-and-prediction-pipeline include bootstrapping, Taylor expansions and Bayesian modelling <sup class="cite-ref" data-cite="Taylor 1997"></sup>, <sup class="cite-ref" data-cite="Benaroya 2005"></sup>, <sup class="cite-ref" data-cite="Wolter 2007"></sup>. Typically UA results in a probability distribution (PDF), summarised e.g. by mean or median and 95% confidence interval. In contrast to raw model residuals (i.e. difference between point prediction and observation), PDFs allow expressing residuals in relation to the prediction uncertainty, e.g. as percentiles or as z-score.
+
+After quantifying prediction uncertainty, three follow-up steps may follow: (1) an analysis of the sources of uncertainty ("uncertainty decomposition"), using ANOVA or variable-importance-based approaches. If test/validation data are available: (2) quantification of expected prediction error (based on raw residuals of prediction to test data, e.g. RMSPE); and (3) computation of some measure of prediction quality based on the PDF (log-likelihood, or, if no assumption about the PDF shall be made, by CPRS <sup class="cite-ref" data-cite="Matheson 1976"></sup>). The last step can be extended to compute prediction limits (<sup class="cite-ref" data-cite="Wesselkamp 2025"></sup>).
+
+IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
+
+--- Validation #validation
+TEXT External validation is an honest estimate of prediction quality.
+IMPORTANT 🔔 Validation needs to be planned: split data into MANY subsets.
+LINK long-term-plan
+
+--- Documentation of model: code, development, unit testing, validation, usage #documentation-model
+TEXT Documentation serves transparency of the science and use of the model. LLMs may be usefully employed to support documentation (particularly of code and use). In some fields, documentation standards exist (e.g. ODD: Grimm et al. 2010; TRACE: Schmolke et al. 2010).
+
+<ol>
+  <li>Code documentation: what is each element of the code doing (Swannack et al. 2025)?</li>
+  <li>Development: Versioning, allowing rollback to earlier version in case of bugs. Which data sets have been used for which model component?</li>
+  <li>Unit testing: how is code evaluated for correct working, which tests are actually implemented?</li>
+  <li>Validation: which data sets have been used to validate the model? How well did the model do? What are the prediction uncertainty levels derived from this validation?</li>
+  <li>Use: How can the model be used, how can predictions be made? This typically takes the form of one or several tutorials.</li>
+</ol>
+
+General references: <sup class="cite-ref" data-cite="grimm 2010"></sup>, <sup class="cite-ref" data-cite="schmolke 2010"></sup>, <sup class="cite-ref" data-cite="swannack 2025"></sup>
+
+
+=== 4. Predicting #predicting
 ROLE Modeller
 RATIONALE This is the actual act of creating a quantitative “conditional” statement based on the model(s). “Conditional” means that the statement depends on the input provided; for scenarios the prediction would then be “projections”, for short term the prediction would be a “forecast”. The actual prediction products may need to be tailored to the stakeholder, but as scientific output they must adhere to some expected standards.
 
 --- Best answer with uncertainty indication #best-answer
-TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself. <p>Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making. If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty. <p>For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty can help pinpoint the main sources of uncertainty, motivating future science. General references: <sup class="cite-ref" data-cite="kaye 2012"></sup>, <sup class="cite-ref" data-cite="spiegelhalter 2025"></sup>
+TEXT The answer to the question identified in Stage 1 is the main point of this entire work. Due to the uncertainty in the various steps of modelling (model structure, input, initial states, parameters, options, stochasticity: produced in Stage 3), there will not be a single answer, but a range of answers. In addition to giving a "best guess" (which could be, e.g., the mean, median, mode or a robust statistic), also the uncertainty must be quantified. Arguably, uncertainty quantification is tedious and long-winding, but without a probability distribution of the prediction, one cannot judge the quality and relevance of the prediction itself.
+
+Ideally, the answer is a PDF; knowing the distribution of uncertainty allows using it in decision making. If that is not possible, it should be something like the 95%-confidence interval (or equivalent in robust or Bayesian statistics). After transformation to normality, also the signal-to-noise ratio ("how many sigmas is the result?") may be a reasonable. When using maps to communicate predictions, it may be advisable to hash pixels proportional to their uncertainty.
+
+For many questions, the error bars may widely exceed the signal, thereby indicating that our current knowledge is insufficient for making "useful" statements. A decomposition of uncertainty can help pinpoint the main sources of uncertainty, motivating future science. General references: <sup class="cite-ref" data-cite="kaye 2012"></sup>, <sup class="cite-ref" data-cite="spiegelhalter 2025"></sup>
 
 EXAMPLE 🪏 Worked example (fisheries)
-  How much fish biomass can be extracted from this region of the ocean next year
-  and remain below maximum sustainable yield?
+  How much fish biomass can be extracted from this region of the ocean next year and remain below maximum sustainable yield?
 IMPORTANT 🔔 Uncertainty quantification is mandatory.
   Co-interpretation of results and their uncertainty — PDF, also on maps — is required.
 
---- Plausibility check
-TEXT The credo for this step is: "I don't want to look like a fool." To avoid embarrassment, predictions should be checked for plausibility. Apart from internal consistency (Can that much soil actually erode away? Do trees grow that fast?), the comparison with published data is an important step. If the prediction is widely outside previous observations, they may still be correct, but being an outlier certainly warrants double checking model(s), data, parameters and scenarios. <p>If predictions survive double-checking but still "feel wrong", it is particularly important to communicate the assumptions behind modelling approach, the model code and parameterisation. Also the (Mahalanobis) distance between training and prediction data can be quantified to illustrate how unusual the prediction situation is.
+--- Plausibility check #plausibility-check
+TEXT The credo for this step is: "I don't want to look like a fool." To avoid embarrassment, predictions should be checked for plausibility. Apart from internal consistency (Can that much soil actually erode away? Do trees grow that fast?), the comparison with published data is an important step. If the prediction is widely outside previous observations, they may still be correct, but being an outlier certainly warrants double checking model(s), data, parameters and scenarios.
+
+If predictions survive double-checking but still "feel wrong", it is particularly important to communicate the assumptions behind modelling approach, the model code and parameterisation. Also the (Mahalanobis) distance between training and prediction data can be quantified to illustrate how unusual the prediction situation is.
 
 --- Uncertainty decomposition #uncertainty-decomp
-TEXT The sources of uncertainty for a given prediction indicate our lack of knowledge, thereby giving real-world context to when prediction are reliable. For example, a major uncertainty in Earth System Models (and Global Circulation Models and atmospheric models) is how clouds respond to and thus affect temperature and precipitation. That in itself suggests that (a) cloud formation requires careful parameterisation, and (b) maybe long-term cloud behaviour can described phenomenological even without physical understanding. <p>In a similar way, uncertainty decomposition delineates areas of relative robust and more uncertain knowledge.Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction. <p>Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
+TEXT The sources of uncertainty for a given prediction indicate our lack of knowledge, thereby giving real-world context to when prediction are reliable. For example, a major uncertainty in Earth System Models (and Global Circulation Models and atmospheric models) is how clouds respond to and thus affect temperature and precipitation. That in itself suggests that (a) cloud formation requires careful parameterisation, and (b) maybe long-term cloud behaviour can described phenomenological even without physical understanding.
+
+In a similar way, uncertainty decomposition delineates areas of relative robust and more uncertain knowledge. Uncertainty decomposition: one cannot take model elements (or drivers) as irrelevant unless demonstrated to be irrelevant for this prediction.
+
+Use ANOVA- or randomforest-importance-like decomposition (Note: Shapley and PDP have different meaning for correlated input, just like type I and III for ANOVA).
 IMPORTANT 🔔 Always use several models for structural uncertainty.
 
-=== 5. Utilisation
+=== 5. Utilisation #utilisation
 ROLE Modeller + Stakeholder
 RATIONALE [text]
 
 --- Joint interpretation #communication
 TEXT [text]
-  >>> 📢 Communicate
+  >>> 📢 Communicate #communicate
       [text]
-  >>> ↩️ Feedback
+  >>> ↩️ Feedback #feedback
       [text]
 
---- Use / exploit prediction
-TEXT Use or exploit the prediction — for example, to take management decisions.
+--- Use / exploit prediction #use-exploit-prediction
+TEXT Use or exploit the prediction, for example, to take management decisions.
 EXAMPLE 🪏 Worked example (fisheries)
-  How much fish biomass can be extracted from this region of the ocean next year
-  and remain below maximum sustainable yield?
+  How much fish biomass can be extracted from this region of the ocean next year and remain below maximum sustainable yield?
 
---- Follow-up planning
+--- Follow-up planning #follow-up-planning
 TEXT Further modifications of models, new data for the next period, continuous engagement of stakeholders.
 LINK specific-question
 
@@ -406,14 +501,5 @@ How to establish a moderated discussion to resolve or highlight differences?
 
 
 </script>
-<!--
-UNCITED REFERENCES (update when citations change):
-- Benaroya 2005
-- Committee 2012
-- Matheson 1976
-- Taylor 1997
-- Wolter 2007
-╚══════════════════════════════════════════════════════════════════════════════╝
--->
 </body>
 </html>

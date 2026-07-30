@@ -6,18 +6,55 @@ function parseContent() {
   var section=null, curPhase=null, curNode=null, curSubNode=null, curSub=null, curField=null;
 
   function flush(){ curField=null; }
-  function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 
   // Walk the content line by line and build the structured phase, node, and glossary data.
-  function stripHtml(s){ return s.replace(/<[^>]*>/g,''); }
   function trimVal(s){ return s.replace(/^\s+|\s+$/g,''); }
   function indentOf(line){ var m=line.match(/^(\s*)/); return m?m[1].length:0; }
   function colorFor(num){ return ['c1','c2','c3','c4','c5'][num-1]||'c1'; }
+  function splitDefinedId(text){
+    var match=text.match(/^(.*?)(?:\s+#([a-z0-9\-]+))?\s*$/);
+    return { label:trimVal(match?match[1]:text), id:match&&match[2]?match[2]:'' };
+  }
+  function appendField(target,key,text){
+    if(!target) return;
+    if(!target[key]) target[key]=text;
+    else target[key]+=' '+text;
+  }
+  function isMultilineField(name){
+    return name==='rationale'||name==='text'||name==='text-after'||name==='sub-desc'||name==='example'||name==='important';
+  }
+  function addFieldParagraphBreak(){
+    if(!isMultilineField(curField)) return false;
+    if(curField==='rationale'&&curPhase&&!curNode){ curPhase.rationale+='\n\n'; return true; }
+    if(curField==='text'){
+      var t=curSubNode||curNode;
+      if(t){ t.body+='\n\n'; return true; }
+      if(curPhase&&!curNode){ curPhase.body+='\n\n'; return true; }
+      return false;
+    }
+    if(curField==='text-after'){
+      var ta=curSubNode||curNode;
+      if(ta){ ta.bodyAfter+='\n\n'; return true; }
+      return false;
+    }
+    if(curField==='sub-desc'&&curSub){ curSub.desc+='\n\n'; return true; }
+    if(curField==='example'){
+      var ex=curSubNode||curNode;
+      if(ex){ if(!ex.example) ex.example=''; ex.example+='\n\n'; return true; }
+      return false;
+    }
+    if(curField==='important'){
+      var imp=curSubNode||curNode;
+      if(imp){ if(!imp.important) imp.important=''; imp.important+='\n\n'; return true; }
+      return false;
+    }
+    return false;
+  }
   function isKeyword(line){
     return line.indexOf('--- ')===0||line.indexOf('>>> ')===0||
            line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
-           line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
-           line.indexOf('EXAMPLE ')===0||line.indexOf('IMPORTANT ')===0||
+           line==='RATIONALE'||line.indexOf('TEXT ')===0||line==='TEXT'||
+           line.indexOf('EXAMPLE ')===0||line==='EXAMPLE'||line.indexOf('IMPORTANT ')===0||line==='IMPORTANT'||
            line.indexOf('LINK ')===0;
   }
 
@@ -25,7 +62,7 @@ function parseContent() {
     var raw_line=lines[i], line=trimVal(raw_line);
     if(line===''){
       if(section==='INTRO'&&curField==='intro') result.intro.push('');
-      curField=null;
+      if(!addFieldParagraphBreak()) curField=null;
       continue;
     }
     if(line.indexOf('## ')===0){
@@ -35,29 +72,28 @@ function parseContent() {
     }
     if(line.indexOf('=== ')===0){
       flush();
-      var pRaw=trimVal(line.slice(4)), dotPos=pRaw.indexOf('.');
-      var pNum=dotPos>-1?parseInt(pRaw.slice(0,dotPos),10):(result.phases.length+1);
-      var pTitle=dotPos>-1?trimVal(pRaw.slice(dotPos+1)):pRaw;
-      curPhase={id:'phase'+pNum,title:pTitle,role:'',color:colorFor(pNum),phaseNum:String(pNum),rationale:'',nodes:[]};
+      var phaseMeta=splitDefinedId(trimVal(line.slice(4))), dotPos=phaseMeta.label.indexOf('.');
+      var pNum=dotPos>-1?parseInt(phaseMeta.label.slice(0,dotPos),10):(result.phases.length+1);
+      var pTitle=dotPos>-1?trimVal(phaseMeta.label.slice(dotPos+1)):phaseMeta.label;
+      curPhase={id:phaseMeta.id||('phase-'+pNum),title:pTitle,role:'',color:colorFor(pNum),phaseNum:String(pNum),rationale:'',body:'',nodes:[]};
       result.phases.push(curPhase);
       curNode=null; curSubNode=null; curSub=null;
       continue;
     }
     if(line.indexOf('--- ')===0){
       flush();
-      var nTitleRaw=trimVal(line.slice(4));
-      var nId, nTitle;
-      var idMatch=nTitleRaw.match(/^(.*?)\s+#([a-z0-9\-]+)\s*$/);
-      if(idMatch){ nTitle=trimVal(idMatch[1]); nId=idMatch[2]; }
-      else { nTitle=nTitleRaw; nId=slugify(nTitleRaw); }
-      if(indentOf(raw_line)>=2&&curNode){
-        curSubNode={id:nId,title:nTitle,role:null,body:'',subItems:[],xlinks:[],example:null,important:null};
+      var isSubNode=indentOf(raw_line)>=2&&curNode;
+      var nodeMeta=splitDefinedId(trimVal(line.slice(4)));
+      if(isSubNode){
+        var subNodeId=nodeMeta.id||('sub-node-'+((curNode.subNodes?curNode.subNodes.length:0)+1));
+        curSubNode={id:subNodeId,title:nodeMeta.label,role:null,body:'',bodyAfter:'',subItems:[],xlinks:[],example:null,important:null};
         if(!curNode.subNodes) curNode.subNodes=[];
         curNode.subNodes.push(curSubNode);
         curSub=null;
       }else{
+        var nodeId=nodeMeta.id||('node-'+((curPhase&&curPhase.nodes)?curPhase.nodes.length+1:1));
         curSubNode=null;
-        curNode={id:nId,title:nTitle,role:null,badges:[],body:'',subItems:[],xlinks:[],example:null,important:null,subNodes:[]};
+        curNode={id:nodeId,title:nodeMeta.label,role:null,badges:[],body:'',bodyAfter:'',subItems:[],xlinks:[],example:null,important:null,subNodes:[]};
         if(curPhase) curPhase.nodes.push(curNode);
         curSub=null;
       }
@@ -66,46 +102,53 @@ function parseContent() {
     if(line.indexOf('>>> ')===0){
       flush();
       var sRaw=trimVal(line.slice(4)), iconMatch=sRaw.match(/^(\S+)\s+(.*)/);
-      var subName=iconMatch?trimVal(iconMatch[2]):sRaw;
-      var subBaseId=slugify(stripHtml(subName))||'item';
+      var subMeta=splitDefinedId(iconMatch?trimVal(iconMatch[2]):sRaw);
+      var subName=subMeta.label;
       var siTarget=curSubNode||curNode;
-      var subId=subBaseId;
-      if(siTarget&&siTarget.subItems){
-        var suffix=2;
-        var exists=true;
-        while(exists){
-          exists=false;
-          for(var si=0;si<siTarget.subItems.length;si++){
-            if(siTarget.subItems[si].id===subId){ exists=true; break; }
-          }
-          if(exists){ subId=subBaseId+'-'+suffix; suffix++; }
-        }
-      }
+      var subId=subMeta.id||('sub-item-'+((siTarget&&siTarget.subItems)?siTarget.subItems.length+1:1));
       curSub={id:subId,icon:iconMatch?iconMatch[1]:'',name:subName,role:null,desc:''};
       if(siTarget) siTarget.subItems.push(curSub);
       curField='sub-desc';
       continue;
     }
-    if(line.indexOf('ROLE ')===0&&curPhase&&!curNode){ curPhase.role=trimVal(line.slice(5)); flush(); continue; }
-    if(line.indexOf('RATIONALE ')===0&&curPhase&&!curNode){ curPhase.rationale=trimVal(line.slice(10)); curField='rationale'; continue; }
-    if(line==='STAKEHOLDER'){
-      if(curSub) curSub.role='sh'; else if(curSubNode) curSubNode.role='sh'; else if(curNode) curNode.role='sh';
+    if((line.indexOf('ROLE ')===0||line==='ROLE')&&(curSub||curSubNode||curNode||curPhase)){
+      var roleValue=line==='ROLE'?'':trimVal(line.slice(5));
+      if(curSub) curSub.role=roleValue;
+      else if(curSubNode) curSubNode.role=roleValue;
+      else if(curNode) curNode.role=roleValue;
+      else curPhase.role=roleValue;
       flush();
       continue;
     }
-    if(line.indexOf('TEXT ')===0&&(curSubNode||curNode)){
-      var tgt=curSubNode||curNode;
-      tgt.body=trimVal(line.slice(5));
-      curField='text';
+    if((line.indexOf('RATIONALE ')===0||line==='RATIONALE')&&curPhase&&!curNode){
+      curPhase.rationale=line==='RATIONALE'?'':trimVal(line.slice(10));
+      curField='rationale';
       continue;
     }
-    if(line.indexOf('EXAMPLE ')===0&&(curSubNode||curNode)){
-      (curSubNode||curNode).example='<strong>'+trimVal(line.slice(8))+'</strong>';
+    if((line.indexOf('TEXT ')===0||line==='TEXT')&&(curSubNode||curNode||(curPhase&&!curNode))){
+      var textVal=line==='TEXT'?'':trimVal(line.slice(5));
+      if(curSubNode||curNode){
+        var tgt=curSubNode||curNode;
+        if(tgt.subItems&&tgt.subItems.length>0){
+          tgt.bodyAfter=textVal;
+          curField='text-after';
+        }else{
+          tgt.body=textVal;
+          curField='text';
+        }
+      }else{
+        curPhase.body=textVal;
+        curField='text';
+      }
+      continue;
+    }
+    if((line.indexOf('EXAMPLE ')===0||line==='EXAMPLE')&&(curSubNode||curNode)){
+      (curSubNode||curNode).example=(line==='EXAMPLE')?'':'<strong>'+trimVal(line.slice(8))+'</strong>';
       curField='example';
       continue;
     }
-    if(line.indexOf('IMPORTANT ')===0&&(curSubNode||curNode)){
-      (curSubNode||curNode).important='<strong>'+trimVal(line.slice(10))+'</strong>';
+    if((line.indexOf('IMPORTANT ')===0||line==='IMPORTANT')&&(curSubNode||curNode)){
+      (curSubNode||curNode).important=(line==='IMPORTANT')?'':'<strong>'+trimVal(line.slice(10))+'</strong>';
       curField='important';
       continue;
     }
@@ -126,12 +169,35 @@ function parseContent() {
       result.checklist.push({text:trimVal(cp[0]),link:lm?lm[1]:null});
       continue;
     }
-    if(!isKeyword(line)&&indentOf(raw_line)>=2){
-      if(curField==='rationale'&&curPhase&&!curNode){ curPhase.rationale+=' '+line; continue; }
-      if(curField==='text'){ var tt=curSubNode||curNode; if(tt){ tt.body+=' '+line; } continue; }
-      if(curField==='example'){ var te=curSubNode||curNode; if(te){ te.example+=' '+line; } continue; }
-      if(curField==='important'){ var ti=curSubNode||curNode; if(ti){ ti.important+=' '+line; } continue; }
-      if(curField==='sub-desc'&&curSub){ curSub.desc=curSub.desc?curSub.desc+' '+line:line; continue; }
+    if(!isKeyword(line)&&curField==='rationale'&&curPhase&&!curNode){
+      appendField(curPhase,'rationale',line);
+      continue;
+    }
+    if(!isKeyword(line)&&curField==='text'){
+      if(curSubNode||curNode){
+        appendField(curSubNode||curNode,'body',line);
+        continue;
+      }
+      if(curPhase&&!curNode){
+        appendField(curPhase,'body',line);
+        continue;
+      }
+    }
+    if(!isKeyword(line)&&curField==='text-after'){
+      appendField(curSubNode||curNode,'bodyAfter',line);
+      continue;
+    }
+    if(!isKeyword(line)&&curField==='example'){
+      var te=curSubNode||curNode;
+      if(te){ appendField(te,'example',line); continue; }
+    }
+    if(!isKeyword(line)&&curField==='important'){
+      var ti=curSubNode||curNode;
+      if(ti){ appendField(ti,'important',line); continue; }
+    }
+    if(!isKeyword(line)&&curField==='sub-desc'&&curSub){
+      appendField(curSub,'desc',line);
+      continue;
     }
   }
 

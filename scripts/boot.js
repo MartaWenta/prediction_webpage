@@ -1,4 +1,10 @@
 // Render the whole page from the parsed content and initialise the interactive widgets.
+function typesetMath(roots){
+  if(!window.MathJax||!MathJax.typesetPromise) return;
+  var els=[].concat(roots||[]).filter(Boolean);
+  if(els.length) MathJax.typesetPromise(els);
+}
+
 function renderAll(){
   var data=parseContent();
 
@@ -29,6 +35,7 @@ function renderAll(){
       biblioGlobal:'BASIS_BIBLIO',
       citationSelector:'.cite-ref[data-cite]',
       footnoteSupSelector:'.footnote-ref',
+      referencesOutSelector:'#refs-out',
       missingPrefix:'Reference details not found in central bibliography for '
     });
   }
@@ -41,6 +48,7 @@ function renderAll(){
   buildSidebar(data.phases);
   collectConnectors(data.phases);
   drawConnectors();
+  typesetMath([main, document.getElementById('intro-body'), highlightOut]);
 }
 
 document.addEventListener('DOMContentLoaded',renderAll);
@@ -145,7 +153,7 @@ function setAllSectionsExpanded(expanded){
   var secTitles=document.querySelectorAll('.sec-title:not(.no-toggle)');
   for(var m=0;m<secTitles.length;m++) secTitles[m].classList.toggle('collapsed',!expanded);
 
-  var sections=document.querySelectorAll('#s-checklist, #s-glossary');
+  var sections=document.querySelectorAll('#s-checklist, #s-glossary, #s-references');
   for(var n=0;n<sections.length;n++){
     sections[n].classList.toggle('sec-collapsed',!expanded);
     setFindHidden(sections[n],!expanded);
