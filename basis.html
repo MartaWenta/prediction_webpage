@@ -166,7 +166,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
 .rationale{
   background:var(--parchment2);border:1px solid var(--rule);
   border-left:3px solid var(--amber);border-radius:6px;
-  padding:8px 14px;margin-bottom:14px;
+  padding:8px 14px;margin-bottom:0;
   display:flex;gap:8px;align-items:flex-start;
 }
 .rat-label{
@@ -175,6 +175,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--parchment);color:
   white-space:nowrap;padding-top:2px;
 }
 .rat-text{font-size:.81rem;color:var(--ink-muted);font-style:italic;line-height:1.5}
+/* Rationale sits OUTSIDE .phase-nodes so it stays visible when the phase is collapsed */
+.phase-rat{padding:0 20px 14px}
 
 /* ── NODE CARD ───────────────────────────────────────────── */
 .card{
@@ -326,6 +328,61 @@ body.show-links .xlink{display:block}
 .important strong{
   display:block;margin-bottom:3px;font-size:.7rem;
   text-transform:uppercase;letter-spacing:.06em;color:#cc3333;
+}
+/* IMPORTANT placed inside a >>> sub-item (stays in that sub-item's box) */
+.si-important{
+  margin-top:6px;padding:7px 10px;background:#fff0f0;
+  border-radius:6px;border-left:3px solid #cc3333;
+  font-size:.76rem;color:#7a1010;line-height:1.5;
+}
+
+/* ── STOP SIGN ───────────────────────────────────────────── */
+/* Drawn, not an emoji: the 🛑 emoji is a blank red octagon — no font
+   anywhere carries an octagon with the word STOP on it. Sizes itself
+   to the surrounding text via em units. */
+.stopsign{
+  display:inline-block;vertical-align:-0.24em;
+  width:1.25em;height:1.25em;margin:0 .1em;flex-shrink:0;
+}
+
+/* ── NOTE — free text at the BOTTOM of a box ─────────────── */
+.note{
+  margin:10px 0 0;padding:9px 13px;
+  background:var(--parchment);border:1px solid var(--rule);
+  border-left:3px solid var(--green-light);border-radius:7px;
+  font-size:.82rem;color:var(--ink-mid);line-height:1.65;
+}
+.sub-card-body .note{background:#fff}
+/* Free text directly under a PHASE title */
+.phase-text{font-size:.845rem;color:var(--ink-mid);line-height:1.7;margin:0 0 12px}
+
+/* ── CONCLUSION — closes off a phase box (mirrors Rationale at the top) ── */
+.conclusion{
+  margin:14px 0 0;padding:10px 14px;
+  background:#eef7f1;border:1px solid var(--rule);
+  border-left:3px solid var(--green-mid);border-radius:7px;
+  font-size:.82rem;color:var(--green-deep);line-height:1.6;
+}
+.conclusion strong{
+  display:block;margin-bottom:3px;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--green-mid);
+}
+
+/* ── FIGURES ─────────────────────────────────────────────── */
+.fig{margin:10px 0 0}
+.fig img{
+  display:block;max-width:100%;height:auto;
+  border-radius:7px;border:1px solid var(--rule);background:#fff;
+}
+.fig figcaption{
+  font-size:.75rem;color:var(--ink-muted);
+  line-height:1.5;margin-top:5px;font-style:italic;
+}
+.fig-ph{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:92px;padding:14px;text-align:center;
+  border:1.5px dashed var(--rule);border-radius:7px;
+  background:var(--parchment);color:var(--ink-muted);font-size:.8rem;
 }
 
 /* ── SECTIONS ────────────────────────────────────────────── */
@@ -509,13 +566,40 @@ body.show-links #arrow-svg{display:block}
 ║   • Lines starting with === are PHASE headings — do not change the ===       ║
 ║   • Lines starting with --- are NODE (card) headings — keep the ---          ║
 ║   • Lines starting with >>> are SUB-ITEMS inside a card                      ║
-║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT,          ║
-║     DETAIL, EXAMPLE, IMPORTANT, LINK) are field labels — keep them as-is     ║
+║   • Keywords on their own line (ROLE, RATIONALE, STAKEHOLDER, TEXT, NOTE,    ║
+║     FIGURE, CONCLUSION, DETAIL, EXAMPLE, IMPORTANT, LINK) are field labels — ║
+║     keep them as-is                                                          ║
 ║   • Everything after a keyword on the same line is the value                 ║
 ║   • Multi-line values: indent continuation lines with at least 2 spaces      ║
 ║   • Apostrophes are fine. Quotes are fine. No escaping needed.               ║
 ║   • To leave a field empty, write [text] as a placeholder                    ║
 ║   • The LINK field on a checklist item is a node id (the slug after ---)     ║
+║   • Write [STOP] anywhere you want a STOP sign to appear. It is DRAWN as a   ║
+║     red octagon with the word STOP on it — no emoji can do that (🛑 is a     ║
+║     blank red octagon), and it scales with the text around it.              ║
+║                                                                              ║
+║   WHERE TEXT AND FIGURES GO (this is the bit you asked for):                 ║
+║                                                                              ║
+║     TEXT    the main paragraph, straight under the title. Works under        ║
+║             === (phase), --- (card) and --- (nested card).                   ║
+║     NOTE    an extra paragraph at the BOTTOM of a --- card — i.e. AFTER the  ║
+║             >>> list. Use this for text that has to come last inside a card. ║
+║                                                                              ║
+║     CONCLUSION                                                               ║
+║             closes off a whole === PHASE box: it appears at the very END of  ║
+║             the phase, BELOW the last --- card but still INSIDE the phase.   ║
+║             This is the "conclusion for that topic". Write it anywhere in    ║
+║             the phase — it always renders last. One per phase.               ║
+║                                                                              ║
+║     FIGURE  an image. Two forms:                                             ║
+║               FIGURE figures/workflow.png | Caption goes here                ║
+║               FIGURE [figure] | Caption goes here      ← dashed placeholder  ║
+║             Use [figure] while the image does not exist yet: the page then   ║
+║             shows a "Figure to be added" box instead of a broken image.      ║
+║             Works under ===, --- and nested ---. Repeat for several figures. ║
+║                                                                              ║
+║   IMPORTANT written under a >>> stays inside THAT sub-item's box.            ║
+║   IMPORTANT written under a --- (before any >>>) belongs to the whole card.  ║
 ║                                                                              ║
 ║   CROSS-PHASE ARROWS (direction is chosen by the keyword you use):           ║
 ║     XLINK       label | target-id   arrow points  THIS box → target          ║
@@ -594,26 +678,27 @@ TEXT The prediction target is defined <i>jointly</i> by stakeholder and modeller
   (For example, a stakeholder may want to know the effect of building a dam on 
   malaria infection rates, but the modeller has no ability to quantify malaria 
   transmissions near stagnant water bodies. Then a prediction task seems infeasible. 
-  &#128721;) REFERENCES
+  [STOP]) REFERENCES
 
 --- Target that can be modelled and observed
-TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. STOP sign) REFERENCES
+TEXT The prediction target has to be <i>observable</i> in order to allow comparison of model and real world. (For example, “environmental health” is no suitable target of a model prediction, while “bird species richness” or “tick density” are. Vague targets indicate unclear question and lead to arbitrary decisions. [STOP]) REFERENCES
 
 --- Scenario planning: Are imaginable results useful to the question?
-TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time.) STOP sign. REFERENCES
+TEXT Stakeholders have to <i>imagine prediction</i> results and evaluate whether these would be useful to them (“What’s the point of knowing the answer?”). Minimal useful prediction precision has to be specified. If it is not useful, there is no point in making the prediction. (For example, if a prediction is only useful if it shows unambiguously the superiority of solution A, then there is a high risk of the prediction being useless: uncertainty may be too large or A may not be the best solution, or only marginally so. Is it really useful? Or: if the decision is a foregone conclusion, predicting is a waste of time. [STOP]) REFERENCES
 EXAMPLE 🪏 Worked example (fisheries)
   How much fish biomass can be extracted from this region of the ocean next year
-  and remain below maximum sustainable yield? <span style="color: red">There is text in the html to go below this point!</span>
+  and remain below maximum sustainable yield?
+NOTE [text]
 
-
-Yields: specific question to be addressed by predictions; identified specific prediction target(s) and required precision; clear usefulness whatever the prediction will be.
+CONCLUSION Yields: specific question to be addressed by predictions; identified specific prediction
+  target(s) and required precision; clear usefulness whatever the prediction will be.
 
 
 === 2. Identifying data and modelling approaches
 ROLE Modeller
 RATIONALE This step explores whether data and modelling approaches are available to allow predicting the system and target identified in the previous step to a degree useful for answering the question.
 
---- Are necessary <i>data of sufficient quality</i> are available? No: STOP! #data-available
+--- Are necessary <i>data of sufficient quality</i> are available? No: STOP! [STOP] #data-available
 TEXT [text]
 XLINK Data splits for validation must be planned here. | validation
 
@@ -633,9 +718,14 @@ TEXT Consider:
       DETAIL [text]
   >>> &#128101; other
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
-
-If multiple approaches a possible: do you have resources to use several of them? If not, justify final choice (“everybody else uses it” is not a valid justification: https://en.wikipedia.org/wiki/Argumentum_ad_populum). Ideally additionally include simple alternative approach (to quantify effect of model choice arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues to help you. If this is all new to you: STOP. 
+      DETAIL [text]
+NOTE If multiple approaches a possible: do you have resources to use several of them? If not, justify
+  final choice (“everybody else uses it” is not a valid justification:
+  <a href="https://en.wikipedia.org/wiki/Argumentum_ad_populum" target="_blank">argumentum ad populum</a>).
+  Ideally additionally include simple alternative approach (to quantify effect of model choice
+  arbitrariness, model structural uncertainty.) Ensure you have necessary competence to implement the
+  approach. Identify weaknesses of this approach and strategies to overcome them. Identify colleagues
+  to help you. If this is all new to you: STOP. [STOP]
 
 --- Specify required model characteristics
 TEXT  with respect to
@@ -657,9 +747,11 @@ IMPORTANT 🔔 Upscale of microlevel processes.
       DETAIL [text]
   >>> &#128208; explicit management intervention rules
       [text]
-      DETAIL <span style="color: red">There is text in the html to go below this point!</span>
-
-  Any of these decisions affects the prediction and its uncertainty. Using only one of the many possible combinations already leads to optimistic error bars, as it ignores model structural uncertainty (or model approach uncertainty). Ideally, several model types are used. REFERENCES (Dormann et al. 2018)
+      DETAIL [text]
+NOTE Any of these decisions affects the prediction and its uncertainty. Using only one of the many
+  possible combinations already leads to optimistic error bars, as it ignores model structural
+  uncertainty (or model approach uncertainty). Ideally, several model types are used.
+  REFERENCES (Dormann et al. 2018)
 
 
 --- Long-term planning
@@ -669,7 +761,7 @@ TEXT This prediction is often part of a longer activity and commitment. Think th
       DETAIL REFERENCES
   >>> 📊 Data for many validations in the modelling cycle
       Any model development step needs to be evaluated on <i>independent data</i>, otherwise the model will be tailored to that specific data set. For a model development over, say, 10 cycles, 11 independent data sets need to be available, or approximated by creating stratified subsets.
-      IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt. <span style="color: red">Should be in same box as "Data for many ..."</span>
+      IMPORTANT 🔔 Overparameterised models make poor predictions — too much detail may hurt.
       DETAIL REFERENCES (Roberts et al. 2017)
   >>> 💻 Computational resources
       Is it realistic do carry out the anticipated computations, incl. debugging cycles, sensitivity and uncertainty analyses, multiple parameterisations (in case of equifinality), model calibrations? If the model runs for longer than 1 min, ensure availability of HPC resources for at least 10<sup>6</sup> -10<sup>7</sup> runs.
@@ -681,15 +773,21 @@ ROLE Modeller
 RATIONALE Before the prediction comes the establishment of the prediction routine, at the technical and at the academic level. The goal of this step is to have a model that can be trusted to make the specific prediction required, and the technical infrastructure necessary to do so.
 
 --- Establish workflow for running models
-TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. <span style="color: red">Put in box for more text at lower level here. Alternatively: link out to another html page with more details on workflows particularly for SA/UA.</span>
+TEXT This technical aspect is essential for running models thousands of times automatically, for using different training data sets, or applying the model to different input data. Sensitivity and uncertainty analysis are impossible to do unless efficiently automatised. If no workflow can be established: STOP. [STOP]
+FIGURE [figure] | Schematic of a reproducible model-running workflow.
+NOTE [text]
 
 --- Trusted models
-TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP REFERENCE: Schmolke et al. 2010 TREE, Getz 2018 EcolLett
+TEXT These steps are <i>necessary</i> but not sufficient to develop trust in a model. If you cannot identify a model that can be trusted to make the prediction: STOP [STOP] REFERENCE: Schmolke et al. 2010 TREE, Getz 2018 EcolLett
   --- Is model "rich" enough?
-  TEXT Does the model structure allow for creating the observed range/dynamics? <span style="color: red">Doyne Farmer's argument that economic models are not sufficiently complex to create market crashes and alike, and hence fundamentally unsuitable for predictions.</span>
+  TEXT Does the model structure allow for creating the observed range/dynamics?
+  NOTE Compare Doyne Farmer's argument that economic models are not sufficiently complex to create
+    market crashes and alike, and hence fundamentally unsuitable for predictions.
   --- Parameterisation
   Modeller, STAKEHOLDER <!-- currently ignored -->
   TEXT Employ existing knowledge.
+  FIGURE [figure] | Caption for the parameterisation figure.
+  NOTE [text]
   --- Code verification/unit testing
   TEXT Does code work as it should? Particularly LLM-aided coding needs to be double-checked for working correctly.
   --- Sensitivity analysis (global vs local)
@@ -787,6 +885,7 @@ function parseContent() {
   var lines = raw.split('\n');
   var result = { intro:[], glossary:[], checklist:[], contentions:[], phases:[] };
   var section=null, curPhase=null, curNode=null, curSubNode=null, curSub=null, curField=null;
+  var curFig=null, curNoteTgt=null;
 
   function flush(){ curField=null; }
   function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
@@ -797,6 +896,8 @@ function parseContent() {
     return line.indexOf('--- ')===0||line.indexOf('>>> ')===0||
            line.indexOf('ROLE ')===0||line.indexOf('RATIONALE ')===0||
            line==='STAKEHOLDER'||line.indexOf('TEXT ')===0||
+           line.indexOf('NOTE ')===0||line.indexOf('FIGURE ')===0||
+           line.indexOf('CONCLUSION ')===0||
            line.indexOf('DETAIL ')===0||line.indexOf('EXAMPLE ')===0||
            line.indexOf('IMPORTANT ')===0||line.indexOf('XLINK ')===0||
            line.indexOf('XLINK-BACK ')===0||line.indexOf('XLINK-BOTH ')===0;
@@ -816,7 +917,8 @@ function parseContent() {
       var pRaw=trimVal(line.slice(4)), dotPos=pRaw.indexOf('.');
       var pNum=dotPos>-1?parseInt(pRaw.slice(0,dotPos),10):(result.phases.length+1);
       var pTitle=dotPos>-1?trimVal(pRaw.slice(dotPos+1)):pRaw;
-      curPhase={id:'phase'+pNum,title:pTitle,role:'',color:colorFor(pNum),phaseNum:String(pNum),rationale:'',nodes:[]};
+      curPhase={id:'phase'+pNum,title:pTitle,role:'',color:colorFor(pNum),phaseNum:String(pNum),
+                rationale:'',body:'',note:'',conclusion:'',figures:[],nodes:[]};
       result.phases.push(curPhase); curNode=null; curSubNode=null; curSub=null; continue;
     }
     if(line.indexOf('--- ')===0){
@@ -828,12 +930,12 @@ function parseContent() {
       if(idMatch){ nTitle=trimVal(idMatch[1]); nId=idMatch[2]; }
       else { nTitle=nTitleRaw; nId=slugify(nTitleRaw); }
       if(indentOf(raw_line)>=2&&curNode){
-        curSubNode={id:nId,title:nTitle,role:null,body:'',subItems:[],xlinks:[],example:null,important:null};
+        curSubNode={id:nId,title:nTitle,role:null,body:'',note:'',figures:[],subItems:[],xlinks:[],example:null,important:null};
         if(!curNode.subNodes) curNode.subNodes=[];
         curNode.subNodes.push(curSubNode); curSub=null;
       } else {
         curSubNode=null;
-        curNode={id:nId,title:nTitle,role:null,badges:[],body:'',subItems:[],xlinks:[],example:null,important:null,subNodes:[]};
+        curNode={id:nId,title:nTitle,role:null,badges:[],body:'',note:'',figures:[],subItems:[],xlinks:[],example:null,important:null,subNodes:[]};
         if(curPhase) curPhase.nodes.push(curNode); curSub=null;
       }
       continue;
@@ -841,7 +943,7 @@ function parseContent() {
     if(line.indexOf('>>> ')===0){
       flush();
       var sRaw=trimVal(line.slice(4)), iconMatch=sRaw.match(/^(\S+)\s+(.*)/);
-      curSub={icon:iconMatch?iconMatch[1]:'',name:iconMatch?trimVal(iconMatch[2]):sRaw,role:null,desc:'',detail:null};
+      curSub={icon:iconMatch?iconMatch[1]:'',name:iconMatch?trimVal(iconMatch[2]):sRaw,role:null,desc:'',detail:null,important:null};
       var siTarget=curSubNode||curNode; if(siTarget) siTarget.subItems.push(curSub);
       curField='sub-desc'; continue;
     }
@@ -851,12 +953,33 @@ function parseContent() {
       if(curSub) curSub.role='sh'; else if(curSubNode) curSubNode.role='sh'; else if(curNode) curNode.role='sh';
       flush(); continue;
     }
+    // CONCLUSION closes off the whole PHASE box — it always targets the phase,
+    // wherever you write it, so it can be written after the last --- card.
+    if(line.indexOf('CONCLUSION ')===0&&curPhase){ curPhase.conclusion=trimVal(line.slice(11)); curField='conclusion'; continue; }
     if(line.indexOf('TEXT ')===0&&(curSubNode||curNode)){
       var tgt=curSubNode||curNode; tgt.body=trimVal(line.slice(5)); curField='text'; continue;
     }
+    // TEXT directly under a phase heading (no --- card open yet)
+    if(line.indexOf('TEXT ')===0&&curPhase){ curPhase.body=trimVal(line.slice(5)); curField='phase-text'; continue; }
     if(line.indexOf('DETAIL ')===0&&curSub){ curSub.detail=trimVal(line.slice(7)); curField='detail'; continue; }
+    // NOTE — trailing paragraph, rendered at the bottom of the innermost open box
+    if(line.indexOf('NOTE ')===0&&(curSubNode||curNode||curPhase)){
+      curNoteTgt=curSubNode||curNode||curPhase;
+      curNoteTgt.note=trimVal(line.slice(5)); curField='note'; continue;
+    }
+    // FIGURE src | caption   (src of [figure] renders a dashed placeholder)
+    if(line.indexOf('FIGURE ')===0&&(curSubNode||curNode||curPhase)){
+      var fTgt=curSubNode||curNode||curPhase;
+      var fParts=trimVal(line.slice(7)).split('|');
+      curFig={src:trimVal(fParts[0]),caption:fParts[1]?trimVal(fParts[1]):''};
+      fTgt.figures.push(curFig); curField='figure'; continue;
+    }
     if(line.indexOf('EXAMPLE ')===0&&(curSubNode||curNode)){
       var tgt=curSubNode||curNode; tgt.example='<strong>'+trimVal(line.slice(8))+'</strong>'; curField='example'; continue;
+    }
+    // IMPORTANT inside a >>> sub-item stays in that sub-item's box
+    if(line.indexOf('IMPORTANT ')===0&&curSub){
+      curSub.important='<strong>'+trimVal(line.slice(10))+'</strong>'; curField='important-sub'; continue;
     }
     if(line.indexOf('IMPORTANT ')===0&&(curSubNode||curNode)){
       var tgt=curSubNode||curNode; tgt.important='<strong>'+trimVal(line.slice(10))+'</strong>'; curField='important'; continue;
@@ -880,9 +1003,14 @@ function parseContent() {
     }
     if(!isKeyword(line)&&indentOf(raw_line)>=2){
       if(curField==='rationale'&&curPhase&&!curNode){ curPhase.rationale+=' '+line; continue; }
+      if(curField==='phase-text'&&curPhase){ curPhase.body+=' '+line; continue; }
+      if(curField==='conclusion'&&curPhase){ curPhase.conclusion+=' '+line; continue; }
       if(curField==='text'){ var tgt=curSubNode||curNode; if(tgt){tgt.body+=' '+line;} continue; }
+      if(curField==='note'&&curNoteTgt){ curNoteTgt.note+=' '+line; continue; }
+      if(curField==='figure'&&curFig){ curFig.caption=curFig.caption?curFig.caption+' '+line:line; continue; }
       if(curField==='detail'&&curSub){ curSub.detail+=' '+line; continue; }
       if(curField==='example'){ var tgt=curSubNode||curNode; if(tgt){tgt.example+=' '+line;} continue; }
+      if(curField==='important-sub'&&curSub){ curSub.important+=' '+line; continue; }
       if(curField==='important'){ var tgt=curSubNode||curNode; if(tgt){tgt.important+=' '+line;} continue; }
       if(curField==='sub-desc'&&curSub){ curSub.desc=curSub.desc?curSub.desc+' '+line:line; continue; }
     }
@@ -896,6 +1024,49 @@ function parseContent() {
 var COLORS={ c1:'#2d6a4f', c2:'#1a5276', c3:'#6c3483', c4:'#b7471c', c5:'#117a65' };
 var SVG_NS='http://www.w3.org/2000/svg';
 
+function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+
+/* ── STOP SIGN ───────────────────────────────────────────────────────
+   An octagon with STOP written on it does not exist as an emoji (🛑 is a
+   blank red octagon), so it is drawn. Write [STOP] in the content block;
+   the old &#128721; / 🛑 spellings keep working as aliases.
+──────────────────────────────────────────────────────────────────────── */
+var STOP_SVG=
+  '<svg class="stopsign" viewBox="0 0 100 100" role="img" aria-label="STOP">'
+  +'<polygon points="31,1 69,1 99,31 99,69 69,99 31,99 1,69 1,31" fill="#c62828"/>'
+  +'<polygon points="34,9 66,9 91,34 91,66 66,91 34,91 9,66 9,34" fill="none" stroke="#fff" stroke-width="5"/>'
+  +'<text x="50" y="52" text-anchor="middle" dominant-baseline="central"'
+  +' font-family="Inter,Helvetica,Arial,sans-serif" font-weight="700" font-size="26"'
+  +' textLength="60" lengthAdjust="spacingAndGlyphs" fill="#fff">STOP</text>'
+  +'</svg>';
+
+function stopSigns(html){
+  return html.replace(/\[STOP\]|&#128721;|🛑/g, STOP_SVG);
+}
+
+// FIGURE blocks. A src of [figure] (or empty) renders a dashed placeholder
+// instead of a broken image, so figures can be written before they exist.
+function renderFigures(figs){
+  if(!figs||!figs.length) return '';
+  var html='';
+  for(var i=0;i<figs.length;i++){
+    var f=figs[i];
+    var hasCap=f.caption&&f.caption!=='[text]';
+    var cap=hasCap?'<figcaption>'+f.caption+'</figcaption>':'';
+    if(!f.src||f.src==='[figure]'){
+      html+='<figure class="fig"><div class="fig-ph">&#128444;&#65039; Figure to be added</div>'+cap+'</figure>';
+    } else {
+      html+='<figure class="fig"><img src="'+esc(f.src)+'" alt="'+esc(hasCap?f.caption:'Figure')+'" loading="lazy">'+cap+'</figure>';
+    }
+  }
+  return html;
+}
+
+// NOTE — trailing paragraph at the bottom of a box
+function renderNote(note){
+  return (note&&note!=='[text]')?'<div class="note">'+note+'</div>':'';
+}
+
 function renderSubItems(items, bgWhite){
   if(!items||!items.length) return '';
   var html='<ul class="sub-list">';
@@ -906,6 +1077,7 @@ function renderSubItems(items, bgWhite){
     html+='<div class="si-body">';
     html+='<div class="si-name">'+s.name+(s.role==='sh'?'<span class="role-tag role-sh">Stakeholder</span>':'')+'</div>';
     if(s.desc&&s.desc!=='[text]') html+='<div class="si-desc">'+s.desc+'</div>';
+    if(s.important&&s.important!=='[text]') html+='<div class="si-important">'+s.important+'</div>';
     if(hasDetail) html+='<div class="si-detail">'+s.detail+'</div>';
     html+='</div>';
     if(hasDetail) html+='<span class="si-chev">&#9658;</span>';
@@ -933,7 +1105,8 @@ function renderSubNodes(nodes, color){
       +'<span class="sub-card-title">'+n.title+roleTag+'</span>'
       +'<svg class="sub-card-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
       +'</div>'
-      +'<div class="sub-card-body">'+bodyHtml+renderSubItems(n.subItems,true)+xlHtml+exHtml+impHtml+'</div></div>';
+      +'<div class="sub-card-body">'+bodyHtml+renderFigures(n.figures)+renderSubItems(n.subItems,true)
+      +xlHtml+exHtml+impHtml+renderNote(n.note)+'</div></div>';
   }
   html+='</div>'; return html;
 }
@@ -953,17 +1126,22 @@ function renderNode(node, color){
     +'<span class="card-title">'+node.title+roleTag+'</span>'
     +'<svg class="chevron" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     +'</div>'
-    +'<div class="card-body">'+bodyHtml+renderSubItems(node.subItems,false)
+    +'<div class="card-body">'+bodyHtml+renderFigures(node.figures)+renderSubItems(node.subItems,false)
     +(node.subNodes&&node.subNodes.length?renderSubNodes(node.subNodes,color):'')
-    +xlHtml+exHtml+impHtml+'</div></div>';
+    +xlHtml+exHtml+impHtml+renderNote(node.note)+'</div></div>';
 }
 
 function renderPhase(phase){
   var color=COLORS[phase.color]||'#2d6a4f';
   var nodesHtml='';
   for(var n=0;n<phase.nodes.length;n++) nodesHtml+=renderNode(phase.nodes[n],color);
+  // Rationale is rendered OUTSIDE .phase-nodes, so it stays readable while the phase is collapsed.
   var ratHtml=(phase.rationale&&phase.rationale!=='[text]')
-    ?'<div class="rationale"><span class="rat-label">Rationale</span><span class="rat-text">'+phase.rationale+'</span></div>':'';
+    ?'<div class="phase-rat"><div class="rationale"><span class="rat-label">Rationale</span>'
+      +'<span class="rat-text">'+phase.rationale+'</span></div></div>':'';
+  var bodyHtml=(phase.body&&phase.body!=='[text]')?'<p class="phase-text">'+phase.body+'</p>':'';
+  var concHtml=(phase.conclusion&&phase.conclusion!=='[text]')
+    ?'<div class="conclusion"><strong>Conclusion</strong>'+phase.conclusion+'</div>':'';
   return '<section class="phase collapsed" id="'+phase.id+'" style="border-top-color:'+color+'">'
     +'<div class="phase-hd" onclick="togglePhase(this.parentElement)">'
     +'<div class="phase-num-badge" style="background:'+color+'">'+phase.phaseNum+'</div>'
@@ -971,7 +1149,9 @@ function renderPhase(phase){
     +(phase.role?'<span class="phase-role">'+phase.role+'</span>':'')
     +'<svg class="phase-chev" viewBox="0 0 20 20" fill="none"><path d="M7 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     +'</div>'
-    +'<div class="phase-nodes">'+ratHtml+nodesHtml+'</div>'
+    +ratHtml
+    +'<div class="phase-nodes">'+bodyHtml+renderFigures(phase.figures)+nodesHtml
+    +renderNote(phase.note)+concHtml+'</div>'
     +'</section>';
 }
 
@@ -1199,6 +1379,8 @@ function autoDefine(root,glossary){
   while((node=walker.nextNode())){
     var skip=false,anc=node.parentNode;
     while(anc&&anc!==root){
+      // never descend into SVG (e.g. the STOP sign's own <text>)
+      if(anc.namespaceURI==='http://www.w3.org/2000/svg'){ skip=true; break; }
       var cls=anc.className&&anc.className.indexOf?anc.className:'',tag=anc.nodeName;
       if(tag==='A'||tag==='H2'||tag==='H1'||
         (cls&&(cls.indexOf('def')!==-1||cls.indexOf('badge')!==-1||
@@ -1275,11 +1457,11 @@ function enableTapTooltips(){
 function renderAll(){
   var data=parseContent();
 
-  document.getElementById('intro-body').innerHTML=renderIntro(data.intro);
+  document.getElementById('intro-body').innerHTML=stopSigns(renderIntro(data.intro));
 
   var main=document.getElementById('main'), html='';
   for(var i=0;i<data.phases.length;i++) html+=renderPhase(data.phases[i]);
-  main.innerHTML=html;
+  main.innerHTML=stopSigns(html);
 
   var dHtml='';
   for(var c=0;c<data.contentions.length;c++){
@@ -1288,7 +1470,7 @@ function renderAll(){
     if(con.body&&con.body!=='[text]') dHtml+='<div class="cont-body">'+con.body+'</div>';
     dHtml+='</div>';
   }
-  document.getElementById('disc-out').innerHTML=dHtml;
+  document.getElementById('disc-out').innerHTML=stopSigns(dHtml);
 
   var gHtml='';
   for(var d=0;d<data.glossary.length;d++){
@@ -1302,7 +1484,7 @@ function renderAll(){
     var jump=item.link?' <a href="#'+item.link+'" style="color:#cc3333;font-weight:600;text-decoration:none">&rarr;</a>':'';
     hHtml+='<div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid #cc3333;border-radius:7px;padding:9px 13px;margin-bottom:7px;font-size:0.84rem;color:var(--ink-mid);line-height:1.6"><span style="flex-shrink:0">&#128276;</span><span>'+item.text+jump+'</span></div>';
   }
-  document.getElementById('highlight-out').innerHTML=hHtml;
+  document.getElementById('highlight-out').innerHTML=stopSigns(hHtml);
 
   autoDefine(document.getElementById('main'),data.glossary);
   autoDefine(document.getElementById('intro-body'),data.glossary);
@@ -1318,8 +1500,30 @@ function renderAll(){
 document.addEventListener('DOMContentLoaded',renderAll);
 
 /* ── INTERACTION ─────────────────────────────────────────── */
-function toggleCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
-function toggleSubCard(card){ card.classList.toggle('open'); setTimeout(drawArrows,220); }
+// Opening a box opens EVERYTHING below it — nested sub-cards and the >>> sub-item
+// details — so there is only one level of show/hide to click through, not three.
+// Phases deliberately do NOT cascade: their --- cards stay shut, or the page is
+// far too full on opening a phase.
+function openDescendants(el){
+  var subCards=el.querySelectorAll('.sub-card');
+  for(var i=0;i<subCards.length;i++) subCards[i].classList.add('open');
+  var subItems=el.querySelectorAll('.sub-item');
+  for(var j=0;j<subItems.length;j++){
+    if(subItems[j].querySelector('.si-detail')) subItems[j].classList.add('open');
+  }
+}
+function toggleCard(card){
+  var opening=!card.classList.contains('open');
+  card.classList.toggle('open');
+  if(opening) openDescendants(card);
+  setTimeout(drawArrows,220);
+}
+function toggleSubCard(card){
+  var opening=!card.classList.contains('open');
+  card.classList.toggle('open');
+  if(opening) openDescendants(card);
+  setTimeout(drawArrows,220);
+}
 function togglePhase(phase){ phase.classList.toggle('collapsed'); setTimeout(drawArrows,220); }
 function toggleSub(el){ if(el.querySelector('.si-detail')) el.classList.toggle('open'); }
 function toggleSection(id,titleEl){
